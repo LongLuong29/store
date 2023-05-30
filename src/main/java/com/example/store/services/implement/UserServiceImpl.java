@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Autowired private RoleRepository roleRepository;
+    @Autowired private RankRepository rankRepository;
 
     @Autowired private ImageStorageService imageStorageService;
     @Autowired private CartProductRepository cartDetailRepository;
@@ -75,9 +76,13 @@ public class UserServiceImpl implements UserService {
         // check role already exists
         encodePassword(user);
         //Check role already exists
-        Role role = roleRepository.findRoleById(user.getRole().getId()).orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
+        Role role = roleRepository.findRoleById(user.getRole().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
         user.setRole(role);
         user.setStatus(true);
+        Rank rank = rankRepository.findRankById(4L)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
+        user.setRank(rank);
 
         String randomCodeVerify = RandomString.make(64);
         user.setVerificationCode(randomCodeVerify);
@@ -107,16 +112,18 @@ public class UserServiceImpl implements UserService {
                 throw new ResourceAlreadyExistsException("Phone user existed");
             }
         }
-        // check role already exists
+
+        user.setImage(
+                imageStorageService.storeFile(userRequestDTO.getImage(), "user"));
         encodePassword(user);
         //Check role already exists
-        Role role = roleRepository.findRoleById(user.getRole().getId()).orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
+        Role role = roleRepository.findRoleById(user.getRole().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
         user.setRole(role);
-        // code after
-
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Update User successfully!", userResponseDTO));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Update User successfully!", userResponseDTO));
     }
 
     @Override

@@ -42,8 +42,8 @@ public class GroupProductServiceImpl implements GroupProductService {
     @Override
     public ResponseEntity<ResponseObject> createGroupProduct(GroupProductRequestDTO groupProductRequestDTO) {
         GroupProduct groupProduct = mapper.groupProductRequestDTOToGroupProduct(groupProductRequestDTO);
+        groupProduct.setStatus(true);
         groupProduct = checkExits(groupProduct);
-
         GroupProduct groupProductSaved = groupProductRepository.save(groupProduct);
         GroupProductResponseDTO groupProductResponseDTO = mapper.groupProductToGroupProductResponseDTO(groupProductSaved);
         return ResponseEntity.status(HttpStatus.OK)
@@ -56,6 +56,7 @@ public class GroupProductServiceImpl implements GroupProductService {
         GroupProduct getGroupProduct = groupProductRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find GroupProduct with ID = " + id));
         groupProduct.setId(id);
+        groupProduct.setStatus(true);
         groupProduct = checkExits(groupProduct);
 
         GroupProduct groupProductSaved = groupProductRepository.save(groupProduct);

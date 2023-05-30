@@ -11,7 +11,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenUtil {
-  private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000; // 24 hour
+  private static final long EXPIRE_DURATION = 12 * 60 * 60 * 1000; // 12 hour
   @Value("${app.jwt.secret}")
   private String SECRET_KEY;
 
@@ -28,7 +28,7 @@ public class JwtTokenUtil {
 
   public String generateToken(User user){
     return Jwts.builder()
-            .setSubject(String.format("%s,%s", user.getId(), user.getPhone()))
+            .setSubject(String.format("%s,%s", user.getId(), user.getRole().getId()))
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
             .signWith(SignatureAlgorithm.HS512, SECRET_KEY)

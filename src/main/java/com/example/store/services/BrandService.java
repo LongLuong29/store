@@ -16,6 +16,10 @@ public interface BrandService {
 
     ResponseEntity<ResponseObject> deleteBrand(Long id);
 
+    ResponseEntity<ResponseObject> safeDeleteBrand(Long id);
+
     BrandResponseDTO getBrandById(Long id);
+
+
 }
 

@@ -33,5 +33,5 @@ public class UserRequestDTO {
     private double point;
 
     private Long role;
-    private Long rank;
+//    private Long rank;
 }

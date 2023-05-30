@@ -18,7 +18,7 @@ public interface UserMapper {
     @Mapping(target = "phone", source = "dto.phone")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "role.id", source = "dto.role")
-    @Mapping(target = "rank.id", source = "dto.rank")
+//    @Mapping(target = "rank.id", source = "dto.rank")
     @Mapping(target = "password", source = "dto.password")
     @Mapping(target = "image", expression = "java(null)")
     User userRequestDTOtoUser(UserRequestDTO dto);

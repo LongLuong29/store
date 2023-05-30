@@ -71,7 +71,17 @@ public class BrandServiceImpl implements BrandService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find brand with ID = " + id));
         brandRepository.delete(getBrand);
         return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK,"Completely removed the brand"));
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> safeDeleteBrand(Long id) {
+        Brand getBrand = brandRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find brand with ID = " + id));
+        getBrand.setStatus(false);
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK,"Delete brand successfully!"));
+//        return null;
     }
 
     @Override

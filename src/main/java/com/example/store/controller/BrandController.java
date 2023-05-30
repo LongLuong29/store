@@ -25,15 +25,21 @@ public class BrandController {
         return brandService.createBrand(brandRequestDTO);
     }
 
-    @PutMapping(value = "")
+    @PutMapping(value="")
     public ResponseEntity<ResponseObject> updateBrand(@ModelAttribute @Valid BrandRequestDTO brandRequestDTO, @RequestParam(name = "id") Long id){
         return brandService.updateBrand(brandRequestDTO, id);
     }
 
-    @DeleteMapping(value = "")
+    @DeleteMapping(value="")
+    public ResponseEntity<ResponseObject> safeDeleteBrand(@RequestParam(name = "id") Long id){
+        return brandService.safeDeleteBrand(id);
+    }
+
+    @DeleteMapping(value = "/remove")
     public ResponseEntity<ResponseObject> deleteBrand(@RequestParam(name = "id") Long id){
         return brandService.deleteBrand(id);
     }
+
 
     @GetMapping(value = "/{id}")
     public BrandResponseDTO getBrandById(@PathVariable(name = "id") Long id){

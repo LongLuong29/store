@@ -17,5 +17,7 @@ public interface CategoryService {
 
     ResponseEntity<ResponseObject> deleteCategory(Long id);
 
+    ResponseEntity<ResponseObject> safeDelete(Long id);
+
     CategoryResponseDTO getCategoryById(Long id);
 }

@@ -196,8 +196,8 @@ public class ProductServiceImpl implements ProductService {
             price = product.getPrice();
         }
         productGalleryDTO.setDiscountPrice(price);
-        List<Review> feedbackList = feedbackRepository.findReviewByProduct(product);
-        productGalleryDTO.setRate(Utils.calculateAvgRate(feedbackList));
+//        List<Review> feedbackList = feedbackRepository.findReviewByProduct(product);
+//        productGalleryDTO.setRate(Utils.calculateAvgRate(feedbackList));
 
         return productGalleryDTO;
     }

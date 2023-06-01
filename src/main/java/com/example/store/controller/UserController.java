@@ -1,6 +1,7 @@
 package com.example.store.controller;
 
 import com.example.store.dto.request.UserRequestDTO;
+import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.UserResponseDTO;
 import com.example.store.services.ImageStorageService;
@@ -34,8 +35,8 @@ public class UserController {
   }
 
   @PutMapping(value = "/{id}")
-  public ResponseEntity<ResponseObject> updateUser(@PathVariable(name = "id") Long id, @ModelAttribute @Valid UserRequestDTO userRequestDTO){
-    return userService.updateUser(id, userRequestDTO);
+  public ResponseEntity<ResponseObject> updateUser(@PathVariable(name = "id") Long id, @ModelAttribute @Valid UserUpdateRequestDTO userUpdateRequestDTO){
+    return userService.updateUser(id, userUpdateRequestDTO);
   }
 
   @GetMapping(value = "/image")

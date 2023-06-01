@@ -4,10 +4,12 @@ import com.example.store.dto.request.RankRequestDTO;
 import com.example.store.dto.response.RankResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Rank;
+import com.example.store.entities.User;
 import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.RankMapper;
 import com.example.store.repositories.RankRepository;
+import com.example.store.repositories.UserRepository;
 import com.example.store.services.RankService;
 import jakarta.transaction.Transactional;
 import org.mapstruct.factory.Mappers;
@@ -27,6 +29,7 @@ public class RankServiceImpl implements RankService {
     private final RankMapper mapper = Mappers.getMapper(RankMapper.class);
 
     @Autowired private RankRepository rankRepository;
+    @Autowired private UserRepository userRepository;
 
     @Override
     public ResponseEntity<?> getAllRank() {
@@ -78,9 +81,22 @@ public class RankServiceImpl implements RankService {
     public RankResponseDTO getRankById(Long id) {
         Rank getRank = rankRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = " + id));
-        RankResponseDTO brandResponseDTO = mapper.rankToRankResponseDTO(getRank);
-        return brandResponseDTO;
+        RankResponseDTO rankResponseDTO = mapper.rankToRankResponseDTO(getRank);
+        return rankResponseDTO;
     }
+
+    @Override
+    public RankResponseDTO getRankByUserId(Long userId) {
+        User getUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        Long getRankId = getUser.getRank().getId();
+        Rank getRank = rankRepository.findRankById(getRankId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with this User "));
+        RankResponseDTO rankResponseDTO = mapper.rankToRankResponseDTO(getRank);
+        return rankResponseDTO;
+    }
+
+
 
     //check brand name exits or not
     private Rank checkExits(Rank rank){

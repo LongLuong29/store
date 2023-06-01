@@ -20,6 +20,7 @@ public class UserResponseDTO {
     private String name;
     private String email;
     private String phone;
+//    private String password;
     private boolean gender;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private Date birthday;

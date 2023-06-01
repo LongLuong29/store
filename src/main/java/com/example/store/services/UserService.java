@@ -1,6 +1,7 @@
 package com.example.store.services;
 
 import com.example.store.dto.request.UserRequestDTO;
+import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.AuthResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.UserResponseDTO;
@@ -15,7 +16,7 @@ public interface UserService {
 
     ResponseEntity<ResponseObject> saveUser(UserRequestDTO userRequestDTO/*, String siteUrl*/)
             throws MessagingException, UnsupportedEncodingException;
-    ResponseEntity<ResponseObject> updateUser(Long id, UserRequestDTO userRequestDTO);
+    ResponseEntity<ResponseObject> updateUser(Long id, UserUpdateRequestDTO userUpdateRequestDTO);
     ResponseEntity<?> getAllUser(Pageable pageable);
     ResponseEntity<ResponseObject> deleteUser(Long id);
     ResponseEntity<UserResponseDTO> getUserById(Long id);

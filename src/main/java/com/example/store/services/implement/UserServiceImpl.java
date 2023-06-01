@@ -1,6 +1,7 @@
 package com.example.store.services.implement;
 
 import com.example.store.dto.request.UserRequestDTO;
+import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.AuthResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.UserResponseDTO;
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setStatus(true);
         Rank rank = rankRepository.findRankById(4L)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = 4" ));
         user.setRank(rank);
 
         String randomCodeVerify = RandomString.make(64);
@@ -93,33 +94,37 @@ public class UserServiceImpl implements UserService {
                 .body(new ResponseObject(HttpStatus.OK, "Create user successfully!", userResponseDTO));
     }
     @Override
-    public ResponseEntity<ResponseObject> updateUser(Long id, UserRequestDTO userRequestDTO) {
-        User user = mapper.userRequestDTOtoUser(userRequestDTO);
+    public ResponseEntity<ResponseObject> updateUser(Long id, UserUpdateRequestDTO userUpdateRequestDTO) {
+        User user = mapper.userUpdateRequestDTOtoUser(userUpdateRequestDTO);
         user.setId(id);
-        User userExists = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        User userExists = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
 
         //Check email user existed
         if (!user.getEmail().equals(userExists.getEmail())) {
-            Optional<User> userCheckEmail = userRepository.findUserByEmail(userRequestDTO.getEmail());
+            Optional<User> userCheckEmail = userRepository.findUserByEmail(userUpdateRequestDTO.getEmail());
             if (userCheckEmail.isPresent()){
                 throw new ResourceAlreadyExistsException("Email user existed");
             }
         }
         //Check phone user existed
         if (!user.getPhone().equals(userExists.getPhone())) {
-            Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
+            Optional<User> userCheckPhone = userRepository.findUserByPhone(userUpdateRequestDTO.getPhone());
             if (userCheckPhone.isPresent()){
                 throw new ResourceAlreadyExistsException("Phone user existed");
             }
         }
 
         user.setImage(
-                imageStorageService.storeFile(userRequestDTO.getImage(), "user"));
-        encodePassword(user);
-        //Check role already exists
-        Role role = roleRepository.findRoleById(user.getRole().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
-        user.setRole(role);
+                imageStorageService.storeFile(userUpdateRequestDTO.getImage(), "user"));
+        user.setStatus(true);
+        user.setPassword(userExists.getPassword());
+        user.setRank(userExists.getRank());
+        user.setRole(userExists.getRole());
+//        //Check role already exists
+//        Role role = roleRepository.findRoleById(user.getRole().getId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
+//        user.setRole(role);
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -174,10 +179,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<UserResponseDTO> getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);    }
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
 
     @Override
     public ResponseEntity<?> getALlShipper() {

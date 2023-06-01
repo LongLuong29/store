@@ -7,4 +7,5 @@ public interface OrderProductService {
   ResponseEntity<ResponseObject> addProductToOrder(Long orderId, Long productId, int amount);
   ResponseEntity<ResponseObject> deleteProductToOrder(Long orderId, Long productId);
   ResponseEntity<?> getProductByOrder(Long orderId);
+  ResponseEntity<?> getAllProductByOrderPayed();
 }

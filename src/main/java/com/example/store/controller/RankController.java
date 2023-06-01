@@ -35,9 +35,9 @@ public class RankController {
         return rankService.deleteRank(id);
     }
 
-    @GetMapping(value = "/{id}")
-    public RankResponseDTO getRankById(@PathVariable(name = "id") Long id){
-        return rankService.getRankById(id);
+    @GetMapping(value = "/{userId}")
+    public RankResponseDTO getRankByUser(@PathVariable(name = "userId") Long id){
+        return rankService.getRankByUserId(id);
     }
 
 }

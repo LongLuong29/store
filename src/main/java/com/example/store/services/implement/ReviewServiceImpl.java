@@ -3,15 +3,11 @@ package com.example.store.services.implement;
 import com.example.store.dto.request.ReviewRequestDTO;
 import com.example.store.dto.response.ReviewResponseDTO;
 import com.example.store.dto.response.ResponseObject;
-import com.example.store.entities.Review;
-import com.example.store.entities.Product;
-import com.example.store.entities.User;
+import com.example.store.entities.*;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.ReviewMapper;
 import com.example.store.models.ItemTotalPage;
-import com.example.store.repositories.ReviewRepository;
-import com.example.store.repositories.ProductRepository;
-import com.example.store.repositories.UserRepository;
+import com.example.store.repositories.*;
 import com.example.store.services.ReviewService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +20,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,6 +29,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private ProductRepository productRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private OrderProductRepository orderProductRepository;
+
 
     private final ReviewMapper mapper = Mappers.getMapper(ReviewMapper.class);
 
@@ -73,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + reviewRequestDTO.getUser()));
         Product product = productRepository.findById(reviewRequestDTO.getProduct()).
                 orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Product với ID = " + reviewRequestDTO.getProduct()));
-
+        checkBought(user, product);
         review.setUser(user);
         review.setProduct(product);
 
@@ -108,5 +108,24 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(review);
 
         return reviewResponseDTO;
+    }
+
+    private User checkBought(User user, Product product){
+        User getUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + user.getId()));
+        Product getProduct = productRepository.findById(product.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Product với ID = " + product.getId()));
+
+        List<Order> orderList = orderRepository.findOrdersByUser(getUser);
+        for(Order order: orderList){
+            List<OrderProduct> orderProductList = orderProductRepository.findOrderProductByOrder(order);
+            for(OrderProduct op: orderProductList){
+                if(op.getProduct() != getProduct)
+                {
+                    return user;
+                }
+            }
+        }
+        throw new ResourceNotFoundException("Người dùng chưa mua sản phẩm này");
     }
 }

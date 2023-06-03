@@ -142,7 +142,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public ResponseEntity<?> getDeliveryByShipper(Long shipperId) {
-        User shipper = userRepository.findById(shipperId).orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
+        User shipper = userRepository
+                .findById(shipperId).orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
         List<Delivery> deliveryList = deliveryRepository.findDeliveriesByShipper(shipper);
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
 

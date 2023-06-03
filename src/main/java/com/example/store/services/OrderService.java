@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
   ResponseEntity<?> getOrderByUser(Long userId);
-  ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO);
+  ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO, Long discountId);
   ResponseEntity<ResponseObject> upateOrder(Long orderId, OrderRequestDTO orderRequestDTO);
   ResponseEntity<?> getAllOrder();
   ResponseEntity<ResponseObject> deleteOrder(Long orderId);

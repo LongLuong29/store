@@ -18,7 +18,7 @@ public class OrderResponseDTO {
   private Long orderId;
   private String status;
   private String paymentMethod;
-  private BigDecimal totalPrice;
+  private BigDecimal finalPrice;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date orderedDate;

@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
         user.setImage(
                 imageStorageService.storeFile(userUpdateRequestDTO.getImage(), "user"));
         user.setStatus(true);
+        user.setPoint(userExists.getPoint());
         user.setPassword(userExists.getPassword());
         user.setRank(userExists.getRank());
         user.setRole(userExists.getRole());

@@ -22,13 +22,12 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 45)
-    @NotNull(message = "Discount title is required")
+    @Column(length = 100)
     private String title;
 
     private String description;
 
-    @NotNull(message = "Discount code is required")
+    @NotNull(message = "Discount percent is required")
     @Min(value = 1, message = "Percent must be greater 1")
     @Max(value = 99, message = "Percent must smaller 99")
     private double percent;

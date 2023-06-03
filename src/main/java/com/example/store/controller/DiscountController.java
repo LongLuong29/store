@@ -12,7 +12,8 @@ public class DiscountController {
   @Autowired private ProductDiscountService productDiscountService;
 
   @PostMapping(value = "/product")
-  public ResponseEntity<ResponseObject> createProductDiscount(@RequestParam(name = "productId") Long productId, @RequestParam(name = "discountId") Long discountId){
+  public ResponseEntity<ResponseObject> createProductDiscount(@RequestParam(name = "productId") Long productId,
+                                                              @RequestParam(name = "discountId") Long discountId){
     return productDiscountService.createProductDiscount(productId, discountId);
   }
 

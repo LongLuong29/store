@@ -41,7 +41,7 @@ public class Order {
 //    @NotNull(message = "Bill final price is required")
 //    private BigDecimal finalPrice;
 
-    @NotNull(message = "Bill total price is required")
+    @NotNull(message = "Order total price is required")
     private BigDecimal totalPrice;
 
 //    private int discount;

@@ -23,7 +23,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 45, unique = true)
+    @Column(length = 200, unique = true)
     @NotNull(message = "Product name is required")
     private String name;
     @Column(name = "thumbnail")

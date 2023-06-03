@@ -16,6 +16,7 @@ public class OrderRequestDTO {
     private String paymentMethod;
     private BigDecimal totalPrice;
 
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date orderedDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

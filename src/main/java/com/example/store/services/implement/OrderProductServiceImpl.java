@@ -5,13 +5,12 @@ import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Order;
 import com.example.store.entities.OrderProduct;
 import com.example.store.entities.Product;
+import com.example.store.entities.ProductDiscount;
 import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.OrderProductMapper;
 import com.example.store.mapper.UserMapper;
-import com.example.store.repositories.OrderProductRepository;
-import com.example.store.repositories.OrderRepository;
-import com.example.store.repositories.ProductRepository;
+import com.example.store.repositories.*;
 import com.example.store.services.OrderProductService;
 import com.example.store.utils.Utils;
 import org.mapstruct.factory.Mappers;
@@ -32,6 +31,8 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
     @Autowired private ProductRepository productRepository;
+    @Autowired private ProductDiscountRepository productDiscountRepository;
+    @Autowired private DiscountRepository discountRepository;
 
     private final OrderProductMapper orderProductMapper = Mappers.getMapper(OrderProductMapper.class);
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
@@ -43,8 +44,10 @@ public class OrderProductServiceImpl implements OrderProductService {
         BigDecimal totalPrice = order.getTotalPrice();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
+        List<ProductDiscount> productDiscountList = productDiscountRepository.findProductDiscountByProduct(product);
 
         Optional<OrderProduct> getOrderProduct = orderProductRepository.findOrderProductByOrderAndProduct(order, product);
+
         if (amount > product.getInventory()){
             throw new InvalidValueException("Amount product " + product.getName() + " must be less than amount product exists");
         } else if(amount < 0) {
@@ -64,9 +67,9 @@ public class OrderProductServiceImpl implements OrderProductService {
                 orderProduct.setQuantity(amount);
 
             }
-
+            double discount = productDiscountList.get(0).getDiscount().getPercent();
             //Total price of order
-            totalPrice = totalPrice.add(totalPrice(product, amount));
+            totalPrice = totalPrice.add(totalPrice(product, amount, discount));
             order.setTotalPrice(totalPrice);
             orderRepository.save(order);
         }
@@ -77,6 +80,7 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     @Override
     public ResponseEntity<ResponseObject> deleteProductToOrder(Long orderId, Long productId) {
+
         return null;
     }
 
@@ -98,7 +102,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public ResponseEntity<?> getAllProductByOrderPayed() {
 
-        // sap xep giam dan theo truong "createDate"
+        // sap xep giam dan theo truong "createdDate"
         Sort sort = Sort.by("createdDate").descending();
         List<Order> orderList = orderRepository.findAll(sort);
         List<OrderProductResponseDTO> orderProductResponseDTOList = new ArrayList<>();
@@ -119,10 +123,11 @@ public class OrderProductServiceImpl implements OrderProductService {
         return ResponseEntity.status(HttpStatus.OK).body(orderProductResponseDTOList);
     }
 
-    private BigDecimal totalPrice(Product product, int amount){
+    private BigDecimal totalPrice(Product product, int amount, double discount){
         BigDecimal totalPrice;
 
-        totalPrice = product.getPrice().multiply(BigDecimal.valueOf(amount)).setScale(2, RoundingMode.UP);
+        totalPrice = product.getPrice().multiply(BigDecimal.valueOf( (1 - discount/100) * amount))
+                .setScale(2, RoundingMode.UP);
 
         return totalPrice;
     }

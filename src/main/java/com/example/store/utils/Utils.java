@@ -23,8 +23,8 @@ public class Utils {
 
     public static BigDecimal getTotalPrice(Product product, BigDecimal totalPrice, int quantity) {
         if (product.getDiscount().getPercent() > 0) {
-            totalPrice = totalPrice
-                    .add(product.getPrice().multiply(BigDecimal.valueOf((1 - (product.getDiscount().getPercent() / 100)) * (double) quantity)))
+            totalPrice = totalPrice.add(product.getPrice()
+                            .multiply(BigDecimal.valueOf((1 - (product.getDiscount().getPercent() / 100)) * (double) quantity)))
                     .setScale(2, RoundingMode.UP);
         } else {
             totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(quantity))).setScale(2, RoundingMode.UP);

@@ -33,6 +33,11 @@ public class CartController {
     return cartProductService.deleteProductToCart(cartId, productId);
   }
 
+  @DeleteMapping("/product/clear-all")
+  public ResponseEntity<ResponseObject> clearAllProductInCart(@RequestParam(name = "cartId") Long cartId){
+    return cartProductService.clearProductInCart(cartId);
+  }
+
   @GetMapping(value = "/product")
   public ResponseEntity<?> getProductInCart(@RequestParam(name = "cartId") Long cartId){
     return cartProductService.getProductToCart(cartId);

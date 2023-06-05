@@ -97,4 +97,16 @@ public class CartProductServiceImpl implements CartProductService {
         return ResponseEntity.status(HttpStatus.OK).body(cartProductResponseDTOList);
     }
 
+    public ResponseEntity<ResponseObject> clearProductInCart(Long cartId){
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find cart with ID = " + cartId));
+
+        List<CartProduct> cartProducts = cartProductRepository.findCartProductByCart(cart);
+
+        cartProductRepository.deleteAll(cartProducts);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Clear all product in cart !!!"));
+    }
+
 }

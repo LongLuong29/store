@@ -18,6 +18,8 @@ public class CartController {
     return cartService.getCartByUser(userId);
   }
 
+
+  //Cart-product
   @PostMapping(value = "/product")
   public ResponseEntity<ResponseObject> addProductToCart(@RequestParam(name = "cartId") Long cartId,
       @RequestParam(name = "productId") Long productId, @RequestParam(name = "amount") int amount){

@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
-  @Query(value = "select d.percent from tbl_discount d inner join  tbl_product_discount pd on d.id = pd.discount_id where pd.product_id = :productId and :date between d.start_date and d.end_date", nativeQuery = true)
-  Optional<Integer> findPercentByProductId(@Param("productId") Long productId, @Param("date")Date date);
+  @Query(value = "select d.percent from tbl_discount d inner join  tbl_product_discount pd on d.id = pd.discount_id" +
+          " where pd.product_id = :productId /*and :date between d.start_date and d.end_date*/", nativeQuery = true)
+  Optional<Integer> findPercentByProductId(@Param("productId") Long productId/*, @Param("date")Date date*/);
 }

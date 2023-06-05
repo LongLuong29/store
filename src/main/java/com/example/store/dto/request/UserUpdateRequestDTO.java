@@ -22,10 +22,10 @@ public class UserUpdateRequestDTO {
     @Pattern(regexp=("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
             + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
     private String email;
+    private String phone;
     private boolean gender;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
-    private String phone;
     MultipartFile image;
 //    private Long role;
 //    private Long rank;

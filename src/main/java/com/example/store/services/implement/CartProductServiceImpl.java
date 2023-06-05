@@ -43,12 +43,18 @@ public class CartProductServiceImpl implements CartProductService {
         if(amount > product.getInventory()){
             throw new InvalidValueException("Amount product add to cart must be less than amount product exists");
         }
+
         Optional<CartProduct> getCartProduct =cartProductRepository.findCartProductByCartAndProduct(cart,product);
         // cart is exist
         if(getCartProduct.isPresent()){
-            if(amount < 0 ){throw new InvalidValueException("Amount product must greater than 1");}
+//            if(amount < 0 ){
+//                throw new InvalidValueException("Amount product must greater than 1");
+//            }
             cartProduct = getCartProduct.get();
             int newAmount = getCartProduct.get().getAmount() + amount;
+            if(newAmount < 0){
+                throw new InvalidValueException("Số lượng sản phẩm mua không thể có giá trị âm !!!");
+            }
             cartProduct.setAmount(newAmount);
         }else {
             cartProduct.setCart(cart);
@@ -68,6 +74,7 @@ public class CartProductServiceImpl implements CartProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find cart with ID = " + cartId));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
+
         CartProduct cartProduct = cartProductRepository.findCartProductByCartAndProduct(cart,product)
             .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId + " and cart ID = " + cartId));
         cartProductRepository.delete(cartProduct);

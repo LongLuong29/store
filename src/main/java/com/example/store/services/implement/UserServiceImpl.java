@@ -1,5 +1,6 @@
 package com.example.store.services.implement;
 
+import com.example.store.dto.request.UserPasswordRequestDTO;
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.AuthResponseDTO;
@@ -7,6 +8,7 @@ import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.UserResponseDTO;
 import com.example.store.dto.response.UserShipperResponseDTO;
 import com.example.store.entities.*;
+import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.UserMapper;
@@ -27,6 +29,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,19 +47,18 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     @Autowired private UserRepository userRepository;
-
     @Autowired private PasswordEncoder passwordEncoder;
-
     @Autowired private RoleRepository roleRepository;
     @Autowired private RankRepository rankRepository;
-
+    @Autowired private OrderRepository orderRepository;
     @Autowired private ImageStorageService imageStorageService;
     @Autowired private CartProductRepository cartDetailRepository;
     @Autowired private ReviewRepository feedbackRepository;
-//    @Autowired private JavaMailSender mailSender;
     @Autowired private CartRepository cartRepository;
-//    @Autowired private ImageFeedbackRepository imageFeedbackRepository;
     @Autowired private AddressDetailRepository addressDetailRepository;
+//    @Autowired private JavaMailSender mailSender;
+//    @Autowired private ImageFeedbackRepository imageFeedbackRepository;
+
     @Override
     public AuthResponseDTO findUserByEmailAndPassword(String email, String password) {return null;}
 
@@ -79,11 +82,13 @@ public class UserServiceImpl implements UserService {
         //Check role already exists
         Role role = roleRepository.findRoleById(user.getRole().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
-        user.setRole(role);
-        user.setStatus(true);
+        // tạo rank mặc định là thành viên hiện đang có id là 4
         Rank rank = rankRepository.findRankById(4L)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = 4" ));
         user.setRank(rank);
+        user.setRole(role);
+        user.setStatus(true);
+        user.setPoint(0);
 
         String randomCodeVerify = RandomString.make(64);
         user.setVerificationCode(randomCodeVerify);
@@ -145,7 +150,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<ResponseObject> deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
 
         // delete cart by user
         Optional<Cart> getCart = cartRepository.findCartByUser(user);
@@ -182,6 +188,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<UserResponseDTO> getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        updateUserRank(user);
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
@@ -202,7 +209,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Integer> getNumberOfCustomer() {
-        int numberOfCustomer = userRepository.getNumberOfCustomer().orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        int numberOfCustomer = userRepository.getNumberOfCustomer()
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return ResponseEntity.status(HttpStatus.OK).body(numberOfCustomer);
     }
 
@@ -218,9 +226,62 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
     }
 
+    private void updateUserRank(User user){
+        //Update user point
+        List<Order> orderList = orderRepository.findOrdersByUser(user);
+        BigDecimal totalPaid = new BigDecimal(0);
+        for(Order order: orderList){
+            if(order.getStatus()=="Done"){
+                totalPaid = totalPaid.add(order.getTotalPrice()).setScale(0, RoundingMode.UP);
+            }
+        }
+        double userPoint = user.getPoint();
+        userPoint = /*userPoint +*/ totalPaid.doubleValue()/100000;
+        user.setPoint(userPoint);
+
+        //UpdateRank
+        Rank silver = rankRepository.findRankByName("Silver")
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find silver rank "));
+        Rank gold = rankRepository.findRankByName("Gold")
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find gold rank "));
+        Rank diamond = rankRepository.findRankByName("Diamond")
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find diamond rank "));
+        if(userPoint >= 200){
+            user.setRank(diamond);
+        }
+        if(userPoint>=100 && userPoint<200){
+            user.setRank(gold);
+        }
+        if(userPoint>=50 && userPoint<100){
+            user.setRank(silver);
+        }
+    }
+
+//    public boolean checkPassword(Long id, String currentPassword){
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+//        String password = passwordEncoder.encode(currentPassword);
+//        if(user.getPassword().equals(password)){
+//            return true;
+//        }
+//        return false;
+//    }
+
+    public ResponseEntity<ResponseObject> updatePassword(Long id,String newPassword, String confirmPassword){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        if(newPassword.equals(confirmPassword)){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(HttpStatus.OK, "Update password successfully!!!", null));
+        }
+        throw new InvalidValueException("Xác nhận mật khẩu mới không khớp");
+    }
 
     private void encodePassword(User user){
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
     }
+
 }

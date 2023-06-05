@@ -24,13 +24,13 @@ public class UserRequestDTO {
             + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
     private String email;
     private boolean gender;
+    private String phone;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
-    private String phone;
     private String password;
     private boolean status;
     MultipartFile image;
-    private double point;
+//    private double point;
 
     private Long role;
 //    private Long rank;

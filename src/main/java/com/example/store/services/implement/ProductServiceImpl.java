@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductGalleryDTO> productGalleryDTOList = new ArrayList<>();
         for (Product product : productList){
             int discount = 0;
-            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId(), new Date());
+            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
             if (getDiscount.isPresent()){
                 discount = getDiscount.get();
             }

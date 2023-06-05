@@ -1,5 +1,6 @@
 package com.example.store.mapper;
 
+import com.example.store.dto.request.UserPasswordRequestDTO;
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.UserResponseDTO;
@@ -44,6 +45,11 @@ public interface UserMapper {
     @Mapping(target = "phone", source = "dto.phone")
     @Mapping(target = "image", expression = "java(null)")
     User userUpdateRequestDTOtoUser(UserUpdateRequestDTO dto);
+
+//    @Mapping(target = "currentPassword", source = "dto.currentPassword")
+//    @Mapping(target = "newPassword", source = "dto.newPassword")
+//    @Mapping(target = "confirmPassword", source = "dto.confirmPassword")
+//    User userPasswordRequestDTO(UserPasswordRequestDTO dto);
 
     @Mapping(target = "id", source = "l.id")
     @Mapping(target = "name", source = "l.name")

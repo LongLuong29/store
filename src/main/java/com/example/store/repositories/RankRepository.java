@@ -13,5 +13,4 @@ import java.util.Optional;
 public interface RankRepository extends JpaRepository<Rank, Long> {
     Optional<Rank> findRankByName(String name);
     Optional<Rank> findRankById(Long id);
-
 }

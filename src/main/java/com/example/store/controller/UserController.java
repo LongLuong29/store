@@ -35,7 +35,8 @@ public class UserController {
   }
 
   @PutMapping(value = "/{id}")
-  public ResponseEntity<ResponseObject> updateUser(@PathVariable(name = "id") Long id, @ModelAttribute @Valid UserUpdateRequestDTO userUpdateRequestDTO){
+  public ResponseEntity<ResponseObject> updateUser(@PathVariable(name = "id") Long id,
+                                                   @ModelAttribute @Valid UserUpdateRequestDTO userUpdateRequestDTO){
     return userService.updateUser(id, userUpdateRequestDTO);
   }
 
@@ -62,5 +63,19 @@ public class UserController {
   @GetMapping(value = "/{id}")
   public ResponseEntity<UserResponseDTO> getUserById(@PathVariable(name = "id") Long id){
     return userService.getUserById(id);
+  }
+
+
+  //Đổi mật khẩu
+//  @PostMapping(value = "/{id}/check-password")
+//  public boolean checkPassword(@PathVariable(name = "id") Long id,@Valid String currentPassword){
+//    return userService.checkPassword(id, currentPassword);
+//  }
+
+  @PutMapping(value = "/{id}/password")
+  public ResponseEntity<ResponseObject> updatePassword(@PathVariable(name = "id") Long id,
+                                                       @Valid String newPassword,
+                                                       @Valid String confirmPassword){
+    return userService.updatePassword(id, newPassword, confirmPassword);
   }
 }

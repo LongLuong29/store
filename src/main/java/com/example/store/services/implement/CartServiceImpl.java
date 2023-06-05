@@ -29,6 +29,7 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
         Cart cart = cartRepository.findCartByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find cart with user ID = " + userId));
+
         CartResponseDTO cartResponseDTO = cartMapper.cartToCartResponseDTO(cart);
         // tính tổng số lượng sản phẩm có trong giỏ
         int totalProduct = cartProductRepository.findCartProductByCart(cart).size();

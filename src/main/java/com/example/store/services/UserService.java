@@ -1,6 +1,5 @@
 package com.example.store.services;
 
-import com.example.store.dto.request.UserPasswordRequestDTO;
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.AuthResponseDTO;

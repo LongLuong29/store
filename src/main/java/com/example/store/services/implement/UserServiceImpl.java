@@ -1,6 +1,5 @@
 package com.example.store.services.implement;
 
-import com.example.store.dto.request.UserPasswordRequestDTO;
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.AuthResponseDTO;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,7 +92,10 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(randomCodeVerify);
         // code after
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
-
+        //Create cart by user
+        Cart cart = new Cart();
+        cart.setUser(user);
+        this.cartRepository.save(cart);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create user successfully!", userResponseDTO));
     }
@@ -219,11 +220,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Verify code is incorrect"));
         getUser.setStatus(true);
         User user =  userRepository.save(getUser);
-        //Create cart by user
-        Cart cart = new Cart();
-        cart.setUser(user);
-        this.cartRepository.save(cart);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
+//        //Create cart by user
+//        Cart cart = new Cart();
+//        cart.setUser(user);
+//        this.cartRepository.save(cart);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
     }
 
     private void updateUserRank(User user){

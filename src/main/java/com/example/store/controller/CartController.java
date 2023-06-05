@@ -22,13 +22,14 @@ public class CartController {
   //Cart-product
   @PostMapping(value = "/product")
   public ResponseEntity<ResponseObject> addProductToCart(@RequestParam(name = "cartId") Long cartId,
-      @RequestParam(name = "productId") Long productId, @RequestParam(name = "amount") int amount){
+                                                         @RequestParam(name = "productId") Long productId,
+                                                         @RequestParam(name = "amount") int amount){
     return cartProductService.addProductToCart(cartId, productId, amount);
   }
 
   @DeleteMapping(value = "/product")
   public ResponseEntity<ResponseObject> deteteProductToCart(@RequestParam(name = "cartId") Long cartId,
-      @RequestParam(name = "productId") Long productId){
+                                                            @RequestParam(name = "productId") Long productId){
     return cartProductService.deleteProductToCart(cartId, productId);
   }
 

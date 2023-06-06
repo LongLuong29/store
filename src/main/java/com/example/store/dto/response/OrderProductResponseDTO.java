@@ -20,18 +20,18 @@ public class OrderProductResponseDTO {
 
     private Long orderId;
     private int amount;
-    private String payMethod;
-    private String status;
+//    private String payMethod;
+//    private String status;
     private BigDecimal price;
     private UserResponseDTO userResponseDTO;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date orderedDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date doneDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date deliveredDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date paidDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private Date orderedDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private Date doneDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private Date deliveredDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private Date paidDate;
 
 }

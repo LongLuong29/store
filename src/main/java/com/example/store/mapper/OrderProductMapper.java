@@ -14,9 +14,9 @@ public interface OrderProductMapper {
     @Mapping(target = "productImage", source = "b.product.thumbnail")
     @Mapping(target = "orderId", source = "b.order.id")
     @Mapping(target = "amount", source = "b.quantity")
-    @Mapping(target = "paidDate", source = "b.order.paidDate")
-    @Mapping(target = "payMethod", source = "b.order.paymentMethod")
-    @Mapping(target = "status", source = "b.order.status")
+//    @Mapping(target = "payMethod", source = "b.order.paymentMethod")
+//    @Mapping(target = "status", source = "b.order.status")
     @Mapping(target = "price",  source = "b.order.totalPrice")
+        //    @Mapping(target = "paidDate", source = "b.order.paidDate")
     OrderProductResponseDTO orderProductToOrderProductResponseDTO(OrderProduct b);
 }

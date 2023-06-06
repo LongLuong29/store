@@ -1,9 +1,6 @@
 package com.example.store.entities.Keys;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,6 +9,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@Data
 public class OrderProductKey implements Serializable {
     private Long product;
     private Long order;

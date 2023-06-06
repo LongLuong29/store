@@ -1,13 +1,11 @@
 package com.example.store.entities.Keys;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Data
 @Getter
 @Setter
 @AllArgsConstructor

@@ -56,15 +56,16 @@ public class OrderServiceImpl implements OrderService {
 
         double getUserDiscount;
         double rankDiscount = user.getRank().getDiscount();
+        // người dùng không dùng discount
         if(discountId==3){
             getUserDiscount=0;
         }
+        // có được phần trăm giảm giá của discount
         else{
             UserDiscount userDiscount = userDiscountRepository.findUserDiscountByDiscountAndUser(discount, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with this user = "));
             getUserDiscount = userDiscount.getDiscount().getPercent();
         }
-
         double totalDiscount = (getUserDiscount + rankDiscount)/100;
         BigDecimal finalPrice = order.getTotalPrice().multiply(BigDecimal.valueOf(1-totalDiscount));
 

@@ -34,7 +34,6 @@ public class  Banner {
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp
     private Date createdDate;
-
     @UpdateTimestamp
     private Date updatedDate;
 

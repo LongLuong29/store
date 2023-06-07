@@ -81,7 +81,6 @@ public class BrandServiceImpl implements BrandService {
         getBrand.setStatus(false);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK,"Delete brand successfully!"));
-//        return null;
     }
 
     @Override

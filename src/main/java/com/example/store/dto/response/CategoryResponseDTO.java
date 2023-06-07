@@ -1,14 +1,12 @@
 package com.example.store.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+@Data
 public class CategoryResponseDTO {
     private Long id;
     private String name;

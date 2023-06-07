@@ -1,16 +1,13 @@
 package com.example.store.dto.response;
 
 import com.example.store.entities.Address;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Data
 public class AddressDetailResponseDTO {
     private Long user;
     private Address address;

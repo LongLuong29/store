@@ -38,14 +38,16 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         Discount discount = discountRepository.findById(discountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with ID = " + discountId));
 
-        Optional<ProductDiscount> getProductDiscount = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product);
+        Optional<ProductDiscount> getProductDiscount
+                = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product);
         if (getProductDiscount.isPresent()){
             throw new ResourceAlreadyExistsException("Discount of product is exists");
         }
         ProductDiscount productDiscount = new ProductDiscount();
         productDiscount.setDiscount(discount);
         productDiscount.setProduct(product);
-        ProductDiscountResponseDTO productDiscountResponseDTO = productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscountRepository.save(productDiscount));
+        ProductDiscountResponseDTO productDiscountResponseDTO
+                = productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscountRepository.save(productDiscount));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create product discount success!!!", productDiscountResponseDTO));
     }
@@ -60,7 +62,8 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         }
         List<ProductDiscountResponseDTO> productDiscountResponseDTOList = new ArrayList<>();
         for (ProductDiscount productDiscount : productDiscountList){
-            productDiscountResponseDTOList.add(productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscount));
+            productDiscountResponseDTOList.add
+                    (productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscount));
         }
         return ResponseEntity.status(HttpStatus.OK).body(productDiscountResponseDTOList);
     }

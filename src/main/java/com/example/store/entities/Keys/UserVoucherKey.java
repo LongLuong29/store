@@ -9,20 +9,20 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDiscountKey implements Serializable {
+public class UserVoucherKey implements Serializable {
   private Long user;
-  private Long discount;
+  private Long voucher;
 
   @Override
   public int hashCode() {
-    return Objects.hash(getDiscount(), getUser());
+    return Objects.hash(getVoucher(), getUser());
   }
 
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
-    if (!(obj instanceof UserDiscountKey)) return false;
-    UserDiscountKey that = (UserDiscountKey) obj;
-    return getUser().equals(that.user) && discount.equals(that.discount);
+    if (!(obj instanceof UserVoucherKey)) return false;
+    UserVoucherKey that = (UserVoucherKey) obj;
+    return getUser().equals(that.user) && voucher.equals(that.voucher);
   }
 }

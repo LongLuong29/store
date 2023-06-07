@@ -3,10 +3,7 @@ package com.example.store.dto.response;
 import com.example.store.entities.Rank;
 import com.example.store.entities.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -14,7 +11,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Data
 public class UserResponseDTO {
     private Long id;
     private String name;

@@ -25,6 +25,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String status;
+
+    @NotNull(message = "Order total price is required")
+    private BigDecimal totalPrice;
+    private BigDecimal shipFee;
+    private BigDecimal discountVoucher;
+    private BigDecimal finalPrice;
+
+    @NotNull(message = "Payment method is required")
+    private String paymentMethod;
+
     @Temporal(TemporalType.DATE)
     private Date orderedDate;
     @Temporal(TemporalType.DATE)
@@ -33,23 +44,6 @@ public class Order {
     private Date deliveredDate;
     @Temporal(TemporalType.DATE)
     private Date paidDate;
-
-    private String status;
-
-//    private BigDecimal shipFee;
-//
-//    @NotNull(message = "Bill final price is required")
-//    private BigDecimal finalPrice;
-
-    @NotNull(message = "Order total price is required")
-    private BigDecimal totalPrice;
-
-//    private int discount;
-
-
-    @NotNull(message = "Payment method is required")
-    private String paymentMethod;
-
     //foreign key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

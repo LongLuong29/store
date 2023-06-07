@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class DiscountController {
   @Autowired private ProductDiscountService productDiscountService;
 
+  // Product-Discount
   @PostMapping(value = "/product")
   public ResponseEntity<ResponseObject> createProductDiscount(@RequestParam(name = "productId") Long productId,
                                                               @RequestParam(name = "discountId") Long discountId){
@@ -23,7 +24,11 @@ public class DiscountController {
   }
 
   @DeleteMapping(value = "/product")
-  public ResponseEntity<ResponseObject> deleteProductDiscount(@RequestParam(name = "productId") Long productId, @RequestParam(name = "discountId") Long discountId){
+  public ResponseEntity<ResponseObject> deleteProductDiscount(@RequestParam(name = "productId") Long productId,
+                                                              @RequestParam(name = "discountId") Long discountId){
     return productDiscountService.deleteProductDiscount(productId, discountId);
   }
+
+
 }
+

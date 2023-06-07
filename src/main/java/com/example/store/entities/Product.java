@@ -54,9 +54,9 @@ public class Product {
 //    @JoinColumn(name = "description_id")
 //    private Attribute attribute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discount_id")
-    private Discount discount;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "discount_id")
+//    private Discount discount;
 
     // time
     @CreationTimestamp

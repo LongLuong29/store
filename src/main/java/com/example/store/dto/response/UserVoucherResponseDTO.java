@@ -1,15 +1,15 @@
 package com.example.store.dto.response;
 
-import com.example.store.entities.Discount;
+import com.example.store.entities.Voucher;
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class  ProductDiscountResponseDTO {
+@Setter
+public class UserVoucherResponseDTO {
   private String id;
   private String name;
-  private Discount discount;
+  private Voucher voucher;
 }

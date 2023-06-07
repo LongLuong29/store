@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired private BrandRepository brandRepository;
     @Autowired private GroupProductRepository groupProductRepository;
     @Autowired private CategoryRepository categoryRepository;
-    @Autowired private ReviewRepository feedbackRepository;
+    @Autowired private ReviewRepository reviewRepository;
     @Autowired private ImageStorageService imageStorageService;
     @Autowired private ImageProductRepository imageProductRepository;
     @Autowired private ProductAttributeRepository attributeProductRepository;
@@ -134,6 +134,9 @@ public class ProductServiceImpl implements ProductService {
             images[i] = imageProductList.get(i).getPath();
         }
         productResponseDTO.setImages(images);
+        List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
+        double calRate = Utils.calculateAvgRate(reviewList);
+        product.setRate(calRate);
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 
@@ -196,8 +199,8 @@ public class ProductServiceImpl implements ProductService {
             price = product.getPrice();
         }
         productGalleryDTO.setDiscountPrice(price);
-//        List<Review> feedbackList = feedbackRepository.findReviewByProduct(product);
-//        productGalleryDTO.setRate(Utils.calculateAvgRate(feedbackList));
+        List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
+        productGalleryDTO.setRate(Utils.calculateAvgRate(reviewList));
 
         return productGalleryDTO;
     }

@@ -51,7 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ResponseEntity<?> getAllReviewByProduct(Pageable pageable, Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
         Page<Review> getReviewList = reviewRepository.findReviewByProduct(pageable,product);
         List<Review> reviewList = getReviewList.getContent();
         List<ReviewResponseDTO> reviewResponseDTOList = new ArrayList<>();

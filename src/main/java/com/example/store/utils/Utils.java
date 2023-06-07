@@ -12,15 +12,15 @@ public class Utils {
     public static final String  DEFAULT_PAGE_SIZE = "100";
     public static final String DEFAULT_PAGE_NUMBER = "1";
 
-    public static double calculateAvgRate(List<Review> feedbackList){
+    public static double calculateAvgRate(List<Review> reviewList){
         double total = 0;
-        if (feedbackList.isEmpty()) return 0;
-        for (Review feedback : feedbackList){
-            total += feedback.getVote();
-        }
-        return total/feedbackList.size();
-    }
+        if (reviewList.isEmpty()) return 0;
 
+        for (Review review : reviewList){
+            total += review.getVote();
+        }
+        return total/reviewList.size();
+    }
 
     public static BigDecimal getTotalPrice(Product product, BigDecimal totalPrice, int quantity, ProductDiscount productDiscount) {
         if (productDiscount.getDiscount().getPercent() > 0) {

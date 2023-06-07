@@ -1,32 +1,30 @@
 package com.example.store.entities;
 
-import com.example.store.entities.Keys.OrderProductKey;
+import com.example.store.entities.Keys.CartDetailKey;
+import com.example.store.entities.Keys.WishListKey;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
-@Getter
 @Setter
-@Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_order_product")
-@IdClass(OrderProductKey.class)
-public class OrderProduct {
+@Entity
+@Table(name = "tbl_wish_list")
+@IdClass(WishListKey.class)
+public class WishList {
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int quantity;
-    private BigDecimal pricePerOne;
-    private BigDecimal discountAmount;
 }

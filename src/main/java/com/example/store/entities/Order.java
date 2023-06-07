@@ -32,6 +32,8 @@ public class Order {
     private BigDecimal shipFee;
     private BigDecimal discountVoucher;
     private BigDecimal finalPrice;
+    @Column(length = 333)
+    private String note;
 
     @NotNull(message = "Payment method is required")
     private String paymentMethod;

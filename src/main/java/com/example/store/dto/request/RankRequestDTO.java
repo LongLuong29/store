@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class RankRequestDTO {
     private String name;
     private double discount;
-    private double point;
-    private String icon;
     private String color;
     private String description;
 }

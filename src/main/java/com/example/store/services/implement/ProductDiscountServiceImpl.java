@@ -38,8 +38,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         Discount discount = discountRepository.findById(discountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with ID = " + discountId));
 
-        Optional<ProductDiscount> getProductDiscount
-                = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product);
+        Optional<ProductDiscount> getProductDiscount = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product);
         if (getProductDiscount.isPresent()){
             throw new ResourceAlreadyExistsException("Discount of product is exists");
         }

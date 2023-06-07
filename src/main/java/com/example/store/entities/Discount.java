@@ -22,7 +22,7 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100)
+    @Column(length = 200)
     private String title;
 
     private String description;
@@ -34,7 +34,7 @@ public class Discount {
 
     private boolean status;
 
-    @Size(max = 14, min = 5, message = "Invalid code size")
+    @Size(max = 11, min = 5, message = "Invalid code size")
     private String code;
 
     @CreationTimestamp

@@ -20,22 +20,12 @@ public class Rank {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotNull(message = "Rank name is required")
     private String name;
-
-    private double discount;
-
-    @NotNull(message = "Point is required")
-    private double point;
-
-    @Column(name = "Rank icon")
-    private String icon;
-
     @NotNull(message = "Color is required")
     private String color;
 
-    @Column(name = "Rank description")
+    private double discount;
     private String description;
 
     @UpdateTimestamp

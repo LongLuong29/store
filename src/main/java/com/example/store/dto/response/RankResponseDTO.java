@@ -11,8 +11,6 @@ public class RankResponseDTO {
     private Long id;
     private String name;
     private double discount;
-    private double point;
-    private String icon;
     private String color;
     private String description;
 }

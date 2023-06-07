@@ -110,11 +110,11 @@ public class OrderProductServiceImpl implements OrderProductService {
         for (Order order : orderList) {
             List<OrderProduct> orderProductList = orderProductRepository.findOrderProductByOrder(order);
             for (OrderProduct orderProduct : orderProductList) {
-                OrderProductResponseDTO orderProductResponseDTO
-                        = orderProductMapper.orderProductToOrderProductResponseDTO(orderProduct);
+                OrderProductResponseDTO orderProductResponseDTO = orderProductMapper.orderProductToOrderProductResponseDTO(orderProduct);
+                List<ProductDiscount> productDiscountList = productDiscountRepository.findProductDiscountByProduct(orderProduct.getProduct());
 
                 orderProductResponseDTO.setPrice
-                        (Utils.getTotalPrice(orderProduct.getProduct(), BigDecimal.valueOf(0.00), orderProduct.getQuantity()));
+                        (Utils.getTotalPrice(orderProduct.getProduct(), BigDecimal.valueOf(0.00), orderProduct.getQuantity(), productDiscountList.get(0)));
                 orderProductResponseDTO.setUserResponseDTO(userMapper.userToUserResponseDTO(order.getUser()));
                 orderProductResponseDTOList.add(orderProductResponseDTO);
             }

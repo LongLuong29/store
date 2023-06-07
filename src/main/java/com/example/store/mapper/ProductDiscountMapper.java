@@ -7,8 +7,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ProductDiscountMapper {
-  @Mapping(target = "id", source = "p.user.id")
-  @Mapping(target = "name", source = "p.user.name")
+  @Mapping(target = "id", source = "p.product.id")
+  @Mapping(target = "name", source = "p.product.name")
   @Mapping(target = "discount", source = "p.discount")
   ProductDiscountResponseDTO productDiscountToProductDiscountResponseDTO(ProductDiscount p);
 }

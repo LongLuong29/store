@@ -1,6 +1,7 @@
 package com.example.store.utils;//package com.example.elecstore.utils;
 
 import com.example.store.entities.Product;
+import com.example.store.entities.ProductDiscount;
 import com.example.store.entities.Review;
 
 import java.math.BigDecimal;
@@ -21,10 +22,10 @@ public class Utils {
     }
 
 
-    public static BigDecimal getTotalPrice(Product product, BigDecimal totalPrice, int quantity) {
-        if (product.getDiscount().getPercent() > 0) {
+    public static BigDecimal getTotalPrice(Product product, BigDecimal totalPrice, int quantity, ProductDiscount productDiscount) {
+        if (productDiscount.getDiscount().getPercent() > 0) {
             totalPrice = totalPrice.add(product.getPrice()
-                            .multiply(BigDecimal.valueOf((1 - (product.getDiscount().getPercent() / 100)) * (double) quantity)))
+                            .multiply(BigDecimal.valueOf((1 - (productDiscount.getDiscount().getPercent() / 100)) * (double) quantity)))
                     .setScale(2, RoundingMode.UP);
         } else {
             totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(quantity))).setScale(2, RoundingMode.UP);

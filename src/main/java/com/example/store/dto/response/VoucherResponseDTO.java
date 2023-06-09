@@ -1,5 +1,6 @@
 package com.example.store.dto.response;
 
+import com.example.store.entities.VoucherType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -29,7 +31,10 @@ public class VoucherResponseDTO {
     private boolean status;
     private String description;
     private String thumbnail;
-    private String type;
+    private BigDecimal upTo;
+    private BigDecimal minSpend;
+
+    private VoucherType voucherType;
 
     @Size(max = 10, min = 5, message = "Invalid code size")
     private String code;

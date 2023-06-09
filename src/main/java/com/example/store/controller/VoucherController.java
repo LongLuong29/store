@@ -44,5 +44,17 @@ public class VoucherController {
                                                             @RequestParam(name = "voucherId") Long voucherId){
         return userVoucherService.deleteUserVoucher(userId, voucherId);
     }
+    //ORDER USER-VOUCHER
+    @GetMapping(value = "/user/order")
+    public ResponseEntity<?> getUserVouchersForOrder(@RequestParam(name = "userId") Long userId,
+                                                     @RequestParam(name = "orderId") Long orderId){
+        return userVoucherService.getUserVouchersForOrder(userId,orderId);
+    }
+    @GetMapping(value = "/user/verify")
+    public ResponseEntity<?> getUserVoucherByCode(@RequestParam(name = "userId") Long userId,
+                                                  @RequestParam(name = "orderId") Long orderId,
+                                                  String code){
+        return userVoucherService.getUserVoucherByCode(userId,orderId,code);
+    }
 
 }

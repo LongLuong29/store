@@ -25,6 +25,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
     @Autowired private DiscountRepository discountRepository;
+    @Autowired private VoucherRepository voucherRepository;
+    @Autowired private UserVoucherRepository userVoucherRepository;
 
 
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -44,31 +46,58 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO, Long discountId) {
+    public ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO, Long voucherId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
-        Discount discount = discountRepository.findById(discountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with ID = " + discountId));
+        Voucher voucher = voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find voucher with ID = " + voucherId));
 
         Order order = orderMapper.orderRequestDTOToOrder(oderRequestDTO);
         order.setUser(user);
+        order.setStatus("Ordered");
 
-//        double getUserDiscount;
-//        double rankDiscount = user.getRank().getDiscount();
-//        // người dùng không dùng discount
-//        if(discountId==3){
-//            getUserDiscount=0;
-//        }
-//        // có được phần trăm giảm giá của discount
-//        else{
-//            UserVoucher userVoucher = userDiscountRepository.findUserDiscountByDiscountAndUser(discount, user)
-//                .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with this user = "));
-//            getUserDiscount = userVoucher.getDiscount().getPercent();
-//        }
-//        double totalDiscount = (getUserDiscount + rankDiscount)/100;
-//        BigDecimal finalPrice = order.getTotalPrice().multiply(BigDecimal.valueOf(1-totalDiscount));
-//
-//        order.setTotalPrice(finalPrice);
+        UserVoucher userVoucher = userVoucherRepository.findUserVoucherByUserAndVoucher(user, voucher)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find voucher with this user = "));
+
+        BigDecimal finalPrice;
+        BigDecimal discountAmount;
+        double rankDiscount = user.getRank().getDiscount()/100;  // rank discount
+        double getUserVoucherDiscount = userVoucher.getVoucher().getPercent()/100; // get voucher discount
+        double totalDiscount; // tong discount
+        BigDecimal orderPrice = order.getTotalPrice();// tính tổng tiền order chưa có giảm giá
+        BigDecimal shipPrice = order.getShippingFee();// ting tong tien ship chua co giam gia
+        // Người dùng không dùng voucher
+        switch (voucher.getVoucherType().getName()){
+            case "ORDER":
+                // order discount
+                discountAmount = orderPrice.multiply(BigDecimal.valueOf(getUserVoucherDiscount)); // tính tổng số tiền đc giảm trên đơn hàng, chưa tính rank
+                totalDiscount = getUserVoucherDiscount + rankDiscount; // tính phần trăm giảm giá của: order + rank
+                if(discountAmount.compareTo(voucher.getMinSpend()) >0) // tổng tiền đc giảm > minSpend số tiền yêu cầu
+                {
+                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-rankDiscount)).add(shipPrice)
+                            .subtract(voucher.getMinSpend());
+                }
+                else // tổng số tiền đc giảm < minSpend   =>  tinh theo phan tram
+                {
+                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-totalDiscount)).add(shipPrice);
+                }
+                break;
+            case "SHIPPING":
+                //shipping discount
+                BigDecimal shipDiscount = order.getShippingFee().multiply(BigDecimal.valueOf(getUserVoucherDiscount));// tinh phi ship dc giam
+                if(shipDiscount.compareTo(voucher.getMinSpend()) >0) // phi ship dc giam > minSpend => su dung minSpend
+                {
+                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(rankDiscount)).add(shipPrice).subtract(shipDiscount);
+                }
+                else // phi ship dc giam < min spend   =>  tinh theo phan tram
+                {
+                    finalPrice = (orderPrice.multiply(BigDecimal.valueOf(rankDiscount)))  .add   (shipPrice.subtract(shipDiscount));
+                }
+                break;
+            default:
+                finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-rankDiscount));
+        }
+        order.setFinalPrice(finalPrice);
         Order orderSave = orderRepository.save(order);
         OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(orderSave);
         return ResponseEntity.status(HttpStatus.OK)

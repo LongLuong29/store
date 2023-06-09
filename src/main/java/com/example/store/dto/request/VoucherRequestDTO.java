@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -27,7 +28,10 @@ public class VoucherRequestDTO {
     private double percent;
     private String description;
     private String thumbnail;
-    private String type;
+    private BigDecimal upTo;
+    private BigDecimal minSpend;
+
+    private Long voucherType;
 
     @Size(max = 10, min = 5, message = "Invalid code size")
     private String code;

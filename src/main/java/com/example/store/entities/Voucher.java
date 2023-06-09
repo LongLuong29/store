@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -27,6 +28,7 @@ public class Voucher {
     @NotNull(message = "Voucher title is required")
     @Column(length = 100)
     private String title;
+
     @NotNull(message = "Discount percent is required")
     @Min(value = 1, message = "Percent must be greater 1")
     @Max(value = 99, message = "Percent must smaller 99")
@@ -34,7 +36,12 @@ public class Voucher {
     private boolean status;
     private String description;
     private String thumbnail;
-    private String type;
+    private BigDecimal upTo;
+    private BigDecimal minSpend;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "voucherType_id")
+    private VoucherType voucherType;
 
     @Size(max = 10, min = 5, message = "Invalid code size")
     private String code;

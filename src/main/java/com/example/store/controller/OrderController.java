@@ -5,6 +5,7 @@ import com.example.store.dto.response.ResponseObject;
 import com.example.store.services.OrderProductService;
 import com.example.store.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class OrderController {
 
   @PostMapping(value = "")
   public ResponseEntity<ResponseObject> createOrder(@RequestParam(name = "userId") Long userId,
-                                                    @RequestParam(name = "discountId") Long discountId,
+                                                    @Param("discountId") Long discountId,
                                                     @RequestBody OrderRequestDTO orderRequestDTO){
     return orderService.createOrder(userId, orderRequestDTO, discountId);
   }

@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface UserVoucherRepository extends JpaRepository<UserVoucher, Long> {
     List<UserVoucher> findUserVoucherByUser(User user);
     Optional<UserVoucher> findUserVoucherByUserAndVoucher(User user, Voucher voucher);
+
 }

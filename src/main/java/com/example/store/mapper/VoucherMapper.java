@@ -16,8 +16,10 @@ public interface VoucherMapper {
   @Mapping(target = "percent", source = "dto.percent")
   @Mapping(target = "description", source = "dto.description")
   @Mapping(target = "thumbnail", source = "dto.thumbnail")
-  @Mapping(target = "type", source = "dto.type")
+  @Mapping(target = "upTo", source = "dto.upTo")
+  @Mapping(target = "minSpend", source = "dto.minSpend")
   @Mapping(target = "code", source = "dto.code")
+  @Mapping(target = "voucherType.id", source = "dto.voucherType")
   @Mapping(target = "startDate", source = "dto.startDate")
   @Mapping(target = "endDate", source = "dto.endDate")
   Voucher voucherRequestDTOtoVoucher(VoucherRequestDTO dto);
@@ -27,8 +29,10 @@ public interface VoucherMapper {
   @Mapping(target = "status", source = "p.status")
   @Mapping(target = "description", source = "p.description")
   @Mapping(target = "thumbnail", source = "p.thumbnail")
-  @Mapping(target = "type", source = "p.type")
+  @Mapping(target = "upTo", source = "p.upTo")
+  @Mapping(target = "minSpend", source = "p.minSpend")
   @Mapping(target = "code", source = "p.code")
+  @Mapping(target = "voucherType", source = "p.voucherType")
   @Mapping(target = "startDate", source = "p.startDate")
   @Mapping(target = "endDate", source = "p.endDate")
   VoucherResponseDTO voucherToVoucherResponseDTO(Voucher p);

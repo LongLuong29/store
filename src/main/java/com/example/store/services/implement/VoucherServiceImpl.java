@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class VoucherServiceImpl implements VoucherService {
     public ResponseEntity<ResponseObject> createVoucher(VoucherRequestDTO voucherRequestDTO) {
         Voucher voucher = mapper.voucherRequestDTOtoVoucher(voucherRequestDTO);
         voucher.setStatus(true);
+        if(voucher.getMinSpend() ==null){
+            voucher.setMinSpend(BigDecimal.valueOf(0));
+        }
         Voucher voucherSaved = voucherRepository.save(voucher);
         VoucherResponseDTO voucherResponseDTO = mapper.voucherToVoucherResponseDTO(voucherSaved);
         return ResponseEntity.status(HttpStatus.OK)

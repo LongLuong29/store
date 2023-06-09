@@ -8,7 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserVoucherService {
     ResponseEntity<?> getAllUserVoucher(Long userId);
+    ResponseEntity<?> getUserVouchersForOrder(Long userId, Long orderId);
+    ResponseEntity<ResponseObject> getUserVoucherByCode(Long userId, Long orderId, String code);
     ResponseEntity<ResponseObject> createUserVoucher(Long userId, Long voucherId);
     ResponseEntity<ResponseObject> deleteUserVoucher(Long userId, Long voucherId);
-
 }

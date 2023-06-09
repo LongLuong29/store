@@ -8,16 +8,11 @@ import org.springframework.http.ResponseEntity;
 
 public interface CategoryService {
     ResponseEntity<?> getAllCategoryOnTrading(Pageable pageable);
-
     ResponseEntity<?> getAllCategory();
-
+    ResponseEntity<?> getCategoryByGroupProduct(Long groupProductId);
     ResponseEntity<ResponseObject> createCategory(CategoryRequestDTO categoryRequestDTO);
-
     ResponseEntity<ResponseObject> updateCategory(CategoryRequestDTO categoryRequestDTO, Long id);
-
     ResponseEntity<ResponseObject> deleteCategory(Long id);
-
     ResponseEntity<ResponseObject> safeDelete(Long id);
-
     CategoryResponseDTO getCategoryById(Long id);
 }

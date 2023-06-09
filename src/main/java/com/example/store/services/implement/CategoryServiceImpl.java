@@ -26,7 +26,7 @@
     @Service
     @Transactional
     public class CategoryServiceImpl implements CategoryService {
-            private final CategoryMapper mapper = Mappers.getMapper(CategoryMapper.class);
+        private final CategoryMapper mapper = Mappers.getMapper(CategoryMapper.class);
 
         @Autowired private CategoryRepository categoryRepository;
         @Autowired private GroupProductRepository groupProductRepository;
@@ -40,12 +40,23 @@
         public ResponseEntity<?> getAllCategory() {
             List<Category> getCategoryList = categoryRepository.findAll();
             List<CategoryResponseDTO> categoryResponseDTOList = new ArrayList<>();
-
             for (Category c : getCategoryList) {
                 CategoryResponseDTO categoryResponseDTO = mapper.categoryToCategoryResponseDTO(c);
                 categoryResponseDTOList.add(categoryResponseDTO);
             }
+            return ResponseEntity.status(HttpStatus.OK).body(categoryResponseDTOList);
+        }
 
+        @Override
+        public ResponseEntity<?> getCategoryByGroupProduct(Long groupProductId) {
+            GroupProduct groupProduct = groupProductRepository.findById(groupProductId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find category ID = "+groupProductId));
+            List<Category> getCategoryList = categoryRepository.findCategoriesByGroupProduct(groupProduct);
+            List<CategoryResponseDTO> categoryResponseDTOList = new ArrayList<>();
+            for (Category c : getCategoryList) {
+                CategoryResponseDTO categoryResponseDTO = mapper.categoryToCategoryResponseDTO(c);
+                categoryResponseDTOList.add(categoryResponseDTO);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(categoryResponseDTOList);
         }
 
@@ -75,7 +86,6 @@
 
             Category categorySaved = categoryRepository.save(category);
             CategoryResponseDTO categoryResponseDTO = mapper.categoryToCategoryResponseDTO(categorySaved);
-
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(HttpStatus.OK, "Update category successfully!", categoryResponseDTO));
         }
@@ -85,7 +95,6 @@
             Category category = categoryRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Could not find category with ID = " + id));
             categoryRepository.delete(category);
-
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(HttpStatus.OK, "Remove category successfully!"));
         }

@@ -80,13 +80,14 @@ public class UserServiceImpl implements UserService {
         //Check role already exists
         Role role = roleRepository.findRoleById(user.getRole().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
-        // tạo rank mặc định là thành viên hiện đang có id là 4
-        Rank rank = rankRepository.findRankById(4L)
+        // tạo rank mặc định là thành viên hiện đang có name = "Bronze"
+        Rank rank = rankRepository.findRankByName("Bronze")
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = 4" ));
         user.setRank(rank);
-        user.setRole(role);
+
         user.setStatus(true);
         user.setPoint(0);
+        user.setRole(role);
 
         String randomCodeVerify = RandomString.make(64);
         user.setVerificationCode(randomCodeVerify);

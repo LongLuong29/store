@@ -26,7 +26,7 @@ public class UserRequestDTO {
     private String email;
     private boolean gender;
     private String phone;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
     private String password;
     private boolean status;

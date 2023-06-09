@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDTO {
-    @Size(message = "Size is invalid.", max = 64, min = 1)
+    @Size(message = "Size is invalid.", max = 200, min = 1)
     private String name;
     @Min(value = 1, message = "Amount must be greater 1")
     private int inventory;

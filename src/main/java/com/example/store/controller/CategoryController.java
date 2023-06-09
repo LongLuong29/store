@@ -19,6 +19,11 @@ public class CategoryController {
         return categoryService.getAllCategory();
     }
 
+    @GetMapping(value = "/gproduct")
+    public ResponseEntity<?> getCategoryByGroupProduct(@RequestParam(name = "groupProductId") Long groupProductId) {
+        return categoryService.getCategoryByGroupProduct(groupProductId);
+    }
+
     @GetMapping(value = "/{id}")
     public CategoryResponseDTO getCategoryById (@PathVariable(name = "id") Long id) {
         return categoryService.getCategoryById(id);

@@ -19,7 +19,7 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "voucher")
+@Table(name = "tbl_voucher")
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

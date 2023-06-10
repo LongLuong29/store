@@ -10,7 +10,6 @@ import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.UserVoucherMapper;
-import com.example.store.mapper.VoucherMapper;
 import com.example.store.repositories.OrderRepository;
 import com.example.store.repositories.UserRepository;
 import com.example.store.repositories.UserVoucherRepository;
@@ -59,7 +58,7 @@ public class UserVoucherServiceImpl implements UserVoucherService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found user with id = " + userId));
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found order with id = " + orderId));
-        BigDecimal price = order.getTotalPrice().add(order.getShippingFee());
+        BigDecimal price = order.getTotalPrice(); // tong tien don hang
         List<UserVoucher> userVoucherList = userVoucherRepository.findUserVoucherByUser(user);
         List<UserVoucherResponseDTO> userVoucherResponseDTOList = new ArrayList<>();
         if(userVoucherList.size()==0){
@@ -129,5 +128,58 @@ public class UserVoucherServiceImpl implements UserVoucherService {
         this.userVoucherRepository.delete(userVoucher);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK,"Remove voucher with id = "+voucherId +" in this user successfully"));
+    }
+
+    @Override
+    public BigDecimal calculateVoucherDiscount(Long userId, Long voucherId, BigDecimal totalPrice, BigDecimal shippingFee) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        Voucher voucher = voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find voucher with ID = " + voucherId));
+
+        UserVoucher userVoucher = userVoucherRepository.findUserVoucherByUserAndVoucher(user, voucher)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find this voucher "));
+
+        BigDecimal discountAmount;
+        double rankDiscount = user.getRank().getDiscount()/100;  // rank discount
+        double getUserVoucherDiscount = userVoucher.getVoucher().getPercent()/100; // get voucher discount
+        double totalDiscount; // tong discount
+        BigDecimal orderPrice = totalPrice;// tính tổng tiền order chưa có giảm giá
+        BigDecimal shipPrice = shippingFee;// ting tong tien ship chua co giam gia
+        // Người dùng không dùng voucher
+        switch (voucher.getVoucherType().getName()){
+            // order discount
+            case "ORDER":
+                // tính tổng số tiền đc giảm trên đơn hàng, chưa tính rank
+                discountAmount = orderPrice.multiply(BigDecimal.valueOf(getUserVoucherDiscount));
+                // tính phần trăm giảm giá của: order + rank
+                totalDiscount = getUserVoucherDiscount + rankDiscount;
+                // tổng tiền đc giảm > upTo số tiền gioi han.
+                if(discountAmount.compareTo(voucher.getUpTo()) >0)
+                {
+                    discountAmount = voucher.getUpTo();
+                    return discountAmount;
+                }
+                else // tổng số tiền đc giảm < minSpend   =>  tinh theo phan tram
+                {
+                    discountAmount  = orderPrice.multiply(BigDecimal.valueOf(totalDiscount));
+                    return discountAmount;
+                }
+            //shipping discount
+            case "SHIPPING":
+                // tinh phi ship dc giam
+                BigDecimal shipDiscount = shipPrice.multiply(BigDecimal.valueOf(getUserVoucherDiscount));
+                if(shipDiscount.compareTo(voucher.getUpTo()) >0) // phi ship dc giam > minSpend => su dung minSpend
+                {
+                    discountAmount = orderPrice.multiply(BigDecimal.valueOf(rankDiscount)).add(voucher.getUpTo());
+                    return discountAmount;
+                }
+                else // phi ship dc giam < min spend   =>  tinh theo phan tram
+                {
+                    discountAmount = orderPrice.multiply(BigDecimal.valueOf(rankDiscount)).add(shipDiscount);
+                    return discountAmount;
+                }
+        }
+        return BigDecimal.valueOf(0);
     }
 }

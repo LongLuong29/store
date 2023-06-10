@@ -30,12 +30,13 @@ public class Voucher {
     private String title;
 
     @NotNull(message = "Discount percent is required")
-    @Min(value = 1, message = "Percent must be greater 1")
-    @Max(value = 99, message = "Percent must smaller 99")
+    @Min(value = 1, message = "Percent must be greater than 1")
+    @Max(value = 100, message = "Percent must smaller than 100")
     private double percent;
     private boolean status;
     private String description;
     private String thumbnail;
+    @NotNull(message = "Voucher has to have a limit discount amount")
     private BigDecimal upTo;
     private BigDecimal minSpend;
 

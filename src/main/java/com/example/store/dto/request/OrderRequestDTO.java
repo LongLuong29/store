@@ -18,6 +18,7 @@ public class OrderRequestDTO {
     @NotNull(message = "Order total price is required")
     private BigDecimal totalPrice;
     private BigDecimal shippingFee;
+    private BigDecimal finalPrice;
     @Column(length = 333)
     private String note;
 

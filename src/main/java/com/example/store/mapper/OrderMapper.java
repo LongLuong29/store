@@ -13,6 +13,7 @@ public interface OrderMapper {
 
     @Mapping(target = "totalPrice", source = "b.totalPrice")
     @Mapping(target = "shippingFee", source = "b.shippingFee")
+    @Mapping(target = "finalPrice", source = "b.finalPrice")
     @Mapping(target = "note", source = "b.note")
     @Mapping(target = "paymentMethod", source ="b.paymentMethod")
 

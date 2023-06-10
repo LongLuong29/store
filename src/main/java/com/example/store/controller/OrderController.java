@@ -33,9 +33,8 @@ public class OrderController {
 
   @PostMapping(value = "")
   public ResponseEntity<ResponseObject> createOrder(@RequestParam(name = "userId") Long userId,
-                                                    @Param("discountId") Long discountId,
                                                     @RequestBody OrderRequestDTO orderRequestDTO){
-    return orderService.createOrder(userId, orderRequestDTO, discountId);
+    return orderService.createOrder(userId, orderRequestDTO);
   }
 
   @PutMapping(value = "")

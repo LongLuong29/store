@@ -4,6 +4,7 @@ import com.example.store.dto.request.VoucherRequestDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.VoucherResponseDTO;
 import com.example.store.entities.Voucher;
+import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.VoucherMapper;
 import com.example.store.repositories.VoucherRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VoucherServiceImpl implements VoucherService {
@@ -38,6 +40,7 @@ public class VoucherServiceImpl implements VoucherService {
     public ResponseEntity<ResponseObject> createVoucher(VoucherRequestDTO voucherRequestDTO) {
         Voucher voucher = mapper.voucherRequestDTOtoVoucher(voucherRequestDTO);
         voucher.setStatus(true);
+        checkVoucherCodeExist(voucher);
         if(voucher.getMinSpend() ==null){
             voucher.setMinSpend(BigDecimal.valueOf(0));
         }
@@ -64,5 +67,19 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public VoucherResponseDTO getVoucherById(Long id) {
         return null;
+    }
+
+    private Voucher checkVoucherCodeExist(Voucher voucher){
+        Optional<Voucher> getVoucher = voucherRepository.findVoucherByCode(voucher.getCode());
+        if(getVoucher.isPresent()){
+            if(voucher.getId() == null){
+                throw new ResourceAlreadyExistsException("Voucher code already exists");
+            } else {
+                if (voucher.getId() != getVoucher.get().getId()) {
+                    throw new ResourceAlreadyExistsException("Brand name already exists");
+                }
+            }
+        }
+        return voucher;
     }
 }

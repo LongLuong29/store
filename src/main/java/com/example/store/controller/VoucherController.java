@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping(value = "/api/v1/voucher")
 public class VoucherController {
@@ -57,4 +59,10 @@ public class VoucherController {
         return userVoucherService.getUserVoucherByCode(userId,orderId,code);
     }
 
+    @PostMapping(value = "/user/calculate")
+    public BigDecimal calculateVoucherDiscount(@RequestParam(name = "userId") Long userId,
+                                               @RequestParam(name = "voucherId") Long voucherId,
+                                               BigDecimal totalPrice, BigDecimal shippingFee){
+        return userVoucherService.calculateVoucherDiscount(userId, voucherId, totalPrice, shippingFee);
+    }
 }

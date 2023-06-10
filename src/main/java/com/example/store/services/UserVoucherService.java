@@ -1,10 +1,9 @@
 package com.example.store.services;
 
-import com.example.store.dto.request.VoucherRequestDTO;
 import com.example.store.dto.response.ResponseObject;
-import com.example.store.dto.response.UserVoucherResponseDTO;
-import com.example.store.dto.response.VoucherResponseDTO;
 import org.springframework.http.ResponseEntity;
+
+import java.math.BigDecimal;
 
 public interface UserVoucherService {
     ResponseEntity<?> getAllUserVoucher(Long userId);
@@ -12,4 +11,5 @@ public interface UserVoucherService {
     ResponseEntity<ResponseObject> getUserVoucherByCode(Long userId, Long orderId, String code);
     ResponseEntity<ResponseObject> createUserVoucher(Long userId, Long voucherId);
     ResponseEntity<ResponseObject> deleteUserVoucher(Long userId, Long voucherId);
+    BigDecimal calculateVoucherDiscount(Long userId, Long voucherId, BigDecimal totalPrice, BigDecimal shippingFee);
 }

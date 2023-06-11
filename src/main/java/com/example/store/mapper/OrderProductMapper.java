@@ -16,7 +16,8 @@ public interface OrderProductMapper {
     @Mapping(target = "amount", source = "b.quantity")
 //    @Mapping(target = "payMethod", source = "b.order.paymentMethod")
 //    @Mapping(target = "status", source = "b.order.status")
-    @Mapping(target = "price",  source = "b.order.totalPrice")
+    @Mapping(target = "price",  source = "b.pricePerOne")
+    @Mapping(target = "discountPrice",  source = "b.discountPrice")
         //    @Mapping(target = "paidDate", source = "b.order.paidDate")
     OrderProductResponseDTO orderProductToOrderProductResponseDTO(OrderProduct b);
 }

@@ -28,5 +28,5 @@ public class OrderProduct {
 
     private int quantity;
     private BigDecimal pricePerOne;
-    private BigDecimal discountAmount;
+    private BigDecimal discountPrice;
 }

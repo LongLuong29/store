@@ -194,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
         productGalleryDTO.setPrice(product.getPrice());
         productGalleryDTO.setThumbnail(product.getThumbnail());
         productGalleryDTO.setDiscount(discount);
-        BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf(discount / (double) 100));
+        BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf( (100- discount) / (double) 100));
         if (discount == 0){
             price = product.getPrice();
         }

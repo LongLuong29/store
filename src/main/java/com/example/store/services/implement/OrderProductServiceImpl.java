@@ -41,13 +41,13 @@ public class OrderProductServiceImpl implements OrderProductService {
         OrderProduct orderProduct = new OrderProduct();
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + orderId));
-        BigDecimal totalPrice = order.getTotalPrice();
+//        BigDecimal totalPrice = order.getTotalPrice();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
         List<ProductDiscount> productDiscountList = productDiscountRepository.findProductDiscountByProduct(product);
-
         Optional<OrderProduct> getOrderProduct = orderProductRepository.findOrderProductByOrderAndProduct(order, product);
 
+        orderProduct.setPricePerOne(product.getPrice());
         if (amount > product.getInventory()){
             throw new InvalidValueException("Amount product " + product.getName() + " must be less than amount product exists");
         } else if(amount < 0) {
@@ -65,13 +65,17 @@ public class OrderProductServiceImpl implements OrderProductService {
                 orderProduct.setOrder(order);
                 orderProduct.setProduct(product);
                 orderProduct.setQuantity(amount);
-
             }
-            double discount = productDiscountList.get(0).getDiscount().getPercent();
-            //Total price of order
-            totalPrice = totalPrice.add(totalPrice(product, amount, discount));
-            order.setTotalPrice(totalPrice);
-            orderRepository.save(order);
+            BigDecimal discountPrice = product.getPrice();
+            if(productDiscountList.size() != 0){
+                discountPrice = product.getPrice()
+                        .multiply(BigDecimal.valueOf( 1 - productDiscountList.get(0).getDiscount().getPercent()/100));
+            }
+            orderProduct.setDiscountPrice(discountPrice);
+//            //Total price of order
+//            totalPrice = totalPrice.add(totalPrice(product, amount, discount));
+//            order.setTotalPrice(totalPrice);
+//            orderRepository.save(order);
         }
         OrderProductResponseDTO  orderProductResponseDTO
                 =  orderProductMapper.orderProductToOrderProductResponseDTO(orderProductRepository.save(orderProduct));
@@ -125,10 +129,8 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     private BigDecimal totalPrice(Product product, int amount, double discount){
         BigDecimal totalPrice;
-
         totalPrice = product.getPrice().multiply(BigDecimal.valueOf( (1 - discount/100) * amount))
                 .setScale(2, RoundingMode.UP);
-
         return totalPrice;
     }
 }

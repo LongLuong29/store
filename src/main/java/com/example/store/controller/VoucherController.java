@@ -54,9 +54,9 @@ public class VoucherController {
     }
     @GetMapping(value = "/user/verify")
     public ResponseEntity<?> getUserVoucherByCode(@RequestParam(name = "userId") Long userId,
-                                                  @RequestParam(name = "orderId") Long orderId,
+                                                  BigDecimal totalPrice,
                                                   String code){
-        return userVoucherService.getUserVoucherByCode(userId,orderId,code);
+        return userVoucherService.getUserVoucherByCode(userId,totalPrice,code);
     }
 
     @PostMapping(value = "/user/calculate")

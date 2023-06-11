@@ -17,12 +17,12 @@ public interface DeliveryService {
 
     DeliveryResponseDTO getDeliveryById(Long id);
 
-    ResponseEntity<?> getDeliveryByStatus(String status);
+//    ResponseEntity<?> getDeliveryByStatus(String status);
 
 
     ResponseEntity<?> getDeliveryByShipper(Long shipperId);
-
-    ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId);
+//    ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId)
+    ;
 
     DeliveryResponseDTO getDeliveryByOrder(Long orderId);
 }

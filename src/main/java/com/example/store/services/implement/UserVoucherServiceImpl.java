@@ -79,19 +79,18 @@ public class UserVoucherServiceImpl implements UserVoucherService {
     }
     //CHECK VOUCHER CODE
     @Override
-    public ResponseEntity<ResponseObject> getUserVoucherByCode(Long userId, Long orderId, String code) {
+    public ResponseEntity<ResponseObject> getUserVoucherByCode(Long userId, BigDecimal totalPrice, String code) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found user with id = " + userId));
         Voucher voucher = voucherRepository.findVoucherByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found voucher with code = "+code));
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not found order with id = " + orderId));
-        BigDecimal price = order.getTotalPrice().add(order.getShippingFee());
+
+        BigDecimal price = totalPrice;
         UserVoucher userVoucher = userVoucherRepository.findUserVoucherByUserAndVoucher(user,voucher)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user voucher "));
 
         if(price.compareTo(userVoucher.getVoucher().getMinSpend()) < 0){
-            throw new InvalidValueException("Voucher is not meet requirement");
+            throw new InvalidValueException("Total order price is not meet requirement");
         }
         UserVoucherResponseDTO userVoucherResponseDTO = userVoucherMapper.userVoucherToUserVoucherResponseDTO(userVoucher);
         return ResponseEntity.status(HttpStatus.OK)

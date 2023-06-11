@@ -12,10 +12,10 @@ import java.util.List;
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     Delivery findDeliveryByOrder(Order order);
 
-    List<Delivery> findDeliveriesByStatus(String status);
+//    List<Delivery> findDeliveriesByStatus(String status);
     List<Delivery> findDeliveriesByShipper(User shipper);
 
-    List<Delivery> findDeliveriesByStatusAndShipper(String status, User shipper);
+//    List<Delivery> findDeliveriesByStatusAndShipper(String status, User shipper);
 
 //
 //    @Query(value = "select d from Delivery d where (d.shipper is null or d.shipper.id = :shipperId) and d.address.province = :province and d.status <>  'cancel' and d.status <> 'waiting'")

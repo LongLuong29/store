@@ -118,18 +118,18 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return deliveryResponseDTO;
     }
-    @Override
-    public ResponseEntity<?> getDeliveryByStatus(String status) {
-        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatus(status);
-        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
-
-        for (Delivery d : deliveryList) {
-            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
-            deliveryResponseDTOList.add(deliveryResponseDTO);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
-    }
+//    @Override
+//    public ResponseEntity<?> getDeliveryByStatus(String status) {
+//        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatus(status);
+//        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+//
+//        for (Delivery d : deliveryList) {
+//            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+//            deliveryResponseDTOList.add(deliveryResponseDTO);
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
+//    }
     @Override
     public ResponseEntity<?> getDeliveryByShipper(Long shipperId) {
         User shipper = userRepository
@@ -144,20 +144,20 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
     }
-    @Override
-    public ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId) {
-        User shipper = userRepository.findById(shipperId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
-        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatusAndShipper(status, shipper);
-        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
-
-        for (Delivery d : deliveryList) {
-            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
-            deliveryResponseDTOList.add(deliveryResponseDTO);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
-    }
+//    @Override
+//    public ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId) {
+//        User shipper = userRepository.findById(shipperId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
+//        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatusAndShipper(status, shipper);
+//        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+//
+//        for (Delivery d : deliveryList) {
+//            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+//            deliveryResponseDTOList.add(deliveryResponseDTO);
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
+//    }
     @Override
     public DeliveryResponseDTO getDeliveryByOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)

@@ -50,13 +50,13 @@ public class DeliveryController {
     public DeliveryResponseDTO getDeliveryByOrder(@RequestParam(name = "orderId") Long orderId){
         return deliveryService.getDeliveryByOrder(orderId);
     }
-    @GetMapping(value = "/status")
-    public ResponseEntity<?> getDeliveryByStatus(@Valid String status) {
-        return deliveryService.getDeliveryByStatus(status);
-    }
-    @GetMapping(value = "/shipper/status")
-    public ResponseEntity<?> getDeliveryByStatusAndShipper(@Valid String status,
-                                                           @RequestParam(name = "shipperId") Long shipperId){
-        return deliveryService.getDeliveryByStatusAndShipper(status,shipperId);
-    }
+//    @GetMapping(value = "/status")
+//    public ResponseEntity<?> getDeliveryByStatus(@Valid String status) {
+//        return deliveryService.getDeliveryByStatus(status);
+//    }
+//    @GetMapping(value = "/shipper/status")
+//    public ResponseEntity<?> getDeliveryByStatusAndShipper(@Valid String status,
+//                                                           @RequestParam(name = "shipperId") Long shipperId){
+//        return deliveryService.getDeliveryByStatusAndShipper(status,shipperId);
+//    }
 }

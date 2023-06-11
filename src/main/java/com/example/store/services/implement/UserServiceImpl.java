@@ -63,13 +63,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<ResponseObject> saveUser(UserRequestDTO userRequestDTO) throws MessagingException, UnsupportedEncodingException {
         User user = mapper.userRequestDTOtoUser(userRequestDTO);
-
         //Check phone user existed
         Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
         if (userCheckPhone.isPresent()) {
             throw new ResourceAlreadyExistsException("Phone user existed");
         }
-
         //Check email user existed
         Optional<User> userCheckEmail = userRepository.findUserByEmail(userRequestDTO.getEmail());
         if (userCheckEmail.isPresent()) {
@@ -82,7 +80,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
         // tạo rank mặc định là thành viên hiện đang có name = "Bronze"
         Rank rank = rankRepository.findRankByName("Bronze")
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = 4" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find bronze rank" ));
         user.setRank(rank);
 
         user.setStatus(true);
@@ -121,7 +119,6 @@ public class UserServiceImpl implements UserService {
                 throw new ResourceAlreadyExistsException("Phone user existed");
             }
         }
-
         user.setImage(
                 imageStorageService.storeFile(userUpdateRequestDTO.getImage(), "user"));
         user.setStatus(true);
@@ -155,7 +152,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
 
-        // delete cart by user
+        // delete cart
         Optional<Cart> getCart = cartRepository.findCartByUser(user);
         if (getCart.isPresent()) {
             List<CartProduct> cartDetailList = cartDetailRepository.findCartProductByCart(getCart.get());
@@ -164,24 +161,18 @@ public class UserServiceImpl implements UserService {
             // xoa gio hang
             cartRepository.delete(getCart.get());
         }
-
-        // delete feedback by user
-        // code after
+        // delete feedback
         List<Review> feedbackList = feedbackRepository.findReviewByUser(user);
         for (Review f : feedbackList) {
             feedbackRepository.delete(f);
         }
-
         // delete address
         List<AddressDetail> addressDetailList = addressDetailRepository.findAddressDetailsByUser(user);
         addressDetailRepository.deleteAll(addressDetailList);
-
-        /*
-         * imageStorageService.deleteFile(user.getImages(), "user");
-         * */
+        // delete image
+         imageStorageService.deleteFile(user.getImage(), "user");
 
         userRepository.delete(user);
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Delete user success!!!", null));
     }

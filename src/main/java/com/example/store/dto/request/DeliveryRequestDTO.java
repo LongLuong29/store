@@ -12,8 +12,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeliveryRequestDTO {
-    @NotNull(message = "Status of Delivery is required")
-    private String status;
     private Long addressId;
     @NotNull(message = "Order is required")
     private Long orderId;
@@ -21,4 +19,6 @@ public class DeliveryRequestDTO {
     private String orderStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date payDate;
+//    @NotNull(message = "Status of Delivery is required")
+//    private String status;
 }

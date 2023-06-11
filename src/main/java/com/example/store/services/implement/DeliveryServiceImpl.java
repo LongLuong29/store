@@ -46,19 +46,18 @@ public class DeliveryServiceImpl implements DeliveryService {
             DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
             deliveryResponseDTOList.add(deliveryResponseDTO);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new ItemTotalPage(deliveryResponseDTOList, getDeliveryList.getTotalPages()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ItemTotalPage(deliveryResponseDTOList, getDeliveryList.getTotalPages()));
     }
-
     @Override
     public ResponseEntity<ResponseObject> createDelivery(DeliveryRequestDTO deliveryRequestDTO) {
         Delivery delivery = mapper.deliveryRequestDTOToDelivery(deliveryRequestDTO);
-
         User user = userRepository.findById(deliveryRequestDTO.getShipperId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + deliveryRequestDTO.getShipperId()));
-
         Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Order với ID = " + deliveryRequestDTO.getOrderId()));
-        Address address = addressRepository.findById(deliveryRequestDTO.getAddressId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
+        Address address = addressRepository.findById(deliveryRequestDTO.getAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
 
         delivery.setShipper(user);
         delivery.setAddress(address);
@@ -70,7 +69,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create delivery successfully!", deliveryResponseDTO));
     }
-
     @Override
     public ResponseEntity<ResponseObject> updateDelivery(DeliveryRequestDTO deliveryRequestDTO, Long id) {
         Delivery delivery = mapper.deliveryRequestDTOToDelivery(deliveryRequestDTO);
@@ -84,7 +82,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         delivery.setAddress(getDelivery.getAddress());
         delivery.setShipper(getDelivery.getShipper());
-
         // change shipper
         if (deliveryRequestDTO.getShipperId() != null) {
             Optional<User> newShipper = userRepository.findById(deliveryRequestDTO.getShipperId());
@@ -92,7 +89,6 @@ public class DeliveryServiceImpl implements DeliveryService {
                 delivery.setShipper(newShipper.get());
             }
         }
-
         //Update order payed
         if (deliveryRequestDTO.getOrderStatus() != null){
             delivery.getOrder().setStatus(deliveryRequestDTO.getOrderStatus());
@@ -106,7 +102,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update delivery successfully!", deliveryResponseDTO));
     }
-
     @Override
     public ResponseEntity<ResponseObject> deleteDelivery(Long id) {
         Delivery delivery = deliveryRepository.findById(id)
@@ -115,7 +110,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete delivery successfully!"));
     }
-
     @Override
     public DeliveryResponseDTO getDeliveryById(Long id) {
         Delivery delivery = deliveryRepository.findById(id)
@@ -124,7 +118,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return deliveryResponseDTO;
     }
-
     @Override
     public ResponseEntity<?> getDeliveryByStatus(String status) {
         List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatus(status);
@@ -137,9 +130,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
     }
-
-
-
     @Override
     public ResponseEntity<?> getDeliveryByShipper(Long shipperId) {
         User shipper = userRepository
@@ -154,7 +144,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
     }
-
     @Override
     public ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId) {
         User shipper = userRepository.findById(shipperId)
@@ -169,7 +158,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
     }
-
     @Override
     public DeliveryResponseDTO getDeliveryByOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
@@ -179,5 +167,4 @@ public class DeliveryServiceImpl implements DeliveryService {
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(delivery);
         return deliveryResponseDTO;
     }
-
 }

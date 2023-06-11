@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface DeliveryMapper {
 
-    @Mapping(target = "status", source = "dto.status")
+//    @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "address", expression = "java(null)")
     @Mapping(target = "order", expression = "java(null)")
     @Mapping(target = "shipper", expression = "java(null)")
@@ -18,7 +18,7 @@ public interface DeliveryMapper {
 
 
     @Mapping(target = "id", source = "d.id")
-    @Mapping(target = "status", source = "d.status")
+    @Mapping(target = "status", source = "d.order.status")
     @Mapping(target = "orderId", source = "d.order.id")
     @Mapping(target = "totalPrice", source = "d.order.totalPrice")
     @Mapping(target = "shipperId", source = "d.shipper.id")

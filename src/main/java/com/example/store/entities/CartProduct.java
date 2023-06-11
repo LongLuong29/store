@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -28,4 +30,6 @@ public class CartProduct {
 
     @NotNull(message = "Product amount is required !!!")
     private int amount;
+
+    private BigDecimal discountPrice;
 }

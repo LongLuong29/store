@@ -33,6 +33,9 @@ public interface ProductMapper {
     @Mapping(target = "deleted", source = "p.deleted")
     @Mapping(target = "thumbnail", source = "p.thumbnail")
 
+    @Mapping(target = "discountPrice", source = "p.discountPrice")
+    @Mapping(target = "discountPercent", source = "p.discountPercent")
+
     @Mapping(target = "groupProduct", source = "p.groupProduct.name")
     @Mapping(target = "category", source = "p.category.name")
     @Mapping(target = "brand", source = "p.brand.name")

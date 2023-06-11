@@ -133,6 +133,22 @@ public class ProductServiceImpl implements ProductService {
         for (int i=0; i < imageProductList.size(); i++){
             images[i] = imageProductList.get(i).getPath();
         }
+
+        //product discount
+        Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
+        double discount = 0;
+        if (getDiscount.isPresent()){
+            discount = getDiscount.get();
+            productResponseDTO.setDiscountPercent(discount);
+        }
+        BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf( (100- discount) / (double) 100));
+        if (discount == 0){
+            price = product.getPrice();
+            productResponseDTO.setDiscountPercent(0);
+        }
+        productResponseDTO.setDiscountPrice(price);
+
+
         productResponseDTO.setImages(images);
         List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
         double calRate = Utils.calculateAvgRate(reviewList);

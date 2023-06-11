@@ -20,6 +20,9 @@ public class ProductResponseDTO {
     private String thumbnail;
     private String[] images;
 
+    private BigDecimal discountPrice;
+    private double discountPercent;
+
     private String category;
     private String groupProduct;
     private String brand;

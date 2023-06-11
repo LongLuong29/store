@@ -30,6 +30,10 @@ public class Product {
     private String thumbnail;
     @NotNull(message = "Price is required")
     private BigDecimal price;
+
+    private BigDecimal discountPrice;
+    private double discountPercent;
+
     private double rate;
     private int inventory;
     private String description;

@@ -4,14 +4,12 @@ import com.example.store.dto.response.CartProductResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Cart;
 import com.example.store.entities.CartProduct;
+import com.example.store.entities.Discount;
 import com.example.store.entities.Product;
 import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.CartProductMapper;
-import com.example.store.repositories.CartProductRepository;
-import com.example.store.repositories.CartRepository;
-import com.example.store.repositories.ProductRepository;
-import com.example.store.repositories.UserRepository;
+import com.example.store.repositories.*;
 import com.example.store.services.CartProductService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,8 @@ public class CartProductServiceImpl implements CartProductService {
     @Autowired private CartProductRepository cartProductRepository;
     @Autowired private CartRepository cartRepository;
     @Autowired private ProductRepository productRepository;
+    @Autowired private DiscountRepository discountRepository;
+    @Autowired private ProductDiscountRepository productDiscountRepository;
 
     private final CartProductMapper cartProductMapper = Mappers.getMapper(CartProductMapper.class);
 
@@ -39,11 +40,10 @@ public class CartProductServiceImpl implements CartProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find cart with ID = " + cartId));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
-
+        Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
         if(amount > product.getInventory()){
             throw new InvalidValueException("Amount product add to cart must be less than amount product exists");
         }
-
         Optional<CartProduct> getCartProduct =cartProductRepository.findCartProductByCartAndProduct(cart,product);
         // cart is exist
         if(getCartProduct.isPresent()){
@@ -61,6 +61,15 @@ public class CartProductServiceImpl implements CartProductService {
             cartProduct.setProduct(product);
             cartProduct.setAmount(amount);
         }
+        double discount = 0;
+        if (getDiscount.isPresent()){
+            discount = getDiscount.get();
+        }
+        BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf( (100- discount) / (double) 100));
+        if (discount == 0){
+            price = product.getPrice();
+        }
+        cartProduct.setDiscountPrice(price);
         CartProduct cartProductSaved = cartProductRepository.save(cartProduct);
         CartProductResponseDTO cartProductResponseDTO = cartProductMapper.cartProductToCartProductResponseDTO(cartProductSaved);
 

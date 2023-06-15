@@ -133,7 +133,6 @@ public class ProductServiceImpl implements ProductService {
         for (int i=0; i < imageProductList.size(); i++){
             images[i] = imageProductList.get(i).getPath();
         }
-
         //product discount
         Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
         double discount = 0;
@@ -148,11 +147,10 @@ public class ProductServiceImpl implements ProductService {
         }
         productResponseDTO.setDiscountPrice(price);
 
-
         productResponseDTO.setImages(images);
         List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
         double calRate = Utils.calculateAvgRate(reviewList);
-        product.setRate(calRate);
+        productResponseDTO.setRate(calRate);
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 

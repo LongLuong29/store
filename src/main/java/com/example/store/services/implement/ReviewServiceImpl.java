@@ -112,19 +112,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private User checkBought(User user, Product product){
-        User getUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + user.getId()));
-        Product getProduct = productRepository.findById(product.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Product với ID = " + product.getId()));
-
-        List<Order> orderList = orderRepository.findOrdersByUser(getUser);
+        List<Order> orderList = orderRepository.findOrdersByUser(user);
         for(Order order: orderList){
-            List<OrderProduct> orderProductList = orderProductRepository.findOrderProductByOrder(order);
-            for(OrderProduct op: orderProductList){
-                if(op.getProduct() != getProduct)
-                {
-                    return user;
-                }
+            Optional<OrderProduct> orderProduct = orderProductRepository.findOrderProductByOrderAndProduct(order,product);
+            if( orderProduct.isPresent() && orderProduct.get().getProduct() == product)
+            {
+                return user;
             }
         }
         throw new ResourceNotFoundException("Người dùng chưa mua sản phẩm này");

@@ -1,5 +1,6 @@
 package com.example.store.entities;
 
+import com.example.store.entities.Enum.AuthenticationProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

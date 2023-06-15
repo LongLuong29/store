@@ -70,7 +70,7 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests()
-                .requestMatchers("/auth/login", "/docs/**", "/swagger-ui/index.html#/", "/verify") //requestMatchers
+                .requestMatchers("/auth/login", "/docs/**", "/swagger-ui/index.html#/", "/verify","/oauth/**") //requestMatchers
                 .permitAll()
                 .anyRequest()
                 .permitAll();

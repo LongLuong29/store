@@ -2,10 +2,7 @@ package com.example.store.services.implement;
 
 import com.example.store.dto.response.CartProductResponseDTO;
 import com.example.store.dto.response.ResponseObject;
-import com.example.store.entities.Cart;
-import com.example.store.entities.CartProduct;
-import com.example.store.entities.Discount;
-import com.example.store.entities.Product;
+import com.example.store.entities.*;
 import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.CartProductMapper;
@@ -100,7 +97,11 @@ public class CartProductServiceImpl implements CartProductService {
         List<CartProduct> cartProductList = cartProductRepository.findCartProductByCart(cart);
         List<CartProductResponseDTO> cartProductResponseDTOList = new ArrayList<>();
         for (CartProduct cartProduct : cartProductList){
+            Product getProduct = cartProduct.getProduct();
             CartProductResponseDTO cartProductResponseDTO = cartProductMapper.cartProductToCartProductResponseDTO(cartProduct);
+            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(getProduct.getId()/*, new Date()*/);
+            if(getDiscount.isPresent()){cartProductResponseDTO.setDiscount(getDiscount.get());}
+            else{cartProductResponseDTO.setDiscount(0);}
             cartProductResponseDTOList.add(cartProductResponseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(cartProductResponseDTOList);

@@ -15,6 +15,7 @@ public class CartProductResponseDTO {
     private String productImage;
     private BigDecimal price;
     private BigDecimal discountPrice;
+    private Integer discount;
     private Long cartId;
     private int amount;
 }

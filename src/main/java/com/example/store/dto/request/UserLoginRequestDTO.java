@@ -7,7 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class GroupProductRequestDTO {
-    private Long id;
-    private String name;
+public class UserLoginRequestDTO {
+    private String username;
+
+    private String password;
+
+    private int otp;
 }

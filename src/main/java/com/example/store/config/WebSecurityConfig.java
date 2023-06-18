@@ -21,7 +21,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.webjars.NotFoundException;
 
@@ -30,6 +34,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -37,6 +43,8 @@ public class WebSecurityConfig {
     @Autowired private JwtTokenFilter jwtTokenFilter;
 
     @Autowired private UserRepository userRepository;
+
+    @Autowired AuthenticationSuccessHandler successHandler;
 
     @Bean
     UserDetailsService userDetailsService(){
@@ -64,42 +72,48 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
-    SecurityFilterChain configure(HttpSecurity http) throws Exception{
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests()
-                .requestMatchers("/auth/login", "/docs/**", "/swagger-ui/index.html#/", "/verify","/oauth/**") //requestMatchers
+                .requestMatchers("/auth/login", "/docs/**", "/swagger-ui/index.html#/","/verify",
+                        "/oauth2/**","/registration/**","/login/**", "/", "/home", "/dashboard")
                 .permitAll()
-                .anyRequest()
-                .permitAll();
+                .anyRequest().authenticated()
+//                .and()
+//                .formLogin().loginPage("/login").successHandler(successHandler)
+                .and().csrf().disable()
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
+                .and().oauth2Login().successHandler(successHandler);
 
-        //Handle exception config
-        http.exceptionHandling()
-                .accessDeniedHandler(
-                        ((request, response, accessDeniedException) -> {
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.setStatus(HttpServletResponse.SC_OK);
-                            Map<String, Object> map = new HashMap<>();
-                            ResponseObject responseObject = new ResponseObject(HttpStatus.UNAUTHORIZED, accessDeniedException.getMessage());
-                            map = MapHelper.convertObject(responseObject);
-                            response.getWriter().write(new JSONObject(map).toString());
-                        })
-                );
 
-        http.exceptionHandling()
-                .authenticationEntryPoint(
-                        ((request, response, authException) -> {
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.setStatus(HttpServletResponse.SC_OK);
-                            Map<String, Object> map = new HashMap<>();
-                            ResponseObject responseObject = new ResponseObject(HttpStatus.UNAUTHORIZED, authException.getMessage());
-                            map = MapHelper.convertObject(responseObject);
-                            response.getWriter().write(new JSONObject(map).toString());
-                        })
-                );
-
+//        //Handle exception config
+//        http.exceptionHandling()
+//                .accessDeniedHandler(
+//                        ((request, response, accessDeniedException) -> {
+//                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                            Map<String, Object> map = new HashMap<>();
+//                            ResponseObject responseObject = new ResponseObject(HttpStatus.UNAUTHORIZED, accessDeniedException.getMessage());
+//                            map = MapHelper.convertObject(responseObject);
+//                            response.getWriter().write(new JSONObject(map).toString());
+//                        })
+//                );
+//
+//        http.exceptionHandling()
+//                .authenticationEntryPoint(
+//                        ((request, response, authException) -> {
+//                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                            Map<String, Object> map = new HashMap<>();
+//                            ResponseObject responseObject = new ResponseObject(HttpStatus.UNAUTHORIZED, authException.getMessage());
+//                            map = MapHelper.convertObject(responseObject);
+//                            response.getWriter().write(new JSONObject(map).toString());
+//                        })
+//                );
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

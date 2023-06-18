@@ -43,10 +43,10 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
             if(!getUser.isPresent()) {
                 UserRequestDTO user = new UserRequestDTO();
 
+//                user.setName(userDetails.getAttribute("email") !=null?userDetails.getAttribute("email"):userDetails.getAttribute("login"));
                 user.setEmail(username);
                 user.setName(userDetails.getAttribute("name"));
-//                user.setName(userDetails.getAttribute("email") !=null?userDetails.getAttribute("email"):userDetails.getAttribute("login"));
-                user.setPassword(("Dummy"));
+                user.setPassword(("default"));
                 user.setRole(1L);
                 try {
                      userService.saveUser(user);
@@ -55,8 +55,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
                 }
             }
         }
-        redirectUrl = "/dashboard";
+        redirectUrl = "/";
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
-
 }

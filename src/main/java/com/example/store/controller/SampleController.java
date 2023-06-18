@@ -39,41 +39,28 @@ public class SampleController {
     private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     UserRepository userRepo;
 
-    @GetMapping("/home")
-    public String home() {
+    @GetMapping("/")
+    public String home(){
         return "home";
     }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public void loginUser(@ModelAttribute
-                          UserLoginRequestDTO userLoginDTO) {
-        System.out.println("UserDTO"+userLoginDTO);
-    }
-
-    @GetMapping("/dashboard")
-    public String displayDashboard(Model model){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        if(securityContext.getAuthentication().getPrincipal() instanceof DefaultOAuth2User) {
-            DefaultOAuth2User user = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
-            model.addAttribute("userDetails", user.getAttribute("name")!= null ?user.getAttribute("name"):user.getAttribute("login"));
-        }else {
-            User user = (User) securityContext.getAuthentication().getPrincipal();
-            Optional<User> users = userRepo.findUserByEmail(user.getUsername());
-            model.addAttribute("userDetails", users.get().getName());
-        }
-        return "dashboard";
-    }
+//
+//    @GetMapping("/dashboard")
+//    public String displayDashboard(Model model){
+//        SecurityContext securityContext = SecurityContextHolder.getContext();
+//        if(securityContext.getAuthentication().getPrincipal() instanceof DefaultOAuth2User) {
+//            DefaultOAuth2User user = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
+//            model.addAttribute("userDetails", user.getAttribute("name")!= null ?user.getAttribute("name"):user.getAttribute("login"));
+//        }else {
+//            User user = (User) securityContext.getAuthentication().getPrincipal();
+//            Optional<User> users = userRepo.findUserByEmail(user.getUsername());
+//            model.addAttribute("userDetails", users.get().getName());
+//        }
+//        return "dashboard";
+//    }
 
 }

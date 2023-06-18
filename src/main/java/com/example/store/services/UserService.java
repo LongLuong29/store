@@ -23,7 +23,8 @@ public interface UserService {
     ResponseEntity<ResponseObject> updatePassword(Long id,String newPassword, String confirmPassword);
     ResponseEntity<?> getALlShipper();
     ResponseEntity<Integer> getNumberOfCustomer();
-    //    boolean checkPassword(Long id, String currentPassword);
+    void processOAuthPostLogin(String username);
+
 
 
 }

@@ -4,6 +4,7 @@ import com.example.store.dto.request.OrderRequestDTO;
 import com.example.store.dto.response.OrderResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.*;
+import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.OrderMapper;
 import com.example.store.repositories.*;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -49,6 +51,10 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        Optional<User> userCheckPhone = userRepository.findUserByPhone(user.getPhone());
+        if (userCheckPhone.get().getPhone() == null) {
+            throw new ResourceAlreadyExistsException("User must have phone number");
+        }
 //        Voucher voucher = voucherRepository.findById(voucherId)
 //                .orElseThrow(() -> new ResourceNotFoundException("Could not find voucher with ID = " + voucherId));
         Order order = orderMapper.orderRequestDTOToOrder(oderRequestDTO);

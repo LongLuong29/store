@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User user = mapper.userRequestDTOtoUser(userRequestDTO);
         //Check phone user existed
         Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
-        if (userCheckPhone.isPresent()) {
+        if (userCheckPhone.get().getPhone() != null && userCheckPhone.isPresent()) {
             throw new ResourceAlreadyExistsException("Phone user existed");
         }
         //Check email user existed
@@ -207,6 +207,26 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(numberOfCustomer);
     }
 
+    @Override
+    public void processOAuthPostLogin(String username) {
+        Optional<User> existUser = userRepository.findUserByEmail(username);
+
+        if (!existUser.isPresent()) {
+            User newUser = new User();
+            newUser.setEmail(username);
+            newUser.setName(username);
+            newUser.setStatus(true);
+            newUser.setPassword(("Dummy"));
+            Role role = roleRepository.findRoleById(1L)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = 1"));
+            newUser.setRole(role);
+            userRepository.save(newUser);
+
+            System.out.println("Created new user: " + username);
+
+        }
+    }
+
     public ResponseEntity<ResponseObject> verifyUser(String verifyCode) {
         User getUser = userRepository.findUserByVerificationCode(verifyCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Verify code is incorrect"));
@@ -250,16 +270,6 @@ public class UserServiceImpl implements UserService {
             user.setRank(silver);
         }
     }
-
-//    public boolean checkPassword(Long id, String currentPassword){
-//        User user = userRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
-//        String password = passwordEncoder.encode(currentPassword);
-//        if(user.getPassword().equals(password)){
-//            return true;
-//        }
-//        return false;
-//    }
 
     public ResponseEntity<ResponseObject> updatePassword(Long id,String newPassword, String confirmPassword){
         User user = userRepository.findById(id)

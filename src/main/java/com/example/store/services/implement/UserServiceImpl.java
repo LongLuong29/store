@@ -65,8 +65,10 @@ public class UserServiceImpl implements UserService {
         User user = mapper.userRequestDTOtoUser(userRequestDTO);
         //Check phone user existed
         Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
-        if (userCheckPhone.get().getPhone() != null && userCheckPhone.isPresent()) {
-            throw new ResourceAlreadyExistsException("Phone user existed");
+        if (userCheckPhone.isPresent()) {
+            if(userCheckPhone.get().getPhone() != null){
+                throw new ResourceAlreadyExistsException("Phone user existed");
+            }
         }
         //Check email user existed
         Optional<User> userCheckEmail = userRepository.findUserByEmail(userRequestDTO.getEmail());
@@ -82,7 +84,6 @@ public class UserServiceImpl implements UserService {
         Rank rank = rankRepository.findRankByName("Bronze")
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find bronze rank" ));
         user.setRank(rank);
-
         user.setStatus(true);
         user.setPoint(0);
         user.setRole(role);
@@ -287,5 +288,6 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
     }
+
 
 }

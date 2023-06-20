@@ -2,9 +2,13 @@ package com.example.store.config;
 
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.filter.JwtTokenFilter;
+import com.example.store.oauth.CustomOAuth2User;
 import com.example.store.oauth.CustomOAuth2UserService;
 import com.example.store.repositories.UserRepository;
+import com.example.store.services.UserService;
 import com.example.store.utils.MapHelper;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.context.annotation.Bean;
@@ -12,11 +16,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +43,8 @@ import org.webjars.NotFoundException;
 
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +63,8 @@ public class WebSecurityConfig {
 
     @Autowired AuthenticationSuccessHandler successHandler;
 
+   @Autowired UserService userService;
+
     @Bean
     UserDetailsService userDetailsService(){
         return new UserDetailsService() {
@@ -68,12 +79,24 @@ public class WebSecurityConfig {
             }
         };
     }
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
             throws Exception {
         return authConfig.getAuthenticationManager();
     }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.authenticationProvider(authenticationProvider());
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -87,17 +110,23 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests()
-                .requestMatchers("/", "/home", "/auth/**", "/docs/**","/oauth2/**", "/swagger-ui/index.html#/","/verify",
-                        "/registration/**","/login/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/", "/home", "/auth/**", "/docs/**","/oauth2/**","/oauth/**", "/swagger-ui/index.html#/","/verify",
+                        "/registration/**","/login/**", "/dashboard").permitAll()
+                .anyRequest().permitAll()
                 .and()
-                    .formLogin().permitAll()
-                .and().oauth2Login()
+                .formLogin().permitAll()
+                .and()
+                .oauth2Login()
                     .loginPage("/login")
-                    .userInfoEndpoint().userService(oauthUserService).and().successHandler(successHandler)
-                .and()
-                    .logout().logoutSuccessUrl("/").permitAll();
+//                    .userInfoEndpoint()
+//                    .userService(oauthUserService)
+//                    .and()
+//                    .userInfoEndpoint().userService(oauthUserService)
+//                    .and()
+                    .successHandler(successHandler)
+                    .and().logout().logoutSuccessUrl("/").permitAll();
         //                .and()
+
 //                .formLogin().loginPage("/auth/login")
 //                .successHandler(successHandler)
 //                .and().csrf().disable()

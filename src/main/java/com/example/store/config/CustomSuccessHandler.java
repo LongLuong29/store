@@ -14,6 +14,8 @@ import com.example.store.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,6 +42,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
     @Autowired UserService userService;
     @Autowired UserMapper userMapper;
     @Autowired AuthenticationManager auth;
+    @Autowired ServletContext servletContext;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -73,10 +76,15 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
         }
         String accessToken = jwtUtil.generateToken(user4Token);
 
-        response.setContentType("application/json");
-        new ObjectMapper().writeValue(response.getOutputStream(), accessToken);
-//        redirectUrl = "/";
-//        new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl + name);
+        request.setAttribute("accessToken", accessToken);
+        RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/oauth2/getToken");
+        dispatcher.forward(request, response);
+
+
+//        response.setContentType("application/json");
+//        new ObjectMapper().writeValue(response.getOutputStream(), accessToken);
+//        redirectUrl = "/oauth2/getToken";
+//        new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
 //*****************************************************************************************************************
 

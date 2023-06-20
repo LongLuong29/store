@@ -5,7 +5,10 @@ import com.example.store.dto.request.UserLoginRequestDTO;
 import com.example.store.entities.User;
 import com.example.store.repositories.UserRepository;
 import com.example.store.services.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpEntity;
@@ -26,6 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,42 +37,16 @@ import java.util.Optional;
 @RestController
 public class SampleController {
 
-    @Autowired UserRepository userRepo;
+    @Autowired
+    UserRepository userRepo;
 
-    @GetMapping("/")
-    public String home(Model model){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-//        DefaultOAuth2User getuser = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
-        String rs = new String();
-        if(securityContext.getAuthentication().getPrincipal() instanceof DefaultOAuth2User) {
-            DefaultOAuth2User user = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
-            model.addAttribute("userDetails", user.getAttribute("name")!= null ?user.getAttribute("name"):user.getAttribute("login"));
-            rs = user.getAttribute("name")!= null ?user.getAttribute("name"):user.getAttribute("login");
-        }else {
-            Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-            String username = loggedInUser.getName();
-            Optional<User> users = userRepo.findUserByEmail(username);
-            model.addAttribute("userDetails", users.get().getName());
-            rs = users.get().getName();
-        }
-        return rs;
+    @GetMapping("/oauth2/getToken")
+    public String googleToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String accessToken = request.getAttribute("accessToken").toString();
+        return accessToken;
+//            response.setContentType("application/json");
+//            new ObjectMapper().writeValue(response.getOutputStream(), accessToken);
+
     }
-
-    @GetMapping("/dashboard")
-    public String displayDashboard(Model model){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.getAuthentication().getPrincipal();
-        DefaultOAuth2User getuser = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
-
-        if(securityContext.getAuthentication().getPrincipal() instanceof DefaultOAuth2User) {
-            DefaultOAuth2User user = (DefaultOAuth2User) securityContext.getAuthentication().getPrincipal();
-            model.addAttribute("userDetails", user.getAttribute("name")!= null ?user.getAttribute("name"):user.getAttribute("login"));
-        }else {
-            User user = (User) securityContext.getAuthentication().getPrincipal();
-            Optional<User> users = userRepo.findUserByEmail(user.getUsername());
-            model.addAttribute("userDetails", users.get().getName());
-        }
-        return "dashboard";
-    }
-
 }

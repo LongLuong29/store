@@ -1,15 +1,20 @@
-package com.example.store.config;
+package com.example.store.component;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import com.example.store.dto.request.UserRequestDTO;
+import com.example.store.entities.RefreshToken;
 import com.example.store.entities.User;
+import com.example.store.entities.principal.UserPrincipal;
+import com.example.store.exceptions.BadRequestException;
 import com.example.store.mapper.UserMapper;
 import com.example.store.oauth.CustomOAuth2User;
 import com.example.store.repositories.RoleRepository;
 import com.example.store.repositories.UserRepository;
+import com.example.store.services.RefreshTokenService;
 import com.example.store.services.UserService;
+import com.example.store.utils.CookieUtils;
 import com.example.store.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -30,11 +35,14 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.web.util.UriComponentsBuilder;
+import jakarta.servlet.http.Cookie;
 @Component
-public class CustomSuccessHandler implements AuthenticationSuccessHandler{
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    public static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
 
     @Autowired UserRepository userRepo;
     @Autowired RoleRepository roleRepository;
@@ -43,12 +51,13 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
     @Autowired UserMapper userMapper;
     @Autowired AuthenticationManager auth;
     @Autowired ServletContext servletContext;
+    @Autowired RefreshTokenService refreshTokenService;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 
                                         Authentication authentication) throws IOException, ServletException {
-        String redirectUrl = null;
         UsernamePasswordAuthenticationToken authenticationToken = null;
         String username = null;
         User user4Token = new User();
@@ -74,43 +83,30 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler{
             authentication = auth.authenticate(authenticationToken);
             user4Token = (User) authentication.getPrincipal();
         }
-        String accessToken = jwtUtil.generateToken(user4Token);
+        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
 
-        request.setAttribute("accessToken", accessToken);
-        RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/oauth2/getToken");
-        dispatcher.forward(request, response);
+        String token = jwtUtil.generateToken(user4Token);
+        String targetUrl = redirectUri.orElse("http://localhost:3000/login");
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(authentication);
+//        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("token", token)
+//                .queryParam("refreshToken", refreshToken.getToken())
+//                .queryParam("userId", userPrincipal.getId())
+                .build().toUriString();
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+//        request.setAttribute("accessToken", accessToken);
+//        RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/oauth2/getToken");
+//        dispatcher.forward(request, response);
 
 //        response.setContentType("application/json");
 //        new ObjectMapper().writeValue(response.getOutputStream(), accessToken);
 //        redirectUrl = "/oauth2/getToken";
 //        new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
-//*****************************************************************************************************************
-
-        //        System.out.println("AuthenticationSuccessHandler invoked");
-//        System.out.println("Authentication name: " + authentication.getName());
-//        CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-//        String email = oauthUser.getEmail();
-//        Optional<User> getUser = userRepo.findUserByEmail(email);
-//            if(!getUser.isPresent()) {
-//                UserRequestDTO user = new UserRequestDTO();
-////                user.setName(userDetails.getAttribute("email") !=null?userDetails.getAttribute("email"):userDetails.getAttribute("login"));
-//                user.setEmail(email);
-//                user.setName(oauthUser.getName());
-//                user.setPassword(("default"));
-//                user.setRole(1L);
-//                try {
-//                    userService.saveUser(user);
-//                } catch (MessagingException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        userService.processOAuthPostLogin(oauthUser.getEmail());
-//        DefaultOidcUser oauthUser = (DefaultOidcUser) authentication.getPrincipal();
-//        String email = oauthUser.getAttribute("email");
-//        userService.processOAuthPostLogin(email);
-//        response.sendRedirect("/");
     }
 }
 

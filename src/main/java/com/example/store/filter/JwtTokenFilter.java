@@ -1,6 +1,8 @@
 package com.example.store.filter;
 
 import com.example.store.entities.User;
+import com.example.store.repositories.UserRepository;
+import com.example.store.services.UserService;
 import com.example.store.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   @Autowired
   private UserDetailsService userDetailsService;
+
+  @Autowired private UserRepository userRepository;
+  @Autowired private UserService userService;
 
   @Override
   protected void doFilterInternal(
@@ -82,7 +87,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   private UserDetails getUserDetails(String token){
     User userDetails = new User();
-    String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
+    String[] jwtSubject = jwtTokenUtil.getSubject(token).split(".");
+
     userDetails = (User) userDetailsService.loadUserByUsername(jwtSubject[1]);
     return userDetails;
   }

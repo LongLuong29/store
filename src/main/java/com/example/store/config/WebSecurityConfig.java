@@ -1,5 +1,6 @@
 package com.example.store.config;
 
+import com.example.store.component.OAuth2AuthenticationSuccessHandler;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.filter.JwtTokenFilter;
 import com.example.store.oauth.CustomOAuth2User;
@@ -55,15 +56,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
     @Autowired private JwtTokenFilter jwtTokenFilter;
-
     @Autowired private UserRepository userRepository;
-
-    @Autowired private CustomOAuth2UserService oauthUserService;
-//    ClientRegistrationRepository clientRegistrationRepository;
-
-    @Autowired AuthenticationSuccessHandler successHandler;
-
-   @Autowired UserService userService;
+    @Autowired private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    @Autowired UserService userService;
 
     @Bean
     UserDetailsService userDetailsService(){
@@ -123,7 +118,7 @@ public class WebSecurityConfig {
 //                    .and()
 //                    .userInfoEndpoint().userService(oauthUserService)
 //                    .and()
-                    .successHandler(successHandler)
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
                     .and().logout().logoutSuccessUrl("/").permitAll();
         //                .and()
 

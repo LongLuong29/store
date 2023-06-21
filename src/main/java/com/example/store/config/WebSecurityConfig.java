@@ -107,7 +107,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers("/", "/home", "/auth/**", "/docs/**","/oauth2/**","/oauth/**", "/swagger-ui/index.html#/","/verify",
                         "/registration/**","/login/**", "/dashboard").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()
                 .and()

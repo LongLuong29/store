@@ -20,16 +20,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-  @Autowired
-   private JwtTokenUtil jwtTokenUtil;
 
-  @Autowired
-  private UserDetailsService userDetailsService;
-
+  @Autowired private JwtTokenUtil jwtTokenUtil;
+  @Autowired private UserDetailsService userDetailsService;
   @Autowired private UserRepository userRepository;
   @Autowired private UserService userService;
 
@@ -87,9 +85,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   private UserDetails getUserDetails(String token){
     User userDetails = new User();
-    String[] jwtSubject = jwtTokenUtil.getSubject(token).split(".");
-
-    userDetails = (User) userDetailsService.loadUserByUsername(jwtSubject[1]);
+    String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
+    Optional<User> getuser = userRepository.findById(Long.parseLong(jwtSubject[0]));
+//    String getUserName = getuser.get().getName();
+    if(getuser.isPresent()){
+      userDetails = getuser.stream().findFirst().orElse(null);
+    }
     return userDetails;
   }
 

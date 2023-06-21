@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     @Pattern(regexp = ("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
             + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
-    @Size(max = 30, min = 10, message = "Invalid mail size")
+    @Size(max =110, min = 10, message = "Invalid mail size")
     private String email;
 
     // custom trường data trong entity

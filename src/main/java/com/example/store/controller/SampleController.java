@@ -2,6 +2,8 @@ package com.example.store.controller;
 
 
 import com.example.store.dto.request.UserLoginRequestDTO;
+import com.example.store.dto.response.AuthResponseDTO;
+import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.User;
 import com.example.store.repositories.UserRepository;
 import com.example.store.services.UserService;
@@ -11,10 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,10 +40,12 @@ public class SampleController {
     UserRepository userRepo;
 
     @GetMapping("/oauth2/getToken")
-    public String googleToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<ResponseObject> googleToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String accessToken = request.getAttribute("accessToken").toString();
-        return accessToken;
+//        String username = "";
+//        AuthResponseDTO authResponseDTO = new AuthResponseDTO(username, accessToken);
+        return ResponseEntity.ok().body(new ResponseObject(HttpStatus.OK, "Login Successfully", accessToken));
 //            response.setContentType("application/json");
 //            new ObjectMapper().writeValue(response.getOutputStream(), accessToken);
 

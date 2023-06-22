@@ -246,7 +246,7 @@ public class UserServiceImpl implements UserService {
         List<Order> orderList = orderRepository.findOrdersByUser(user);
         BigDecimal totalPaid = new BigDecimal(0);
         for(Order order: orderList){
-            if(order.getStatus()=="Done"){
+            if(order.getStatus().equals("Done")){
                 totalPaid = totalPaid.add(order.getTotalPrice()).setScale(0, RoundingMode.UP);
             }
         }

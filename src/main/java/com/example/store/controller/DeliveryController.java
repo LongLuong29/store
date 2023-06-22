@@ -38,7 +38,7 @@ public class DeliveryController {
     public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId){
         return deliveryService.deleteDelivery(deliveryId);
     }
-    @GetMapping(value = "")
+    @GetMapping(value = "/byId")
     public DeliveryResponseDTO getDeliveryById(@RequestParam(name = "deliveryId") Long deliveryId){
         return deliveryService.getDeliveryById(deliveryId);
     }

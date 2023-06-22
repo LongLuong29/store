@@ -30,17 +30,17 @@ public class DeliveryController {
         return deliveryService.createDelivery(deliveryRequestDTO);
     }
     @PutMapping(value = "")
-    public ResponseEntity<ResponseObject> updateDelivery(@RequestParam(name = "addressId") Long addressId,
+    public ResponseEntity<ResponseObject> updateDelivery(@RequestParam(name = "deliveryId") Long deliveryId,
                                                          @ModelAttribute @Valid DeliveryRequestDTO deliveryRequestDTO){
-        return deliveryService.updateDelivery(deliveryRequestDTO,addressId);
+        return deliveryService.updateDelivery(deliveryRequestDTO,deliveryId);
     }
     @DeleteMapping(value = "/remove")
-    public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "addressId") Long addressId){
-        return deliveryService.deleteDelivery(addressId);
+    public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId){
+        return deliveryService.deleteDelivery(deliveryId);
     }
-    @GetMapping(value = "/{id}")
-    public DeliveryResponseDTO getDeliveryById(@RequestParam(name = "addressId") Long addressId){
-        return deliveryService.getDeliveryById(addressId);
+    @GetMapping(value = "")
+    public DeliveryResponseDTO getDeliveryById(@RequestParam(name = "deliveryId") Long deliveryId){
+        return deliveryService.getDeliveryById(deliveryId);
     }
     @GetMapping(value = "/shipper")
     public ResponseEntity<?> getDeliveryByShipper(@RequestParam(name = "shipperId") Long shipperId){

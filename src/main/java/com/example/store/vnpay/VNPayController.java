@@ -35,7 +35,7 @@ public class VNPayController {
                                                       @RequestParam("orderId") Long orderId
                                                       /*HttpServletRequest request*/){
         /*String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();*/
-        String returnUrl = "http:localhost:8080/payment/vnpay-payment";
+        String returnUrl = "http:localhost:8080/vnpay-payment";
         String vnpayUrl = vnPayService.createOrder(orderTotal, orderId, returnUrl);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Successfully", vnpayUrl));
     }

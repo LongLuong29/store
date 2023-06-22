@@ -47,7 +47,7 @@ public class User implements UserDetails {
     private Date birthday;
 
     @Column(unique = true)
-    @Size(max = 12, min = 9, message = "Invalid phone size")
+    @Size(max = 11, min = 10, message = "Invalid phone size")
     private String phone;
 
     @NotNull(message = "Password is required")

@@ -55,6 +55,12 @@ public class UserController {
     return userService.getAllUser(pageable);
   }
 
+  @GetMapping(value = "/shipper")
+  public ResponseEntity<?> getAllShipper(){ return userService.getALlShipper(); }
+
+  @GetMapping(value = "/user-amount")
+  public ResponseEntity<Integer> getNumberOfCustomer(){ return userService.getNumberOfCustomer(); }
+
   @DeleteMapping(value = "/{id}")
   public ResponseEntity<ResponseObject> deleteUser(@PathVariable(name = "id") Long id){
     return userService.deleteUser(id);
@@ -65,15 +71,8 @@ public class UserController {
     return userService.getUserById(id);
   }
 
-
-  //Đổi mật khẩu
-//  @PostMapping(value = "/{id}/check-password")
-//  public boolean checkPassword(@PathVariable(name = "id") Long id,@Valid String currentPassword){
-//    return userService.checkPassword(id, currentPassword);
-//  }
-
   @PutMapping(value = "/{id}/password")
-  public ResponseEntity<ResponseObject> updatePassword(@PathVariable(name = "id") Long id,
+  public ResponseEntity<ResponseObject> changePassword(@PathVariable(name = "id") Long id,
                                                        @Valid String newPassword,
                                                        @Valid String confirmPassword){
     return userService.updatePassword(id, newPassword, confirmPassword);

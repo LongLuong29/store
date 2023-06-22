@@ -23,6 +23,7 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
   @Query(value = "select sum (b.quantity) from OrderProduct b where b.order.status = 'paid'")
   Optional<Integer> numberProductOfAllOrder();
 
-  @Query(value = "select b.product as product, sum (b.quantity) as quantity from OrderProduct b where b.order.status = 'paid' group by b.product")
+  @Query(value = "select b.product as product, sum (b.quantity) as quantity from OrderProduct b" +
+          " where b.order.status = 'paid' group by b.product")
   List<IProductQuantity> numberProductOfOrder(Sort sort);
 }

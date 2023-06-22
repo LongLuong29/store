@@ -18,7 +18,7 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    private String status;
+    private boolean status; // 0 la don hang shipper huy, kh nhan chuyen hang
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")

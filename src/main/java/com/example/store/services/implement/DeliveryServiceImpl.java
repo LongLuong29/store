@@ -7,6 +7,7 @@ import com.example.store.entities.Address;
 import com.example.store.entities.Order;
 import com.example.store.entities.Delivery;
 import com.example.store.entities.User;
+import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.DeliveryMapper;
 import com.example.store.models.ItemTotalPage;
@@ -43,8 +44,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
 
         for (Delivery d : deliveryList) {
-            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
-            deliveryResponseDTOList.add(deliveryResponseDTO);
+            if(d.isStatus()){
+                DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+                deliveryResponseDTOList.add(deliveryResponseDTO);
+            }
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ItemTotalPage(deliveryResponseDTOList, getDeliveryList.getTotalPages()));
@@ -59,6 +62,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         Address address = addressRepository.findById(deliveryRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
 
+        Delivery userDeliveries = deliveryRepository.findDeliveryByOrder(order);
+        if(userDeliveries != null){
+            throw new ResourceAlreadyExistsException("This order already has delivery");
+        }
         delivery.setShipper(user);
         delivery.setAddress(address);
         delivery.setOrder(order);
@@ -107,7 +114,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public ResponseEntity<ResponseObject> deleteDelivery(Long id) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with ID = " + id));
-        deliveryRepository.delete(delivery);
+        delivery.setStatus(false);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete delivery successfully!"));
     }
@@ -134,7 +141,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public ResponseEntity<?> getDeliveryByShipper(Long shipperId) {
         User shipper = userRepository
-                .findById(shipperId).orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
+                .findById(shipperId).orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with shipper ID = " + shipperId));
         List<Delivery> deliveryList = deliveryRepository.findDeliveriesByShipper(shipper);
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
 
@@ -162,7 +169,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public DeliveryResponseDTO getDeliveryByOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with order ID = " + orderId));
 
         Delivery delivery = deliveryRepository.findDeliveryByOrder(order);
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(delivery);

@@ -34,7 +34,7 @@ public class DeliveryController {
                                                          @ModelAttribute @Valid DeliveryRequestDTO deliveryRequestDTO){
         return deliveryService.updateDelivery(deliveryRequestDTO,deliveryId);
     }
-    @DeleteMapping(value = "/remove")
+    @DeleteMapping(value = "/softDelete")
     public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId){
         return deliveryService.deleteDelivery(deliveryId);
     }

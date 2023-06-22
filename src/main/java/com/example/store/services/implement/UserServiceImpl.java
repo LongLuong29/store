@@ -11,7 +11,6 @@ import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.UserMapper;
-import com.example.store.models.IListShipper;
 import com.example.store.repositories.*;
 import com.example.store.services.ImageStorageService;
 import com.example.store.services.UserService;
@@ -105,7 +104,6 @@ public class UserServiceImpl implements UserService {
         user.setId(id);
         User userExists = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
-
         //Check email user existed
         if (!user.getEmail().equals(userExists.getEmail())) {
             Optional<User> userCheckEmail = userRepository.findUserByEmail(userUpdateRequestDTO.getEmail());
@@ -152,7 +150,6 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ResponseObject> deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
-
         // delete cart
         Optional<Cart> getCart = cartRepository.findCartByUser(user);
         if (getCart.isPresent()) {
@@ -190,42 +187,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getALlShipper() {
-        List<IListShipper> shipperList = userRepository.getAllShipper();
+        List<User> shipperList = userRepository.getAllShipper();
         List<UserShipperResponseDTO> userShipperResponseDTOList = new ArrayList<>();
 
-        for (IListShipper i: shipperList) {
+        for (User i: shipperList) {
             UserShipperResponseDTO userShipperResponseDTO = mapper.iListShipperToShipperResponseDTO(i);
             userShipperResponseDTOList.add(userShipperResponseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(userShipperResponseDTOList);
     }
 
-
     @Override
     public ResponseEntity<Integer> getNumberOfCustomer() {
         int numberOfCustomer = userRepository.getNumberOfCustomer()
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Does not have any customer"));
         return ResponseEntity.status(HttpStatus.OK).body(numberOfCustomer);
-    }
-
-    @Override
-    public void processOAuthPostLogin(String username) {
-        Optional<User> existUser = userRepository.findUserByEmail(username);
-
-        if (!existUser.isPresent()) {
-            User newUser = new User();
-            newUser.setEmail(username);
-            newUser.setName(username);
-            newUser.setStatus(true);
-            newUser.setPassword(("Dummy"));
-            Role role = roleRepository.findRoleById(1L)
-                    .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = 1"));
-            newUser.setRole(role);
-            userRepository.save(newUser);
-
-            System.out.println("Created new user: " + username);
-
-        }
     }
 
     public ResponseEntity<ResponseObject> verifyUser(String verifyCode) {
@@ -239,6 +215,23 @@ public class UserServiceImpl implements UserService {
 //        this.cartRepository.save(cart);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
+    }
+
+    public ResponseEntity<ResponseObject> updatePassword(Long id,String newPassword, String confirmPassword){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        if(newPassword.equals(confirmPassword)){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(HttpStatus.OK, "Update password successfully!!!", null));
+        }
+        throw new InvalidValueException("Xác nhận mật khẩu mới không khớp");
+    }
+
+    private void encodePassword(User user){
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
     }
 
     private void updateUserRank(User user){
@@ -271,23 +264,5 @@ public class UserServiceImpl implements UserService {
             user.setRank(silver);
         }
     }
-
-    public ResponseEntity<ResponseObject> updatePassword(Long id,String newPassword, String confirmPassword){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
-        if(newPassword.equals(confirmPassword)){
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(HttpStatus.OK, "Update password successfully!!!", null));
-        }
-        throw new InvalidValueException("Xác nhận mật khẩu mới không khớp");
-    }
-
-    private void encodePassword(User user){
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-    }
-
 
 }

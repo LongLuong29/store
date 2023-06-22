@@ -13,14 +13,15 @@ public interface DeliveryMapper {
     @Mapping(target = "address", expression = "java(null)")
     @Mapping(target = "order", expression = "java(null)")
     @Mapping(target = "shipper", expression = "java(null)")
+//    @Mapping(target = "orderStatus", expression = "dto.order.status")
     Delivery deliveryRequestDTOToDelivery(DeliveryRequestDTO dto);
-
 
 
     @Mapping(target = "id", source = "d.id")
     @Mapping(target = "status", source = "d.order.status")
     @Mapping(target = "orderId", source = "d.order.id")
     @Mapping(target = "totalPrice", source = "d.order.totalPrice")
+    @Mapping(target = "userName", source = "d.order.user.name")
     @Mapping(target = "shipperId", source = "d.shipper.id")
     @Mapping(target = "shipperName", source = "d.shipper.name")
     @Mapping(target = "shipperPhone", source = "d.shipper.phone")

@@ -5,7 +5,6 @@ import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.UserResponseDTO;
 import com.example.store.dto.response.UserShipperResponseDTO;
 import com.example.store.entities.User;
-import com.example.store.models.IListShipper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -52,5 +51,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", source = "l.id")
     @Mapping(target = "name", source = "l.name")
-    UserShipperResponseDTO iListShipperToShipperResponseDTO(IListShipper l);
+    @Mapping(target = "phone", source = "l.phone")
+    UserShipperResponseDTO iListShipperToShipperResponseDTO(User l);
+
 }

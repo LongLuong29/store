@@ -62,6 +62,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setShipper(user);
         delivery.setAddress(address);
         delivery.setOrder(order);
+        delivery.getOrder().setStatus("Wait_Delivering");
 
         Delivery deliverySaved = deliveryRepository.save(delivery);
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(deliverySaved);

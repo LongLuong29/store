@@ -1,4 +1,4 @@
-package com.example.store.filter;
+package com.example.store.utils;
 
 import com.example.store.entities.User;
 import com.example.store.repositories.UserRepository;

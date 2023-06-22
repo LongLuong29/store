@@ -25,6 +25,7 @@ public class OrderRequestDTO {
     @NotNull(message = "Payment method is required")
     private String paymentMethod;
 
+    private Long addressId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date orderedDate;

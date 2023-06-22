@@ -17,6 +17,8 @@ public interface OrderMapper {
     @Mapping(target = "note", source = "b.note")
     @Mapping(target = "paymentMethod", source ="b.paymentMethod")
 
+    @Mapping(target = "address", expression = "java(null)")
+
     @Mapping(target = "orderedDate", source ="b.orderedDate")
     @Mapping(target = "doneDate", source ="b.doneDate")
     @Mapping(target = "deliveredDate", source ="b.deliveredDate")
@@ -38,6 +40,11 @@ public interface OrderMapper {
     @Mapping(target = "doneDate", source ="b.doneDate")
     @Mapping(target = "deliveredDate", source ="b.deliveredDate")
     @Mapping(target = "paidDate", source ="b.paidDate")
+
+    @Mapping(target = "deliveryApartmentNumber", source = "b.address.apartmentNumber")
+    @Mapping(target = "deliveryWard", source = "b.address.ward")
+    @Mapping(target = "deliveryDistrict", source = "b.address.district")
+    @Mapping(target = "deliveryProvince", source = "b.address.province")
     OrderResponseDTO orderToOrderResponseDTO(Order b);
 
 }

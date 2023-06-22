@@ -11,35 +11,34 @@ import java.util.*;
 
 @Service
 public class VNPayService {
-    public String createOrder(int total, String orderInfor, String urlReturn){
-//        String vnp_RequestId = VNPayConfig.getRandomNumber(8);
+    public String createOrder(int total, Long orderId, String urlReturn){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
+        String vnp_TxnRef = String.valueOf(orderId)/*VNPayConfig.getRandomNumber(8)*/;
         String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
+
+        total = total *100;
 
         Map<String, String> vnp_Params = new HashMap<>();
 //        vnp_Params.put("vnp_RequestId", vnp_RequestId);
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(total*100));
+        vnp_Params.put("vnp_Amount", String.valueOf(total));
         vnp_Params.put("vnp_CurrCode", "VND");
+//        vnp_Params.put("vnp_BankCode", "NCP");
+        vnp_Params.put("vnp_ReturnUrl", urlReturn);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        String bank_code = "other";
-        vnp_Params.put("vnp_BankCode", bank_code);
 
-//        if (bank_code != null && !bank_code.isEmpty()) {
-//            vnp_Params.put("vnp_BankCode", bank_code);
-//        }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", orderInfor);
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang: " + vnp_TxnRef);
+        vnp_Params.put("vnp_Locale", "vn");
+        vnp_Params.put("vnp_OrderType", "other");
 
-        String locate = "vn";
-        vnp_Params.put("vnp_Locale", locate);
 
-        urlReturn += VNPayConfig.vnp_Returnurl;
+//        urlReturn += VNPayConfig.vnp_Returnurl;
 //        vnp_Params.put("vnp_ReturnUrl", urlReturn);
 //        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
@@ -48,9 +47,9 @@ public class VNPayService {
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-        cld.add(Calendar.MINUTE, 15);
-        String vnp_ExpireDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+//        cld.add(Calendar.MINUTE, 15);
+//        String vnp_ExpireDate = formatter.format(cld.getTime());
+//        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
         List fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);

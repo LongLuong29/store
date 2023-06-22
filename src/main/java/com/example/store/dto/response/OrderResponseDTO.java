@@ -28,6 +28,11 @@ public class OrderResponseDTO {
   @NotNull(message = "Payment method is required")
   private String paymentMethod;
 
+  private String deliveryApartmentNumber;
+  private String deliveryWard;
+  private String deliveryDistrict;
+  private String deliveryProvince;
+
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date orderedDate;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

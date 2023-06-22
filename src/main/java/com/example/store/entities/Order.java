@@ -51,14 +51,14 @@ public class Order {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "shipper_id")
 //    private User shipper;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "address_id")
-//    private Address address;
 
     //cre - edi
     @CreationTimestamp
@@ -66,6 +66,5 @@ public class Order {
 
     @UpdateTimestamp
     private Date updatedDate;
-
 
 }

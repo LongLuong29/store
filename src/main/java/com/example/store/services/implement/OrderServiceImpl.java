@@ -30,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired private DiscountRepository discountRepository;
     @Autowired private VoucherRepository voucherRepository;
     @Autowired private UserVoucherRepository userVoucherRepository;
+    @Autowired private AddressRepository addressRepository;
 
 
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -55,13 +56,14 @@ public class OrderServiceImpl implements OrderService {
         if (userCheckPhone.get().getPhone() == null) {
             throw new ResourceAlreadyExistsException("User must have phone number");
         }
-//        Voucher voucher = voucherRepository.findById(voucherId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Could not find voucher with ID = " + voucherId));
+        Address address = addressRepository.findById(oderRequestDTO.getAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find this address"));
         Order order = orderMapper.orderRequestDTOToOrder(oderRequestDTO);
         order.setUser(user);
         order.setStatus("Ordered");
         Date orderDay = new java.util.Date();
         order.setOrderedDate(orderDay);
+        order.setAddress(address);
 //        UserVoucher userVoucher = userVoucherRepository.findUserVoucherByUserAndVoucher(user, voucher)
 //                .orElseThrow(() -> new ResourceNotFoundException("Could not find this voucher "));
 //        BigDecimal finalPrice;

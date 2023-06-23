@@ -4,8 +4,8 @@ package com.example.store.mapper;
 import com.example.store.dto.request.ProductRequestDTO;
 import com.example.store.dto.response.ProductResponseDTO;
 //import com.example.store.dto.response.ProductStatisticResponseDTO;
+import com.example.store.dto.response.ProductStatisticResponseDTO;
 import com.example.store.entities.Product;
-import com.example.store.models.IProductQuantity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -44,7 +44,7 @@ public interface ProductMapper {
 
 //    @Mapping(target = "id", source = "ip.product.id")
 //    @Mapping(target = "name", source = "ip.product.name")
-//    @Mapping(target = "quantity", source = "ip.product.quantity")
+//    @Mapping(target = "quantity", source = "ip.product.inventory")
 //    @Mapping(target = "price", source = "ip.product.price")
 //    @Mapping(target = "quantitySales", source = "ip.quantity")
 //    @Mapping(target = "totalPrice", expression = "java(null)")

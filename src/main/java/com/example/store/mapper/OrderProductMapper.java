@@ -20,4 +20,6 @@ public interface OrderProductMapper {
     @Mapping(target = "discountPrice",  source = "b.discountPrice")
         //    @Mapping(target = "paidDate", source = "b.order.paidDate")
     OrderProductResponseDTO orderProductToOrderProductResponseDTO(OrderProduct b);
+
+
 }

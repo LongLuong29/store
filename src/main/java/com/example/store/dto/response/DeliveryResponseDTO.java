@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 public class DeliveryResponseDTO {
     private Long id;
+    private boolean deliveryStatus;
     private String status;
     private BigDecimal totalPrice;
     private Long orderId;

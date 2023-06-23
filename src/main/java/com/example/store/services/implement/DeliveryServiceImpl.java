@@ -7,6 +7,7 @@ import com.example.store.entities.Address;
 import com.example.store.entities.Order;
 import com.example.store.entities.Delivery;
 import com.example.store.entities.User;
+import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceAlreadyExistsException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.DeliveryMapper;
@@ -39,7 +40,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public ResponseEntity<?> getAllDeliveryOnTrading(Pageable pageable) {
-        Page<Delivery> getDeliveryList = deliveryRepository.findAll(pageable);
+        Page<Delivery> getDeliveryList = deliveryRepository.findAllEnableDelivery(pageable);
         List<Delivery> deliveryList = getDeliveryList.getContent();
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
 
@@ -57,15 +58,21 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = mapper.deliveryRequestDTOToDelivery(deliveryRequestDTO);
         User user = userRepository.findById(deliveryRequestDTO.getShipperId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + deliveryRequestDTO.getShipperId()));
+        if(user.getRole().getId() != 3){
+            throw new InvalidValueException("This user is not shipper");
+        }
         Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Order với ID = " + deliveryRequestDTO.getOrderId()));
         Address address = addressRepository.findById(deliveryRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
 
-        Delivery userDeliveries = deliveryRepository.findDeliveryByOrder(order);
-        if(userDeliveries != null){
-            throw new ResourceAlreadyExistsException("This order already has delivery");
+        List<Delivery> userDeliveryList = deliveryRepository.findDeliveryByOrder(order);
+        for (Delivery userDelivery: userDeliveryList){
+            if(userDelivery != null && userDelivery.isStatus()){
+                throw new ResourceAlreadyExistsException("This order already has delivery");
+            }
         }
+        delivery.setStatus(true);
         delivery.setShipper(user);
         delivery.setAddress(address);
         delivery.setOrder(order);
@@ -90,6 +97,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         delivery.setAddress(getDelivery.getAddress());
         delivery.setShipper(getDelivery.getShipper());
+        delivery.setStatus(true);
         // change shipper
         if (deliveryRequestDTO.getShipperId() != null) {
             Optional<User> newShipper = userRepository.findById(deliveryRequestDTO.getShipperId());
@@ -126,18 +134,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return deliveryResponseDTO;
     }
-//    @Override
-//    public ResponseEntity<?> getDeliveryByStatus(String status) {
-//        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByStatus(status);
-//        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
-//
-//        for (Delivery d : deliveryList) {
-//            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
-//            deliveryResponseDTOList.add(deliveryResponseDTO);
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
-//    }
+
     @Override
     public ResponseEntity<?> getDeliveryByShipper(Long shipperId) {
         User shipper = userRepository
@@ -152,7 +149,37 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
     }
-//    @Override
+
+    @Override
+    public List<DeliveryResponseDTO> getDeliveryByOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with order ID = " + orderId));
+
+        List<Delivery> deliveryList = deliveryRepository.findDeliveryByOrder(order);
+        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+        for (Delivery d: deliveryList){
+            if(d.isStatus()){
+                DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+                deliveryResponseDTOList.add(deliveryResponseDTO);
+            }
+        }
+        return deliveryResponseDTOList;
+    }
+
+        @Override
+    public List<DeliveryResponseDTO> findDeliveriesByOrderStatus (String orderStatus) {
+        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByOrderStatus(orderStatus);
+        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+
+        for (Delivery d : deliveryList) {
+            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+            deliveryResponseDTOList.add(deliveryResponseDTO);
+        }
+
+        return deliveryResponseDTOList;
+    }
+
+    //    @Override
 //    public ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId) {
 //        User shipper = userRepository.findById(shipperId)
 //                .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
@@ -166,13 +193,4 @@ public class DeliveryServiceImpl implements DeliveryService {
 //
 //        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
 //    }
-    @Override
-    public DeliveryResponseDTO getDeliveryByOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with order ID = " + orderId));
-
-        Delivery delivery = deliveryRepository.findDeliveryByOrder(order);
-        DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(delivery);
-        return deliveryResponseDTO;
-    }
 }

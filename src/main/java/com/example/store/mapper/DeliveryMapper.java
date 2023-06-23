@@ -18,6 +18,7 @@ public interface DeliveryMapper {
 
 
     @Mapping(target = "id", source = "d.id")
+    @Mapping(target = "deliveryStatus", source = "d.status")
     @Mapping(target = "status", source = "d.order.status")
     @Mapping(target = "orderId", source = "d.order.id")
     @Mapping(target = "totalPrice", source = "d.order.totalPrice")

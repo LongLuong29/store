@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "api/v1/delivery")
 public class DeliveryController {
@@ -47,13 +49,14 @@ public class DeliveryController {
         return deliveryService.getDeliveryByShipper(shipperId);
     }
     @GetMapping(value = "/order")
-    public DeliveryResponseDTO getDeliveryByOrder(@RequestParam(name = "orderId") Long orderId){
+    public List<DeliveryResponseDTO> getDeliveryByOrder(@RequestParam(name = "orderId") Long orderId){
         return deliveryService.getDeliveryByOrder(orderId);
     }
-//    @GetMapping(value = "/status")
-//    public ResponseEntity<?> getDeliveryByStatus(@Valid String status) {
-//        return deliveryService.getDeliveryByStatus(status);
-//    }
+
+    @GetMapping(value = "/order-status")
+    public List<DeliveryResponseDTO> getDeliveryByStatus(@Valid String orderStatus) {
+        return deliveryService.findDeliveriesByOrderStatus(orderStatus);
+    }
 //    @GetMapping(value = "/shipper/status")
 //    public ResponseEntity<?> getDeliveryByStatusAndShipper(@Valid String status,
 //                                                           @RequestParam(name = "shipperId") Long shipperId){

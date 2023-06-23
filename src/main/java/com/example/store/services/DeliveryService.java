@@ -6,6 +6,8 @@ import com.example.store.dto.response.ResponseObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface DeliveryService {
     ResponseEntity<?> getAllDeliveryOnTrading(Pageable pageable);
 
@@ -17,12 +19,11 @@ public interface DeliveryService {
 
     DeliveryResponseDTO getDeliveryById(Long id);
 
-//    ResponseEntity<?> getDeliveryByStatus(String status);
-
-
     ResponseEntity<?> getDeliveryByShipper(Long shipperId);
-//    ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId)
-    ;
 
-    DeliveryResponseDTO getDeliveryByOrder(Long orderId);
+    List<DeliveryResponseDTO> getDeliveryByOrder(Long orderId);
+
+    List<DeliveryResponseDTO> findDeliveriesByOrderStatus (String orderStatus);
+    //    ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId)
+
 }

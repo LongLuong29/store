@@ -16,6 +16,7 @@ public class DeliveryResponseDTO {
     private BigDecimal totalPrice;
     private Long orderId;
     private String userName;
+    private String userPhone;
     private Long shipperId;
     private String shipperName;
     private String shipperPhone;

@@ -158,10 +158,11 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<Delivery> deliveryList = deliveryRepository.findDeliveryByOrder(order);
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
         for (Delivery d: deliveryList){
-            if(d.isStatus()){
+//            if(d.isStatus()){
                 DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
                 deliveryResponseDTOList.add(deliveryResponseDTO);
-            }
+//            }
+
         }
         return deliveryResponseDTOList;
     }

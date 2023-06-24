@@ -1,5 +1,7 @@
 package com.example.store.services;
 
+import com.example.store.dto.response.OrderProductResponseDTO;
+import com.example.store.entities.OrderProduct;
 import com.example.store.entities.Product;
 import com.example.store.models.IProductQuantity;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,10 @@ public interface StatisticService {
     BigDecimal totalProgressRevenue(Date sinceDay, Date toDay);
 
     BigDecimal totalCancelRevenue(Date sinceDay, Date toDay);
+
+    int totalOrdered();
+
+    List<IProductQuantity> findTopProduct();
 
     List<Product> topSellerProducts();
 

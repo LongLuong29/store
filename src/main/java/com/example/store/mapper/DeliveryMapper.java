@@ -23,6 +23,7 @@ public interface DeliveryMapper {
     @Mapping(target = "orderId", source = "d.order.id")
     @Mapping(target = "totalPrice", source = "d.order.totalPrice")
     @Mapping(target = "userName", source = "d.order.user.name")
+    @Mapping(target = "userPhone", source = "d.order.user.phone")
     @Mapping(target = "shipperId", source = "d.shipper.id")
     @Mapping(target = "shipperName", source = "d.shipper.name")
     @Mapping(target = "shipperPhone", source = "d.shipper.phone")

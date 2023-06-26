@@ -21,5 +21,4 @@ public interface OrderProductMapper {
         //    @Mapping(target = "paidDate", source = "b.order.paidDate")
     OrderProductResponseDTO orderProductToOrderProductResponseDTO(OrderProduct b);
 
-
 }

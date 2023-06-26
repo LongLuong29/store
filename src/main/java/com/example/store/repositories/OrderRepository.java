@@ -15,6 +15,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
   List<Order> findOrdersByUser (User user);
 
+  List<Order> findOrdersByStatus(String status);
+
   @Query(value = "SELECT o FROM Order o where o.createdDate >= :sinceDay and o.createdDate <=:toDay")
   List<Order> findOrderByDate(Date sinceDay, Date toDay);
 //  @Modifying

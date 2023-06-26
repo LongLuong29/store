@@ -1,18 +1,15 @@
 package com.example.store.controller;
 
-import com.example.store.dto.response.OrderProductResponseDTO;
-import com.example.store.entities.OrderProduct;
-import com.example.store.entities.Product;
-import com.example.store.models.IProductQuantity;
 import com.example.store.services.StatisticService;
+import com.example.store.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -53,8 +50,24 @@ public class StatisticController {
     }
 
     @GetMapping(value = "/top-seller")
-    public List<IProductQuantity> findTopProduct(){
+    public ResponseEntity<?> findTopProduct(){
         return statisticService.findTopProduct();
+    }
+    @GetMapping(value = "/sold-product-amount")
+    public ResponseEntity<?> findSolProductAmount(@RequestParam(name = "page", required = false, defaultValue = Utils.DEFAULT_PAGE_NUMBER) int page,
+                                                  @RequestParam(name = "size", required = false, defaultValue = Utils.DEFAULT_PAGE_SIZE) int size){
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return statisticService.findSoldProductAmount(pageable);
+    }
+
+    @GetMapping(value = "/order-amount-by-status")
+    public int findOrderAmountByStatus(@RequestParam(name = "orderStatus", required = false) String orderStatus){
+        return statisticService.countOrderAmountByOrderStatus(orderStatus);
+    }
+
+    @GetMapping(value = "/total-revenue-in-7days")
+    public List<BigDecimal> totalRevenueIn7Days(){
+        return statisticService.totalRevenueIn7Days();
     }
 
 }

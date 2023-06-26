@@ -1,11 +1,10 @@
 package com.example.store.services;
 
-import com.example.store.dto.response.OrderProductResponseDTO;
-import com.example.store.entities.OrderProduct;
 import com.example.store.entities.Product;
 import com.example.store.models.IProductQuantity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,9 +22,12 @@ public interface StatisticService {
 
     int totalOrdered();
 
-    List<IProductQuantity> findTopProduct();
+    ResponseEntity<?> findTopProduct();
 
-    List<Product> topSellerProducts();
+    ResponseEntity<?> findSoldProductAmount(Pageable pageable);
 
-    Page<IProductQuantity> numberProductsSold(Pageable pageable);
+    int countOrderAmountByOrderStatus(String orderStatus);
+
+    List<BigDecimal> totalRevenueIn7Days();
+
 }

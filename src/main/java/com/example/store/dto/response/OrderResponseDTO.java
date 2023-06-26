@@ -28,6 +28,7 @@ public class OrderResponseDTO {
   @NotNull(message = "Payment method is required")
   private String paymentMethod;
 
+  private Long addressId;
   private String deliveryApartmentNumber;
   private String deliveryWard;
   private String deliveryDistrict;

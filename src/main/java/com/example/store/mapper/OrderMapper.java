@@ -41,6 +41,7 @@ public interface OrderMapper {
     @Mapping(target = "deliveredDate", source ="b.deliveredDate")
     @Mapping(target = "paidDate", source ="b.paidDate")
 
+    @Mapping(target = "addressId", source = "b.address.id")
     @Mapping(target = "deliveryApartmentNumber", source = "b.address.apartmentNumber")
     @Mapping(target = "deliveryWard", source = "b.address.ward")
     @Mapping(target = "deliveryDistrict", source = "b.address.district")

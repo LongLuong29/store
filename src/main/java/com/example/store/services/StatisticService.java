@@ -1,5 +1,6 @@
 package com.example.store.services;
 
+import com.example.store.entities.Order;
 import com.example.store.entities.Product;
 import com.example.store.models.IProductQuantity;
 import org.springframework.data.domain.Page;
@@ -30,4 +31,7 @@ public interface StatisticService {
 
     List<BigDecimal> totalRevenueIn7Days();
 
+    ResponseEntity<?> find5RecentOrder();
+
+    List<Integer> countTotalNewCustomer7Days();
 }

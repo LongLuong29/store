@@ -1,5 +1,6 @@
 package com.example.store.controller;
 
+import com.example.store.entities.Order;
 import com.example.store.services.StatisticService;
 import com.example.store.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/statistic")
 public class StatisticController {
-    @Autowired
-    StatisticService statisticService;
+    @Autowired StatisticService statisticService;
 
     @GetMapping(value = "/total-revenue")
     public BigDecimal totalRevenue(@RequestParam(name = "sinceDay") Date sinceDay,
@@ -68,6 +68,16 @@ public class StatisticController {
     @GetMapping(value = "/total-revenue-in-7days")
     public List<BigDecimal> totalRevenueIn7Days(){
         return statisticService.totalRevenueIn7Days();
+    }
+
+    @GetMapping(value = "/top5-recent-order")
+    public ResponseEntity<?> top5RecentOrder(){
+        return statisticService.find5RecentOrder();
+    }
+
+    @GetMapping(value = "/new-user-amount")
+    public List<Integer> countTotalNewCustomer7Days(){
+        return statisticService.countTotalNewCustomer7Days();
     }
 
 }

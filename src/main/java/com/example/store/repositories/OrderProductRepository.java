@@ -23,7 +23,7 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
   Optional<OrderProduct> findOrderProductByOrderAndProduct(Order order, Product product);
 
   @Query(value = "select op from OrderProduct op group by op.product " +
-          "order by sum(op.quantity)  desc limit 4")
+          "order by sum(op.quantity)  desc limit 10")
   List<OrderProduct> findTopProduct();
 
   @Query(value = "select op from OrderProduct op group by op.product " +

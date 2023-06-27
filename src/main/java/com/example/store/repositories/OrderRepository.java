@@ -19,6 +19,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
   @Query(value = "SELECT o FROM Order o where o.createdDate >= :sinceDay and o.createdDate <=:toDay")
   List<Order> findOrderByDate(Date sinceDay, Date toDay);
+
+  @Query(value = "SELECT o FROM Order o where o.createdDate <= :today order by o.createdDate desc limit 5")
+  List<Order> find5RecentOrder(Date today);
+
 //  @Modifying
 //  @Query(value = "UPDATE Order o SET o.paidDate = :paidDate where o.id = :orderId")
 //  int  updateOrderPaidDay(@Param("orderId") Long orderId,@Param("paidDate") Date paidDate);

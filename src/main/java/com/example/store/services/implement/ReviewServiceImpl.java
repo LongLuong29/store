@@ -74,6 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + reviewRequestDTO.getUser()));
         Product product = productRepository.findById(reviewRequestDTO.getProduct()).
                 orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Product với ID = " + reviewRequestDTO.getProduct()));
+        checkExits(user, product);
         checkBought(user, product);
         review.setUser(user);
         review.setProduct(product);
@@ -117,9 +118,15 @@ public class ReviewServiceImpl implements ReviewService {
             Optional<OrderProduct> orderProduct = orderProductRepository.findOrderProductByOrderAndProduct(order,product);
             if( orderProduct.isPresent() && orderProduct.get().getProduct() == product)
             {
-                return user;
+                if(orderProduct.get().getOrder().getStatus().equals("Done")){return user;}
             }
         }
-        throw new ResourceNotFoundException("Người dùng chưa mua sản phẩm này");
+        throw new ResourceNotFoundException("Người dùng chưa mua hoặc chưa hoàn thành việc mua sản phẩm  này");
+    }
+
+    private User checkExits(User user, Product product){
+        Optional<Review> getReview = reviewRepository.findReviewByUserAndProduct(user, product);
+        if(getReview.isPresent()){throw new ResourceNotFoundException("Người dùng đã đánh giá sản phẩm này rồi");}
+        return user;
     }
 }

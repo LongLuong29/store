@@ -1,16 +1,20 @@
 package com.example.store.services.implement;
 
+import com.example.store.dto.response.OrderResponseDTO;
 import com.example.store.dto.response.ProductQuantityResponseDTO;
 import com.example.store.dto.response.ProductResponseDTO;
+import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Order;
 import com.example.store.entities.OrderProduct;
 import com.example.store.entities.Product;
+import com.example.store.mapper.OrderMapper;
 import com.example.store.mapper.OrderProductMapper;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.models.IProductQuantity;
 import com.example.store.repositories.OrderProductRepository;
 import com.example.store.repositories.OrderRepository;
 import com.example.store.repositories.ProductRepository;
+import com.example.store.repositories.UserRepository;
 import com.example.store.services.StatisticService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mapstruct.factory.Mappers;
@@ -28,14 +32,13 @@ import java.util.List;
 
 @Service
 public class StatisticServiceImpl implements StatisticService {
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderProductRepository orderProductRepository;
+    @Autowired private ProductRepository productRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private OrderProductRepository orderProductRepository;
 
     private final OrderProductMapper orderProductMapper = Mappers.getMapper(OrderProductMapper.class);
+    private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
     private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
 
@@ -157,6 +160,36 @@ public class StatisticServiceImpl implements StatisticService {
             totalRevenueIn7Days.add(totalRevenue);
         }
         return totalRevenueIn7Days;
+    }
+
+    @Override
+    public ResponseEntity<?> find5RecentOrder() {
+        Date today = new Date();
+        List<Order> orderList = orderRepository.find5RecentOrder(today);
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for (Order o: orderList){
+            OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(o);
+            orderResponseDTOList.add(orderResponseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTOList);
+    }
+
+    @Override
+    public List<Integer> countTotalNewCustomer7Days() {
+        List<Integer> newUserAmount = new ArrayList<>();
+        Date date = new Date();
+        Date sinceDay = new Date();
+        Date toDay = new Date();
+        int getDate = date.getDate();
+        for(int i =0; i < 7; i++){
+            sinceDay.setDate(getDate - i);
+            toDay.setDate(getDate - i);
+            sinceDay.setHours(0); sinceDay.setMinutes(0); sinceDay.setSeconds(1);
+            toDay.setHours(23); toDay.setMinutes(59); toDay.setSeconds(59);
+            Integer getUserAmount = userRepository.countTotalNewCustomer7Days(sinceDay, toDay);
+            newUserAmount.add(getUserAmount);
+        }
+        return newUserAmount;
     }
 
 }

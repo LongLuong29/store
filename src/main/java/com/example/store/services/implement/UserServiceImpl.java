@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import net.bytebuddy.utility.RandomString ;
@@ -121,10 +122,12 @@ public class UserServiceImpl implements UserService {
         user.setImage(
                 imageStorageService.storeFile(userUpdateRequestDTO.getImage(), "user"));
         user.setStatus(true);
+        user.setCreateDate(userExists.getCreateDate());
         user.setPoint(userExists.getPoint());
         user.setPassword(userExists.getPassword());
         user.setRank(userExists.getRank());
         user.setRole(userExists.getRole());
+        user.setUpdateDate(new Date());
 //        //Check role already exists
 //        Role role = roleRepository.findRoleById(user.getRole().getId())
 //                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));

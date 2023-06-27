@@ -9,16 +9,13 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-//    @Mapping(target = "status", source ="b.status")
-
     @Mapping(target = "totalPrice", source = "b.totalPrice")
     @Mapping(target = "shippingFee", source = "b.shippingFee")
     @Mapping(target = "finalPrice", source = "b.finalPrice")
     @Mapping(target = "note", source = "b.note")
+    @Mapping(target = "status", source = "b.status")
     @Mapping(target = "paymentMethod", source ="b.paymentMethod")
-
     @Mapping(target = "address", expression = "java(null)")
-
     @Mapping(target = "orderedDate", source ="b.orderedDate")
     @Mapping(target = "doneDate", source ="b.doneDate")
     @Mapping(target = "deliveredDate", source ="b.deliveredDate")

@@ -19,6 +19,7 @@ public class OrderRequestDTO {
     private BigDecimal totalPrice;
     private BigDecimal shippingFee;
     private BigDecimal finalPrice;
+    private String status;
     @Column(length = 333)
     private String note;
 

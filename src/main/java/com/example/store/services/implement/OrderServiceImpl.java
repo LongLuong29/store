@@ -115,10 +115,12 @@ public class OrderServiceImpl implements OrderService {
         Order getOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + orderId));
         Order order = orderMapper.orderRequestDTOToOrder(orderRequestDTO);
-
+        Address address = addressRepository.findById(orderRequestDTO.getAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find this address"));
         order.setId(orderId);
         order.setTotalPrice(getOrder.getTotalPrice());
         order.setUser(getOrder.getUser());
+        order.setAddress(address);
         Order orderSave = orderRepository.save(order);
         OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(orderSave);
         return ResponseEntity.status(HttpStatus.OK)

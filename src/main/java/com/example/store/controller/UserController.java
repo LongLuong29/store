@@ -4,6 +4,7 @@ import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.request.UserUpdateRequestDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.dto.response.UserResponseDTO;
+import com.example.store.services.FirebaseImageService;
 import com.example.store.services.ImageStorageService;
 import com.example.store.services.UserService;
 import com.example.store.utils.Utils;
@@ -25,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 public class UserController {
   @Autowired private UserService userService;
 
-  @Autowired private ImageStorageService imageStorageService;
+  @Autowired private FirebaseImageService imageService;
 
   @PostMapping(value = "")
   public ResponseEntity<ResponseObject> createUser(@ModelAttribute @Valid UserRequestDTO userRequestDTO, HttpServletRequest request)
@@ -41,11 +42,8 @@ public class UserController {
   }
 
   @GetMapping(value = "/image")
-  public ResponseEntity<byte[]> getImageUser(@RequestParam("fileName") String fileName){
-    byte[] image = imageStorageService.readFileContent(fileName, "user");
-    return ResponseEntity.status(HttpStatus.OK)
-        .contentType(MediaType.IMAGE_JPEG)
-        .body(image);
+  public String getUserImage(@RequestParam(name = "filename") String filename) {
+    return imageService.getImageUrl(filename);
   }
 
   @GetMapping(value = "")

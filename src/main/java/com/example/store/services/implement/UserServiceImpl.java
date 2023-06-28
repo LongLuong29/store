@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import net.bytebuddy.utility.RandomString ;
+
+import java.util.UUID;
 
 
 
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Autowired private ReviewRepository feedbackRepository;
     @Autowired private CartRepository cartRepository;
     @Autowired private AddressDetailRepository addressDetailRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
 //    @Autowired private JavaMailSender mailSender;
 //    @Autowired private ImageFeedbackRepository imageFeedbackRepository;
 
@@ -88,7 +90,7 @@ public class UserServiceImpl implements UserService {
         user.setPoint(0);
         user.setRole(role);
 
-        String randomCodeVerify = RandomString.make(64);
+        String randomCodeVerify = UUID.randomUUID().toString();
         user.setVerificationCode(randomCodeVerify);
         // code after
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
@@ -119,12 +121,20 @@ public class UserServiceImpl implements UserService {
                 throw new ResourceAlreadyExistsException("Phone user existed");
             }
         }
-        user.setImage(
-                imageStorageService.storeFile(userUpdateRequestDTO.getImage(), "user"));
+//        user.setImage(
+//                imageService.save(userUpdateRequestDTO.getImage()));
+        try {
+            String fileName = imageService.save(userUpdateRequestDTO.getImage());
+//            String imageUrl = imageService.getImageUrl(fileName);
+            user.setImage(fileName);
+        } catch (Exception e) {
+            //  throw internal error;
+        }
         user.setStatus(true);
         user.setCreateDate(userExists.getCreateDate());
         user.setPoint(userExists.getPoint());
         user.setPassword(userExists.getPassword());
+//        user.setImage(userExists.getImages());
         user.setRank(userExists.getRank());
         user.setRole(userExists.getRole());
         user.setUpdateDate(new Date());

@@ -108,13 +108,29 @@
 				<artifactId>spring-security-test</artifactId>
 				<scope>test</scope>
 			</dependency>
-
 			<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 			<dependency>
 				<groupId>javax.xml.bind</groupId>
 				<artifactId>jaxb-api</artifactId>
 				<version>2.3.1</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.google.firebase/firebase-admin -->
+			<dependency>
+				<groupId>com.google.firebase</groupId>
+				<artifactId>firebase-admin</artifactId>
+				<version>8.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-storage</artifactId>
+				<version>1.96.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.api-client</groupId>
+				<artifactId>google-api-client</artifactId>
+				<version>1.30.4</version>
+			</dependency>
+
 
 
 		</dependencies>

@@ -4,6 +4,7 @@ import com.example.store.entities.Order;
 import com.example.store.entities.User;
 import com.example.store.models.IStatisticDay;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
@@ -23,6 +24,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u FROM User u where u.role.id = 3")
     List<User> getAllShipper();
+
+
+    @Modifying
+    @Query(value = "UPDATE User u set u.image = :images where u.id = :userId")
+    void updateUserByImages(Long userId, String images);
 
     @Query(value = "SELECT count(u) FROM User u where u.createDate >= :sinceDay and u.createDate <=:toDay and u.role.id = 1")
     int countTotalNewCustomer7Days(Date sinceDay, Date toDay);

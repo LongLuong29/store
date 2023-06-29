@@ -39,6 +39,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired private ImageProductRepository imageProductRepository;
     @Autowired private ProductAttributeRepository attributeProductRepository;
     @Autowired private ProductDiscountRepository productDiscountRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
+
 
     private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
     @Override
@@ -64,8 +66,13 @@ public class ProductServiceImpl implements ProductService {
         product = checkExists(product);
         //Set thumbnail
         if (productRequestDTO.getThumbnail() != null){
-            product.setThumbnail(imageStorageService.storeFile(productRequestDTO.getThumbnail(), "product/thumbnail"));
+            try {
+                String fileName = imageService.save(productRequestDTO.getThumbnail());
+                product.setThumbnail(fileName);
+            } catch (Exception e) {}
         }
+        //set deleted = true
+        product.setDeleted(true);
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
         if (productRequestDTO.getImages() != null){
@@ -84,20 +91,23 @@ public class ProductServiceImpl implements ProductService {
         product = checkExists(product);
         //Set thumbnail
         if (productRequestDTO.getThumbnail() != null){
-            imageStorageService.deleteFile(getProduct.getThumbnail(), "product/thumbnail");
-            product.setThumbnail(imageStorageService.storeFile(productRequestDTO.getThumbnail(), "product/thumbnail"));
+            try {
+                String fileName = imageService.save(productRequestDTO.getThumbnail());
+                imageService.delete(fileName);
+                product.setThumbnail(fileName);
+            } catch (Exception e) {}
         }
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
-        //Save image
-        if (productRequestDTO.getImages() != null){
-            List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(productSaved);
-            for (ImageProduct imageProduct : imageProductList){
-                imageStorageService.deleteFile(imageProduct.getPath(), "product/thumbnail");
-                imageProductRepository.delete(imageProduct);
-            }
-            productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
-        }
+        //Save images
+//        if (productRequestDTO.getImages() != null){
+//            List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(productSaved);
+//            for (ImageProduct imageProduct : imageProductList){
+//                imageStorageService.deleteFile(imageProduct.getPath(), "product/thumbnail");
+//                imageProductRepository.delete(imageProduct);
+//            }
+//            productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
+//        }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update product successfully!", productResponseDTO));
     }
@@ -206,7 +216,8 @@ public class ProductServiceImpl implements ProductService {
         productGalleryDTO.setId(product.getId());
         productGalleryDTO.setName(product.getName());
         productGalleryDTO.setPrice(product.getPrice());
-        productGalleryDTO.setThumbnail(product.getThumbnail());
+        String thumbnailUrl = imageService.getImageUrl(product.getThumbnail());
+        productGalleryDTO.setThumbnail(thumbnailUrl);
         productGalleryDTO.setDiscount(discount);
         productGalleryDTO.setGroupProduct(product.getGroupProduct().getName());
         productGalleryDTO.setBrand(product.getBrand().getName());

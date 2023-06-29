@@ -25,7 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT u FROM User u where u.role.id = 3")
     List<User> getAllShipper();
 
-
     @Modifying
     @Query(value = "UPDATE User u set u.image = :images where u.id = :userId")
     void updateUserByImages(Long userId, String images);

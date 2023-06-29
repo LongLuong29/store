@@ -121,27 +121,24 @@ public class UserServiceImpl implements UserService {
                 throw new ResourceAlreadyExistsException("Phone user existed");
             }
         }
-//        user.setImage(
-//                imageService.save(userUpdateRequestDTO.getImage()));
-        try {
-            String fileName = imageService.save(userUpdateRequestDTO.getImage());
-//            String imageUrl = imageService.getImageUrl(fileName);
-            user.setImage(fileName);
-        } catch (Exception e) {
-            //  throw internal error;
+        //User Image
+        if(userUpdateRequestDTO.getImage() != null){
+            try {
+                String fileName = imageService.save(userUpdateRequestDTO.getImage());
+                user.setImage(fileName);
+            } catch (Exception e) {}
+        } else {
+            user.setImage(userExists.getImage());
         }
+
         user.setStatus(true);
         user.setCreateDate(userExists.getCreateDate());
         user.setPoint(userExists.getPoint());
         user.setPassword(userExists.getPassword());
-//        user.setImage(userExists.getImages());
         user.setRank(userExists.getRank());
         user.setRole(userExists.getRole());
         user.setUpdateDate(new Date());
-//        //Check role already exists
-//        Role role = roleRepository.findRoleById(user.getRole().getId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Could not find role with ID = " + user.getRole().getId()));
-//        user.setRole(role);
+
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
 
         return ResponseEntity.status(HttpStatus.OK)

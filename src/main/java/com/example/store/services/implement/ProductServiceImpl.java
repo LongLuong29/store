@@ -20,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,10 +75,15 @@ public class ProductServiceImpl implements ProductService {
         }
         //set deleted = true
         product.setDeleted(true);
+
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
         if (productRequestDTO.getImages() != null){
-            productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
+            try {
+                productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create product successfully!", productResponseDTO));
@@ -97,17 +104,20 @@ public class ProductServiceImpl implements ProductService {
                 product.setThumbnail(fileName);
             } catch (Exception e) {}
         }
+        else{
+            product.setThumbnail(getProduct.getThumbnail());
+        }
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
         //Save images
-//        if (productRequestDTO.getImages() != null){
-//            List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(productSaved);
-//            for (ImageProduct imageProduct : imageProductList){
-//                imageStorageService.deleteFile(imageProduct.getPath(), "product/thumbnail");
-//                imageProductRepository.delete(imageProduct);
-//            }
-//            productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
-//        }
+        if (productRequestDTO.getImages() != null){
+            try {
+                productResponseDTO.setImages(saveImage(productRequestDTO, productSaved));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update product successfully!", productResponseDTO));
     }
@@ -141,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
         List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(product);
         String[] images = new String[imageProductList.size()];
         for (int i=0; i < imageProductList.size(); i++){
-            images[i] = imageProductList.get(i).getPath();
+            images[i] = imageService.getImageUrl(imageProductList.get(i).getPath());
         }
         //product discount
         Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
@@ -196,13 +206,15 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    private String[] saveImage(ProductRequestDTO productRequestDTO, Product product){
+    private String[] saveImage(ProductRequestDTO productRequestDTO, Product product) throws IOException {
         int numberOfFile = productRequestDTO.getImages().length;
+        int i =0;
         String[] images = new String[numberOfFile];
-        for (int i=0; i < numberOfFile; i++){
-            images[i] = imageStorageService.storeFile(productRequestDTO.getImages()[i], "product/images");
+        for(MultipartFile file: productRequestDTO.getImages()){
+            String fileName = imageService.save(file);
+            images[i] = fileName;
+            i++;
         }
-
         for (String path : images){
             ImageProduct imageProduct = new ImageProduct();
             imageProduct.setProduct(product);

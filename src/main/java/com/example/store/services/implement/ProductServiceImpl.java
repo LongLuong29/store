@@ -100,8 +100,8 @@ public class ProductServiceImpl implements ProductService {
         if (productRequestDTO.getThumbnail() != null){
             try {
                 String fileName = imageService.save(productRequestDTO.getThumbnail());
-                imageService.delete(fileName);
                 product.setThumbnail(fileName);
+                imageService.delete(getProduct.getThumbnail());
             } catch (Exception e) {}
         }
         else{
@@ -109,6 +109,7 @@ public class ProductServiceImpl implements ProductService {
         }
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
+        productResponseDTO.setThumbnail(imageService.getImageUrl(product.getThumbnail()));
         //Save images
         if (productRequestDTO.getImages() != null){
             try {

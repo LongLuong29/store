@@ -36,6 +36,9 @@ public interface ProductMapper {
     @Mapping(target = "discountPrice", source = "p.discountPrice")
     @Mapping(target = "discountPercent", source = "p.discountPercent")
 
+    @Mapping(target = "groupProductId", source = "p.groupProduct.id")
+    @Mapping(target = "categoryId", source = "p.category.id")
+    @Mapping(target = "brandId", source = "p.brand.id")
     @Mapping(target = "groupProduct", source = "p.groupProduct.name")
     @Mapping(target = "category", source = "p.category.name")
     @Mapping(target = "brand", source = "p.brand.name")

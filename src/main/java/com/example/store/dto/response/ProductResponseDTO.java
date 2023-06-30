@@ -23,8 +23,11 @@ public class ProductResponseDTO {
     private BigDecimal discountPrice;
     private double discountPercent;
 
+    private Long categoryId;
     private String category;
+    private Long groupProductId;
     private String groupProduct;
+    private Long brandId;
     private String brand;
 
 }

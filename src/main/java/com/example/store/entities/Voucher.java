@@ -25,6 +25,7 @@ public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull(message = "Voucher title is required")
     @Column(length = 100)
     private String title;
@@ -33,19 +34,25 @@ public class Voucher {
     @Min(value = 1, message = "Percent must be greater than 1")
     @Max(value = 100, message = "Percent must smaller than 100")
     private double percent;
+
     private boolean status;
+
     private String description;
+
     private String thumbnail;
+
     @NotNull(message = "Voucher has to have a limit discount amount")
     private BigDecimal upTo;
+
     private BigDecimal minSpend;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "voucherType_id")
     private VoucherType voucherType;
 
-    @Size(max = 10, min = 5, message = "Invalid code size")
+    @Size(max = 10, min = 10, message = "Invalid code size")
     private String code;
+
     @Temporal(TemporalType.DATE)
     private Date startDate;
     @Temporal(TemporalType.DATE)

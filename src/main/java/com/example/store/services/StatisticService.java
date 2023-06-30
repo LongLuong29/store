@@ -1,7 +1,9 @@
 package com.example.store.services;
 
+import com.example.store.dto.response.TopShipperResponseDTO;
 import com.example.store.entities.Order;
 import com.example.store.entities.Product;
+import com.example.store.entities.User;
 import com.example.store.models.IProductQuantity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +36,6 @@ public interface StatisticService {
     ResponseEntity<?> find5RecentOrder();
 
     List<Integer> countTotalNewCustomer7Days();
+
+    List<TopShipperResponseDTO> top5Shipper();
 }

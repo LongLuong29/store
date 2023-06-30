@@ -35,6 +35,7 @@ public class Category {
     @UpdateTimestamp
     private Date updatedDate;
 
+    // foreign key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_product_id")
     private GroupProduct groupProduct;

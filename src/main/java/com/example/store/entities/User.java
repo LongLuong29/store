@@ -32,11 +32,11 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     @Pattern(regexp = ("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
             + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
-    @Size(max =110, min = 10, message = "Invalid mail size")
+    @Size(max =140, min = 11, message = "Invalid mail size")
     private String email;
 
     // custom trường data trong entity
-    @Column(name = "name", length = 45)
+    @Column(name = "name", length = 100)
     @NotNull(message = "Name is required")
     private String name;
 
@@ -56,7 +56,7 @@ public class User implements UserDetails {
     @NotNull(message = "Status is required")
     private boolean status;
 
-    @Column(name = "image", length = 255)
+    @Column(name = "image", length = 500)
     private String image;
 
     @Column(name = "point")

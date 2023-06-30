@@ -26,4 +26,5 @@ public class AddressDetail {
     private Address address;
 
     private boolean defaultAddress;
+
 }

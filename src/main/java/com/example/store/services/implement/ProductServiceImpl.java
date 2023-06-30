@@ -43,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired private ProductDiscountRepository productDiscountRepository;
     @Autowired private FirebaseImageServiceImpl imageService;
 
-
     private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
     @Override
     public ResponseEntity<?> getAllProductOnTrading(Pageable pageable) {
@@ -73,8 +72,8 @@ public class ProductServiceImpl implements ProductService {
                 product.setThumbnail(fileName);
             } catch (Exception e) {}
         }
-        //set deleted = true
-        product.setDeleted(true);
+        //set deleted = false
+        product.setDeleted(false);
 
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
@@ -96,6 +95,12 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + id));
         product.setId(id);
         product = checkExists(product);
+
+        //set exist
+        product.setDeleted(false);
+        product.setRate(getProduct.getRate());
+        product.setCreatedDate(getProduct.getCreatedDate());
+//        product.setInventory(getProduct.getInventory() + productRequestDTO.getInventory());
         //Set thumbnail
         if (productRequestDTO.getThumbnail() != null){
             try {
@@ -107,9 +112,9 @@ public class ProductServiceImpl implements ProductService {
         else{
             product.setThumbnail(getProduct.getThumbnail());
         }
+
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
-        productResponseDTO.setThumbnail(imageService.getImageUrl(product.getThumbnail()));
         //Save images
         if (productRequestDTO.getImages() != null){
             try {
@@ -166,8 +171,8 @@ public class ProductServiceImpl implements ProductService {
             price = product.getPrice();
             productResponseDTO.setDiscountPercent(0);
         }
+        productResponseDTO.setThumbnail(imageService.getImageUrl(product.getName()));
         productResponseDTO.setDiscountPrice(price);
-
         productResponseDTO.setImages(images);
         List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
         double calRate = Utils.calculateAvgRate(reviewList);
@@ -211,6 +216,14 @@ public class ProductServiceImpl implements ProductService {
         int numberOfFile = productRequestDTO.getImages().length;
         int i =0;
         String[] images = new String[numberOfFile];
+
+        //delete exist images
+        List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(product);
+        this.imageProductRepository.deleteAll(imageProductList);
+        for(ImageProduct imageProduct: imageProductList){
+            this.imageService.delete(imageProduct.getPath());
+        }
+
         for(MultipartFile file: productRequestDTO.getImages()){
             String fileName = imageService.save(file);
             images[i] = fileName;
@@ -224,6 +237,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return images;
     }
+
     private ProductGalleryDTO toProductGalleryDTO(Product product, double discount){
         ProductGalleryDTO productGalleryDTO = new ProductGalleryDTO();
         productGalleryDTO.setId(product.getId());

@@ -28,9 +28,4 @@ public class Attribute {
     @NotNull(message = "Attribute value is required")
     private String value;
 
-    @CreationTimestamp
-    private Date createdDate;
-
-    @UpdateTimestamp
-    private Date updatedDate;
 }

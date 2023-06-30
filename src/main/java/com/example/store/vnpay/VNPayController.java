@@ -58,7 +58,6 @@ public class VNPayController {
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
 
-
         model.addAttribute("orderId", orderInfo);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("paymentTime", paymentTime);
@@ -74,6 +73,5 @@ public class VNPayController {
         }
         // Thanh toan that bai
         else{response.sendRedirect(failureUrl); }
-
     }
 }

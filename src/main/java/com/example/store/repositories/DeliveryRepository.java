@@ -24,9 +24,10 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     List<Delivery> findDeliveriesByOrderStatus(String orderStatus);
 
-//    @Query(value = "select d.shipper from Delivery d " +
-//            "order by count(d.order.)")
-//    List<User> getTopShipperByOrder();
+    @Query(value = "select d.shipper from Delivery d " +
+            "where d.status = true " +
+            "group by d.shipper order by count(*) desc limit 5")
+    List<User> getTopShipperByOrder();
 
 //    List<Delivery> findDeliveriesByStatusAndShipper(String status, User shipper);
 

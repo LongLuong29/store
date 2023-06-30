@@ -1,20 +1,12 @@
 package com.example.store.services.implement;
 
-import com.example.store.dto.response.OrderResponseDTO;
-import com.example.store.dto.response.ProductQuantityResponseDTO;
-import com.example.store.dto.response.ProductResponseDTO;
-import com.example.store.dto.response.ResponseObject;
-import com.example.store.entities.Order;
-import com.example.store.entities.OrderProduct;
-import com.example.store.entities.Product;
+import com.example.store.dto.response.*;
+import com.example.store.entities.*;
 import com.example.store.mapper.OrderMapper;
 import com.example.store.mapper.OrderProductMapper;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.models.IProductQuantity;
-import com.example.store.repositories.OrderProductRepository;
-import com.example.store.repositories.OrderRepository;
-import com.example.store.repositories.ProductRepository;
-import com.example.store.repositories.UserRepository;
+import com.example.store.repositories.*;
 import com.example.store.services.StatisticService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mapstruct.factory.Mappers;
@@ -36,6 +28,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired private UserRepository userRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
+    @Autowired private DeliveryRepository deliveryRepository;
 
     private final OrderProductMapper orderProductMapper = Mappers.getMapper(OrderProductMapper.class);
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -190,6 +183,27 @@ public class StatisticServiceImpl implements StatisticService {
             newUserAmount.add(getUserAmount);
         }
         return newUserAmount;
+    }
+
+    @Override
+    public List<TopShipperResponseDTO> top5Shipper() {
+        List<User> shipperList = deliveryRepository.getTopShipperByOrder();
+        List<TopShipperResponseDTO> topShipperResponseDTOList = new ArrayList<>();
+        for(User shipper: shipperList ){
+            TopShipperResponseDTO topShipperResponseDTO = new TopShipperResponseDTO();
+            List<Delivery> deliveryList = deliveryRepository.findDeliveriesByShipper(shipper);
+            int orderAmount = 0;
+            for(Delivery delivery: deliveryList){
+                if(delivery.getOrder().getStatus().equals("Done")){
+                    orderAmount = orderAmount +1;
+                }
+//                orderAmount = orderAmount +1;
+            }
+            topShipperResponseDTO.setShipperName(shipper.getName());
+            topShipperResponseDTO.setOrderAmount(orderAmount);
+            topShipperResponseDTOList.add(topShipperResponseDTO);
+        }
+        return topShipperResponseDTOList;
     }
 
 }

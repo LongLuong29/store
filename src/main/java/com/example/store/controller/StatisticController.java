@@ -1,5 +1,6 @@
 package com.example.store.controller;
 
+import com.example.store.dto.response.TopShipperResponseDTO;
 import com.example.store.entities.Order;
 import com.example.store.services.StatisticService;
 import com.example.store.utils.Utils;
@@ -80,4 +81,6 @@ public class StatisticController {
         return statisticService.countTotalNewCustomer7Days();
     }
 
+    @GetMapping(value = "/top5-shipper-by-order")
+    public List<TopShipperResponseDTO> top5Shipper(){ return statisticService.top5Shipper(); }
 }

@@ -154,6 +154,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + id));
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(product);
+
+        // images
         List<ImageProduct> imageProductList = imageProductRepository.findImageProductByProduct(product);
         String[] images = new String[imageProductList.size()];
         for (int i=0; i < imageProductList.size(); i++){
@@ -171,12 +173,15 @@ public class ProductServiceImpl implements ProductService {
             price = product.getPrice();
             productResponseDTO.setDiscountPercent(0);
         }
-        productResponseDTO.setThumbnail(imageService.getImageUrl(product.getName()));
+        //set exists
+        productResponseDTO.setThumbnail(imageService.getImageUrl(product.getThumbnail()));
         productResponseDTO.setDiscountPrice(price);
         productResponseDTO.setImages(images);
+        //calculate review
         List<Review> reviewList = reviewRepository.findReviewsByProduct(product);
         double calRate = Utils.calculateAvgRate(reviewList);
         productResponseDTO.setRate(calRate);
+
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 

@@ -33,6 +33,8 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Autowired private ProductRepository productRepository;
     @Autowired private ProductDiscountRepository productDiscountRepository;
     @Autowired private DiscountRepository discountRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
+
 
     private final OrderProductMapper orderProductMapper = Mappers.getMapper(OrderProductMapper.class);
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
@@ -97,6 +99,7 @@ public class OrderProductServiceImpl implements OrderProductService {
 
         for (OrderProduct b : orderProductList) {
             OrderProductResponseDTO orderProductResponseDTO = orderProductMapper.orderProductToOrderProductResponseDTO(b);
+            orderProductResponseDTO.setProductImage(imageService.getImageUrl(b.getProduct().getThumbnail()));
             orderProductResponseDTOList.add(orderProductResponseDTO);
         }
 
@@ -120,6 +123,7 @@ public class OrderProductServiceImpl implements OrderProductService {
                 orderProductResponseDTO.setPrice
                         (Utils.getTotalPrice(orderProduct.getProduct(), BigDecimal.valueOf(0.00), orderProduct.getQuantity(), productDiscountList.get(0)));
                 orderProductResponseDTO.setUserResponseDTO(userMapper.userToUserResponseDTO(order.getUser()));
+                orderProductResponseDTO.setProductImage(imageService.getImageUrl(orderProduct.getProduct().getThumbnail()));
                 orderProductResponseDTOList.add(orderProductResponseDTO);
             }
         }

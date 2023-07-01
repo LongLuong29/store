@@ -27,6 +27,8 @@ public class CartProductServiceImpl implements CartProductService {
     @Autowired private ProductRepository productRepository;
     @Autowired private DiscountRepository discountRepository;
     @Autowired private ProductDiscountRepository productDiscountRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
+
 
     private final CartProductMapper cartProductMapper = Mappers.getMapper(CartProductMapper.class);
 
@@ -102,6 +104,7 @@ public class CartProductServiceImpl implements CartProductService {
             Optional<Integer> getDiscount = discountRepository.findPercentByProductId(getProduct.getId()/*, new Date()*/);
             if(getDiscount.isPresent()){cartProductResponseDTO.setDiscount(getDiscount.get());}
             else{cartProductResponseDTO.setDiscount(0);}
+            cartProductResponseDTO.setProductImage(imageService.getImageUrl(cartProduct.getProduct().getThumbnail()));
             cartProductResponseDTOList.add(cartProductResponseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(cartProductResponseDTOList);

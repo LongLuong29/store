@@ -31,6 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired private ProductRepository productRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
 
 
     private final ReviewMapper mapper = Mappers.getMapper(ReviewMapper.class);
@@ -59,6 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         for (Review f : reviewList) {
             ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(f);
+            reviewResponseDTO.setProductThumbnail(imageService.getImageUrl(product.getThumbnail()));
             reviewResponseDTOList.add(reviewResponseDTO);
         }
 

@@ -15,6 +15,7 @@ import com.example.store.repositories.*;
 import com.example.store.services.ImageStorageService;
 import com.example.store.services.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.apache.commons.lang3.RandomStringUtils;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -56,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Autowired private CartRepository cartRepository;
     @Autowired private AddressDetailRepository addressDetailRepository;
     @Autowired private FirebaseImageServiceImpl imageService;
-//    @Autowired private JavaMailSender mailSender;
+    @Autowired private JavaMailSender mailSender;
 //    @Autowired private ImageFeedbackRepository imageFeedbackRepository;
 
     @Override
@@ -77,7 +81,6 @@ public class UserServiceImpl implements UserService {
         if (userCheckEmail.isPresent()) {
             throw new ResourceAlreadyExistsException("Email user existed");
         }
-        // check role already exists
         encodePassword(user);
         //Check role already exists
         Role role = roleRepository.findRoleById(user.getRole().getId())
@@ -86,18 +89,14 @@ public class UserServiceImpl implements UserService {
         Rank rank = rankRepository.findRankByName("Bronze")
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find bronze rank" ));
         user.setRank(rank);
-        user.setStatus(true);
         user.setPoint(0);
         user.setRole(role);
 
-        String randomCodeVerify = UUID.randomUUID().toString();
+        String randomCodeVerify = RandomStringUtils.randomNumeric(8);
         user.setVerificationCode(randomCodeVerify);
         // code after
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
-        //Create cart by user
-        Cart cart = new Cart();
-        cart.setUser(user);
-        this.cartRepository.save(cart);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create user successfully!", userResponseDTO));
     }
@@ -160,6 +159,11 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ResponseObject> deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        try {
+            imageService.delete(user.getImage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         // delete cart
         Optional<Cart> getCart = cartRepository.findCartByUser(user);
         if (getCart.isPresent()) {
@@ -219,10 +223,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Verify code is incorrect"));
         getUser.setStatus(true);
         User user =  userRepository.save(getUser);
-//        //Create cart by user
-//        Cart cart = new Cart();
-//        cart.setUser(user);
-//        this.cartRepository.save(cart);
+        //Create cart by user
+        Cart cart = new Cart();
+        cart.setUser(user);
+        this.cartRepository.save(cart);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
     }
@@ -273,6 +277,26 @@ public class UserServiceImpl implements UserService {
         if(userPoint>=50 && userPoint<100){
             user.setRank(silver);
         }
+    }
+
+    private void sendVerificationEmail(User user, String siteUrl)
+            throws MessagingException, UnsupportedEncodingException {
+        String subject = "Please verify your registration";
+        String senderName = "GEAR STORE";
+        String verifyUrl = siteUrl + "/verify?code=" + user.getVerificationCode();
+        String mailContent = "<p>Dear " + user.getName() + ",<p><br>"
+                + "Please click the link below to verify your registration to GEAR Store:<br>"
+                + "<h3><a href = \"" + verifyUrl + "\">VERIFY</a></h3>"
+                + "Thank you,<br>" + "From GEAR Store with love.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+
+        messageHelper.setFrom("longluong290901@gmail.com", senderName);
+        messageHelper.setTo(user.getEmail());
+        messageHelper.setSubject(subject);
+        messageHelper.setText(mailContent, true);
+        mailSender.send(message);
     }
 
 }

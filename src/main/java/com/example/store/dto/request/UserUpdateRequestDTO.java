@@ -16,7 +16,6 @@ import java.util.Date;
 @Setter
 public class UserUpdateRequestDTO {
     private String name;
-
     @NotNull(message="An email is required!")
     @Size(message="Invalid size.", max = 30, min=10)
     @Pattern(regexp=("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
@@ -27,6 +26,4 @@ public class UserUpdateRequestDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
     MultipartFile image;
-//    private Long role;
-//    private Long rank;
 }

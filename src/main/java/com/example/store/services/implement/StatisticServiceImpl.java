@@ -18,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -134,28 +137,6 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<BigDecimal> totalRevenueIn7Days() {
-        List<BigDecimal> totalRevenueIn7Days = new ArrayList<>();
-        Date date = new Date();
-        Date sinceDay = new Date();
-        Date toDay = new Date();
-        int getDate = date.getDate();
-        for(int i =0; i < 7; i++){
-            sinceDay.setDate(getDate - i);
-            toDay.setDate(getDate - i);
-            sinceDay.setHours(0); sinceDay.setMinutes(0); sinceDay.setSeconds(1);
-            toDay.setHours(23); toDay.setMinutes(59); toDay.setSeconds(59);
-            List<Order> orderList = orderRepository.findOrderByDate(sinceDay, toDay);
-            BigDecimal totalRevenue = BigDecimal.valueOf(0);
-            for (Order o : orderList) {
-                totalRevenue = totalRevenue.add(o.getFinalPrice());
-            }
-            totalRevenueIn7Days.add(totalRevenue);
-        }
-        return totalRevenueIn7Days;
-    }
-
-    @Override
     public ResponseEntity<?> find5RecentOrder() {
         Date today = new Date();
         List<Order> orderList = orderRepository.find5RecentOrder(today);
@@ -168,18 +149,39 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
+    public List<BigDecimal> totalRevenueIn7Days() {
+        List<BigDecimal> totalRevenueIn7Days = new ArrayList<>();
+
+        for(int i =0; i < 7; i++){
+            Calendar sinceDay = Calendar.getInstance();
+            Calendar toDay = Calendar.getInstance();
+            sinceDay.add(Calendar.DATE, -i);
+            toDay.add(Calendar.DATE, -i);
+            sinceDay.set(Calendar.HOUR_OF_DAY, 0); sinceDay.set(Calendar.MINUTE, 0); sinceDay.set(Calendar.SECOND, 3);
+            toDay.set(Calendar.HOUR_OF_DAY, 23); toDay.set(Calendar.MINUTE, 59); toDay.set(Calendar.SECOND, 58);
+            List<Order> orderList = orderRepository.findOrderByDate(sinceDay.getTime(), toDay.getTime());
+            BigDecimal totalRevenue = BigDecimal.valueOf(0);
+            for (Order o : orderList) {
+                totalRevenue = totalRevenue.add(o.getFinalPrice());
+            }
+            totalRevenueIn7Days.add(totalRevenue);
+        }
+        return totalRevenueIn7Days;
+    }
+
+    @Override
     public List<Integer> countTotalNewCustomer7Days() {
         List<Integer> newUserAmount = new ArrayList<>();
-        Date date = new Date();
-        Date sinceDay = new Date();
-        Date toDay = new Date();
-        int getDate = date.getDate();
+
         for(int i =0; i < 7; i++){
-            sinceDay.setDate(getDate - i);
-            toDay.setDate(getDate - i);
-            sinceDay.setHours(0); sinceDay.setMinutes(0); sinceDay.setSeconds(1);
-            toDay.setHours(23); toDay.setMinutes(59); toDay.setSeconds(59);
-            Integer getUserAmount = userRepository.countTotalNewCustomer7Days(sinceDay, toDay);
+            Calendar sinceDay = Calendar.getInstance();
+            Calendar toDay = Calendar.getInstance();
+            sinceDay.add(Calendar.DATE, -i);
+            toDay.add(Calendar.DATE, -i);
+            sinceDay.set(Calendar.HOUR_OF_DAY, 0); sinceDay.set(Calendar.MINUTE, 0); sinceDay.set(Calendar.SECOND, 3);
+            toDay.set(Calendar.HOUR_OF_DAY, 23); toDay.set(Calendar.MINUTE, 59); toDay.set(Calendar.SECOND, 58);
+
+            Integer getUserAmount = userRepository.countTotalNewCustomer7Days(sinceDay.getTime(), toDay.getTime());
             newUserAmount.add(getUserAmount);
         }
         return newUserAmount;

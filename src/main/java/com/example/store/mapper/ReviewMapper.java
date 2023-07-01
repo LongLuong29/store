@@ -4,8 +4,10 @@ package com.example.store.mapper;
 import com.example.store.dto.request.ReviewRequestDTO;
 import com.example.store.dto.response.ReviewResponseDTO;
 import com.example.store.entities.Review;
+import com.example.store.services.implement.FirebaseImageServiceImpl;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {

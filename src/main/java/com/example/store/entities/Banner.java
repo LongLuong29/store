@@ -30,7 +30,6 @@ public class  Banner {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp
     private Date createdDate;

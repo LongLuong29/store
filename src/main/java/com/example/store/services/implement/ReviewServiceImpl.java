@@ -74,6 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + reviewRequestDTO.getUser()));
         Product product = productRepository.findById(reviewRequestDTO.getProduct()).
                 orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Product với ID = " + reviewRequestDTO.getProduct()));
+
         checkExits(user, product);
         checkBought(user, product);
         review.setUser(user);
@@ -107,6 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponseDTO getReviewById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Review với ID = " + reviewId));
+
         ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(review);
 
         return reviewResponseDTO;

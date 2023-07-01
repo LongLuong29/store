@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,14 +23,24 @@ import java.util.List;
 public class BannerServiceImpl implements BannerService {
 
     @Autowired private BannerRepository bannerRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
+
 
     private final BannerMapper mapper = Mappers.getMapper(BannerMapper.class);
     @Override
-    public ResponseEntity<ResponseObject> createBanner(BannerRequestDTO bannerRequestDTO) {
+    public ResponseEntity<ResponseObject> createBanner(BannerRequestDTO bannerRequestDTO){
         Banner banner = mapper.bannerRequestDTOToBanner(bannerRequestDTO);
+
         banner.setStatus(true);
+        try {
+            banner.setPhotoUrl(imageService.save(bannerRequestDTO.getPhotoUrl()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Banner bannerSaved = bannerRepository.save(banner);
         BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(bannerSaved);
+        bannerResponseDTO.setPhotoUrl(imageService.getImageUrl(bannerSaved.getPhotoUrl()));
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create banner successfully !!!", bannerResponseDTO));
     }
@@ -39,10 +50,20 @@ public class BannerServiceImpl implements BannerService {
         Banner getBanner = bannerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find banner with this id: "+id));
         Banner banner = mapper.bannerRequestDTOToBanner(bannerRequestDTO);
+
         banner.setId(id);
+        banner.setStatus(true);
+        banner.setCreatedDate(getBanner.getCreatedDate());
+        try {
+            banner.setPhotoUrl(imageService.save(bannerRequestDTO.getPhotoUrl()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Banner bannerSaved = bannerRepository.save(banner);
         BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(bannerSaved);
+        bannerResponseDTO.setPhotoUrl(imageService.getImageUrl(bannerSaved.getPhotoUrl()));
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update successfully", bannerResponseDTO));
     }
@@ -63,9 +84,11 @@ public class BannerServiceImpl implements BannerService {
         for(Banner banner: bannerList){
             BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);
             bannerResponseDTOList.add(bannerResponseDTO);
+            if(banner.getEndDate().compareTo(new Date()) < 0 ){
+                banner.setStatus(false);
+            }
         }
         return ResponseEntity.status(HttpStatus.OK).body(bannerResponseDTOList);
     }
-
 
 }

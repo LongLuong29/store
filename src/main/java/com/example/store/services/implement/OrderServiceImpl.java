@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,54 +61,16 @@ public class OrderServiceImpl implements OrderService {
         Address address = addressRepository.findById(oderRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find this address"));
         Order order = orderMapper.orderRequestDTOToOrder(oderRequestDTO);
+
         order.setUser(user);
         order.setStatus("Ordered");
-        Date orderDay = new java.util.Date();
+        Date orderDay = new Date();
         order.setOrderedDate(orderDay);
         order.setAddress(address);
-//        UserVoucher userVoucher = userVoucherRepository.findUserVoucherByUserAndVoucher(user, voucher)
-//                .orElseThrow(() -> new ResourceNotFoundException("Could not find this voucher "));
-//        BigDecimal finalPrice;
-//        BigDecimal discountAmount;
-//        double rankDiscount = user.getRank().getDiscount()/100;  // rank discount
-//        double getUserVoucherDiscount = userVoucher.getVoucher().getPercent()/100; // get voucher discount
-//        double totalDiscount; // tong discount
-//        BigDecimal orderPrice = order.getTotalPrice();// tính tổng tiền order chưa có giảm giá
-//        BigDecimal shipPrice = order.getShippingFee();// ting tong tien ship chua co giam gia
-//        // Người dùng không dùng voucher
-//        switch (voucher.getVoucherType().getName()){
-//            case "ORDER":
-//                // order discount
-//                discountAmount = orderPrice.multiply(BigDecimal.valueOf(getUserVoucherDiscount)); // tính tổng số tiền đc giảm trên đơn hàng, chưa tính rank
-//                totalDiscount = getUserVoucherDiscount + rankDiscount; // tính phần trăm giảm giá của: order + rank
-//                if(discountAmount.compareTo(voucher.getUpTo()) >0) // tổng tiền đc giảm > upTo số tiền yêu cầu
-//                {
-//                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-rankDiscount)).add(shipPrice)
-//                            .subtract(voucher.getUpTo());
-//                }
-//                else // tổng số tiền đc giảm < minSpend   =>  tinh theo phan tram
-//                {
-//                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-totalDiscount)).add(shipPrice);
-//                }
-//                break;
-//            case "SHIPPING":
-//                //shipping discount
-//                BigDecimal shipDiscount = order.getShippingFee().multiply(BigDecimal.valueOf(getUserVoucherDiscount));// tinh phi ship dc giam
-//                if(shipDiscount.compareTo(voucher.getUpTo()) >0) // phi ship dc giam > minSpend => su dung minSpend
-//                {
-//                    finalPrice = orderPrice.multiply(BigDecimal.valueOf(rankDiscount)).add(shipPrice).subtract(shipDiscount);
-//                }
-//                else // phi ship dc giam < min spend   =>  tinh theo phan tram
-//                {
-//                    finalPrice = (orderPrice.multiply(BigDecimal.valueOf(1-rankDiscount)))  .add   (shipPrice.subtract(shipDiscount));
-//                }
-//                break;
-//            default:
-//                finalPrice = orderPrice.multiply(BigDecimal.valueOf(1-rankDiscount));
-//        }
-//        order.setFinalPrice(finalPrice);
+
         Order orderSave = orderRepository.save(order);
         OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(orderSave);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create order success!", orderResponseDTO));
     }
@@ -117,12 +81,16 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.orderRequestDTOToOrder(orderRequestDTO);
         Address address = addressRepository.findById(orderRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find this address"));
+
         order.setId(orderId);
-        order.setTotalPrice(getOrder.getTotalPrice());
-        order.setUser(getOrder.getUser());
         order.setAddress(address);
+        order.setUser(getOrder.getUser());
+        order.setTotalPrice(getOrder.getTotalPrice());
+        order.setCreatedDate(getOrder.getCreatedDate());
+
         Order orderSave = orderRepository.save(order);
         OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(orderSave);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update order success!", orderResponseDTO));
     }
@@ -143,6 +111,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderProduct> orderProductList = orderProductRepository.findOrderProductByOrder(getOrder);
         orderProductRepository.deleteAll(orderProductList);
         orderRepository.delete(getOrder);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Delete order success!"));
     }

@@ -122,7 +122,9 @@ public class ReviewServiceImpl implements ReviewService {
             Optional<OrderProduct> orderProduct = orderProductRepository.findOrderProductByOrderAndProduct(order,product);
             if( orderProduct.isPresent() && orderProduct.get().getProduct() == product)
             {
-                if(orderProduct.get().getOrder().getStatus().equals("Done")){return user;}
+                if(orderProduct.get().getOrder().getStatus().equals("Done")){
+                    return user;
+                }
             }
         }
         throw new ResourceNotFoundException("Người dùng chưa mua hoặc chưa hoàn thành việc mua sản phẩm  này");
@@ -130,7 +132,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     private User checkExits(User user, Product product){
         Optional<Review> getReview = reviewRepository.findReviewByUserAndProduct(user, product);
-        if(getReview.isPresent()){throw new ResourceNotFoundException("Người dùng đã đánh giá sản phẩm này rồi");}
-        return user;
+        if(getReview.isPresent()){
+            throw new ResourceNotFoundException("Người dùng đã đánh giá sản phẩm này rồi");
+        }
+        else{return user};
     }
 }

@@ -55,6 +55,7 @@ public class BannerServiceImpl implements BannerService {
         banner.setStatus(true);
         banner.setCreatedDate(getBanner.getCreatedDate());
         try {
+            imageService.delete(getBanner.getPhotoUrl());
             banner.setPhotoUrl(imageService.save(bannerRequestDTO.getPhotoUrl()));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -72,7 +73,13 @@ public class BannerServiceImpl implements BannerService {
     public ResponseEntity<ResponseObject> deleteBanner(Long id) {
         Banner banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not found banner with this id: " + id));
+        try {
+            imageService.delete(banner.getPhotoUrl());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         bannerRepository.delete(banner);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK,"Delete banner successfully"));
     }

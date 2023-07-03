@@ -25,6 +25,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String orderCode;
+
     private String status;
 
     @NotNull(message = "Order total price is required")

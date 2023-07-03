@@ -96,6 +96,8 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(randomCodeVerify);
         // code after
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
+        //send email
+        sendVerificationEmail(user);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create user successfully!", userResponseDTO));
@@ -258,7 +260,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         double userPoint = user.getPoint();
-        userPoint = /*userPoint +*/ totalPaid.doubleValue()/100000;
+        userPoint = totalPaid.doubleValue()/100000;
         user.setPoint(userPoint);
 
         //UpdateRank
@@ -279,11 +281,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void sendVerificationEmail(User user, String siteUrl)
+    private void sendVerificationEmail(User user)
             throws MessagingException, UnsupportedEncodingException {
         String subject = "Please verify your registration";
         String senderName = "GEAR STORE";
-        String verifyUrl = siteUrl + "/verify?code=" + user.getVerificationCode();
+        String verifyUrl = "http://localhost:8080/verify?code=" + user.getVerificationCode();
         String mailContent = "<p>Dear " + user.getName() + ",<p><br>"
                 + "Please click the link below to verify your registration to GEAR Store:<br>"
                 + "<h3><a href = \"" + verifyUrl + "\">VERIFY</a></h3>"
@@ -297,6 +299,43 @@ public class UserServiceImpl implements UserService {
         messageHelper.setSubject(subject);
         messageHelper.setText(mailContent, true);
         mailSender.send(message);
+    }
+
+    public void sendEmailForUser(String email, int typeMail) throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with this email !!!"));
+
+        String senderName = "GEAR STORE";
+        String verifyUrl ="http://localhost:8080/verify?code=" + user.getVerificationCode();
+        String mailContent = "<p>Dear " + user.getName() + ",<p><br>"
+                + "Please click the link below to verify your registration to GEAR Store:<br>"
+                + "<h3><a href = \"" + verifyUrl + "\">CLICK TO VERIFY</a></h3>"
+                + "Thank you,<br>" + "From GEAR Store with love.";
+
+        String mail4Password = "<p>Dear " + user.getName() + ",<p><br>"
+                + "Please click the link below to confirm reset your password in GEAR Store account:<br>"
+                + "<h3><a href = \"" + verifyUrl + "\">CLICK TO VERIFY</a></h3>"
+                + "Thank you,<br>" + "From GEAR Store with love.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+
+        if(typeMail == 0) // 0 for resend Verification mail to active account
+        {
+            messageHelper.setFrom("longluong290901@gmail.com", senderName);
+            messageHelper.setTo(user.getEmail());
+            messageHelper.setSubject("Please verify your registration");
+            messageHelper.setText(mailContent, true);
+            mailSender.send(message);
+        }
+        if(typeMail == 1) // 1 for forgot password
+        {
+            messageHelper.setFrom("longluong290901@gmail.com", senderName);
+            messageHelper.setTo(user.getEmail());
+            messageHelper.setSubject("Please verify for reset your password");
+            messageHelper.setText(mail4Password, true);
+            mailSender.send(message);
+        }
     }
 
 }

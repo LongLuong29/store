@@ -130,11 +130,10 @@ public class ReviewServiceImpl implements ReviewService {
         throw new ResourceNotFoundException("Người dùng chưa mua hoặc chưa hoàn thành việc mua sản phẩm  này");
     }
 
-    private User checkExits(User user, Product product){
+    private void checkExits(User user, Product product){
         Optional<Review> getReview = reviewRepository.findReviewByUserAndProduct(user, product);
         if(getReview.isPresent()){
             throw new ResourceNotFoundException("Người dùng đã đánh giá sản phẩm này rồi");
         }
-        else{return user};
     }
 }

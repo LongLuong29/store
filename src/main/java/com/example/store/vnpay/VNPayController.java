@@ -2,7 +2,10 @@ package com.example.store.vnpay;
 
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Order;
+import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.repositories.OrderRepository;
+import com.example.store.services.OrderService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,10 @@ import java.util.*;
 
 @RestController
 public class VNPayController {
-    @Autowired
-    private VNPayService vnPayService;
-    @Autowired
-    private OrderRepository orderRepository;
+
+    @Autowired private VNPayService vnPayService;
+    @Autowired private OrderService orderService;
+    @Autowired private OrderRepository orderRepository;
 
     @GetMapping("")
     public String home(){
@@ -53,7 +56,6 @@ public class VNPayController {
 
         String orderInfo = request.getParameter("vnp_OrderInfo");
         String TxnRef = request.getParameter("vnp_TxnRef");
-        String orderId = String.valueOf(TxnRef.charAt(0));
         String paymentTime = request.getParameter("vnp_PayDate");
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
@@ -63,12 +65,24 @@ public class VNPayController {
         model.addAttribute("paymentTime", paymentTime);
         model.addAttribute("transactionId", transactionId);
 
+        int stringLength = TxnRef.length() - 7;
+        String orderId = String.valueOf(TxnRef.charAt(0));
+        for(int i=1; i < stringLength; i++){
+            String od = String.valueOf(TxnRef.charAt(i));
+            orderId = orderId+od;
+        }
+        Optional<Order> order = orderRepository.findById(Long.parseLong(orderId));
+        if(order.get() == null){throw new ResourceNotFoundException("This order isn't exists");}
+
         String successUrl = "http://localhost:3000/successOrder";
         String failureUrl = "http://localhost:3000/failureOrder";
         //Thanh toan thanh cong
         if(paymentStatus == 1){
-            Date date = new Date();
-//            orderRepository.updateOrderPaidDay(Long.parseLong(orderId),date);
+            try {
+                orderService.sendEmailForOrderStatus(order.get(),1);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
             response.sendRedirect(successUrl);
         }
         // Thanh toan that bai

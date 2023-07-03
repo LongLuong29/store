@@ -75,4 +75,9 @@ public class UserController {
                                                        @Valid String confirmPassword){
     return userService.updatePassword(id, newPassword, confirmPassword);
   }
+
+  @GetMapping(value = "/password/send-mail")
+  public void sendMail4ChangePassword(@RequestParam(name = "email") String email) throws MessagingException, UnsupportedEncodingException {
+    userService.sendEmailForUser(email,1);
+  }
 }

@@ -2,18 +2,26 @@ package com.example.store.controller;
 
 import com.example.store.dto.request.OrderRequestDTO;
 import com.example.store.dto.response.ResponseObject;
+import com.example.store.entities.Order;
+import com.example.store.exceptions.ResourceNotFoundException;
+import com.example.store.repositories.OrderRepository;
 import com.example.store.services.OrderProductService;
 import com.example.store.services.OrderService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/order")
 public class OrderController {
   @Autowired private OrderService orderService;
   @Autowired private OrderProductService orderProductService;
+  @Autowired private OrderRepository orderRepository;
 
   @GetMapping(value = "")
   public ResponseEntity<?> getAllOrder(){
@@ -67,4 +75,17 @@ public class OrderController {
                                                           @RequestParam(name = "amount") int amount) {
     return orderProductService.addProductToOrder(orderId, productId, amount);
   }
+  // MAIL SENDER ***********************************
+  @PutMapping(value = "/updateStatus")
+  public ResponseEntity<ResponseObject> updateOrderStatus(@RequestParam(name = "orderId") Long orderId,
+                                                          @RequestParam(name = "orderStatus") String orderStatus){
+    return orderService.updateOrderStatus(orderId,orderStatus);
+  }
+  @GetMapping(value = "/SuccessPayment")
+  public void sendEmailForOrderStatus(@RequestParam(name = "orderId") Long orderId,
+                                      @RequestParam(name = "typeMail") int typeMail) throws MessagingException, UnsupportedEncodingException{
+    Optional<Order> order = orderRepository.findById(orderId);
+    orderService.sendEmailForOrderStatus(order.get(),typeMail);
+  }
+
 }

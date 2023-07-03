@@ -34,12 +34,8 @@ public class OrderResponseDTO {
   private String deliveryDistrict;
   private String deliveryProvince;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date orderedDate;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date doneDate;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date deliveredDate;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date paidDate;
 }

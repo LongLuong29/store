@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         user.setPoint(0);
         user.setRole(role);
 
-        String randomCodeVerify = RandomStringUtils.randomNumeric(8);
+        String randomCodeVerify = RandomStringUtils.random(14,true,true);
         user.setVerificationCode(randomCodeVerify);
         // code after
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
@@ -161,10 +161,14 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ResponseObject> deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
-        try {
-            imageService.delete(user.getImage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        //delete image
+        if(user.getImage() != null){
+            try {
+                imageService.delete(user.getImage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         // delete cart
         Optional<Cart> getCart = cartRepository.findCartByUser(user);
@@ -183,8 +187,6 @@ public class UserServiceImpl implements UserService {
         // delete address
         List<AddressDetail> addressDetailList = addressDetailRepository.findAddressDetailsByUser(user);
         addressDetailRepository.deleteAll(addressDetailList);
-        // delete image
-         imageStorageService.deleteFile(user.getImage(), "user");
 
         userRepository.delete(user);
         return ResponseEntity.status(HttpStatus.OK)
@@ -312,10 +314,16 @@ public class UserServiceImpl implements UserService {
                 + "<h3><a href = \"" + verifyUrl + "\">CLICK TO VERIFY</a></h3>"
                 + "Thank you,<br>" + "From GEAR Store with love.";
 
+        String defaultPassword = RandomStringUtils.random(14,true,true);
+
         String mail4Password = "<p>Dear " + user.getName() + ",<p><br>"
                 + "Please click the link below to confirm reset your password in GEAR Store account:<br>"
-                + "<h3><a href = \"" + verifyUrl + "\">CLICK TO VERIFY</a></h3>"
+                + "<h3>Your new password is: </h3>" + defaultPassword + "<br>"
                 + "Thank you,<br>" + "From GEAR Store with love.";
+
+        user.setPassword(defaultPassword);
+        encodePassword(user);
+        userRepository.save(user);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);

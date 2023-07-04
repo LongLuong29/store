@@ -1,5 +1,6 @@
 package com.example.store.services.implement;
 
+import com.example.store.dto.request.ProductRequestDTO;
 import com.example.store.dto.request.ReviewRequestDTO;
 import com.example.store.dto.response.ReviewResponseDTO;
 import com.example.store.dto.response.ResponseObject;
@@ -18,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
     @Autowired private FirebaseImageServiceImpl imageService;
+    @Autowired private ImageReviewRepository imageReviewRepository;
 
 
     private final ReviewMapper mapper = Mappers.getMapper(ReviewMapper.class);
@@ -44,7 +49,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         for (Review f : reviewList) {
             ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(f);
+            if(f.getProduct().getThumbnail()!=null){
+                reviewResponseDTO.setProductThumbnail(imageService.getImageUrl(f.getProduct().getThumbnail()));
+            }
             reviewResponseDTOList.add(reviewResponseDTO);
+
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ItemTotalPage(reviewResponseDTOList, getReviewList.getTotalPages()));
@@ -60,7 +69,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         for (Review f : reviewList) {
             ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(f);
-            reviewResponseDTO.setProductThumbnail(imageService.getImageUrl(product.getThumbnail()));
+            if(product.getThumbnail()!=null){
+                reviewResponseDTO.setProductThumbnail(imageService.getImageUrl(product.getThumbnail()));
+            }
             reviewResponseDTOList.add(reviewResponseDTO);
         }
 
@@ -85,8 +96,44 @@ public class ReviewServiceImpl implements ReviewService {
         Review reviewSaved = reviewRepository.save(review);
         ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(reviewSaved);
 
+        if(reviewRequestDTO.getImages() != null){
+            try {
+                reviewResponseDTO.setImages(saveImage(reviewRequestDTO,reviewSaved));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Thêm mới Review thành công!", reviewResponseDTO));
+    }
+
+    private String[] saveImage(ReviewRequestDTO reviewRequestDTO, Review review) throws IOException {
+        int numberOfFile = reviewRequestDTO.getImages().length;
+        int i =0;
+        String[] images = new String[numberOfFile];
+        String[] imageResponse = new String[numberOfFile];
+        //delete exist images
+        List<ImageReview> imageReviewList = imageReviewRepository.findImageReviewByReview(review);
+        this.imageReviewRepository.deleteAll(imageReviewList);
+        for(ImageReview imageReview: imageReviewList){
+            this.imageService.delete(imageReview.getPath());
+        }
+
+        for(MultipartFile file: reviewRequestDTO.getImages()){
+            String fileName = imageService.save(file);
+            images[i] = fileName;
+            imageResponse[i] = imageService.getImageUrl(fileName);
+            i++;
+        }
+
+        for (String path : images){
+            ImageReview imageReview = new ImageReview();
+            imageReview.setReview(review);
+            imageReview.setPath(path);
+            this.imageReviewRepository.save(imageReview);
+        }
+        return images;
     }
 
     @Override

@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size;
 public class AuthRequestDTO {
   @Pattern(regexp=("^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
       + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
-  @Size(max = 30, min = 10, message = "Invalid mail size")
+  @Size(max = 300, min = 10, message = "Invalid mail size")
   private String email;
 
   @Size(max = 12, min = 9, message = "Invalid phone size")

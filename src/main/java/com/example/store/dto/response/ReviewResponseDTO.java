@@ -13,11 +13,13 @@ public class ReviewResponseDTO {
     private Long id;
     private String content;
     private double vote;
+    private String[] images;
     private Long user;
     private String userName;
     private Long product;
     private String productName;
     private String productThumbnail;
+
 
     private Date createDate;
     private Date updateDate;

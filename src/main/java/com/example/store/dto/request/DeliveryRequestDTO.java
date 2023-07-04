@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 @Data
@@ -16,9 +18,10 @@ public class DeliveryRequestDTO {
     @NotNull(message = "Order is required")
     private Long orderId;
     private Long shipperId;
+    private MultipartFile image;
     private String orderStatus;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date payDate;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private Date payDate;
 //    @NotNull(message = "Status of Delivery is required")
 //    private String status;
 }

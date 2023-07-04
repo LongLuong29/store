@@ -218,7 +218,7 @@ public class OrderServiceImpl implements OrderService {
 
         String deliveredSubject = "Order Delivered";
         String mail4DeliveredNoti = "<p>Dear " + user.getName() + ",<p><br>"
-                + "Your order <b>"+order.getOrderCode()+"</b>"+ "has just been delivered at " + date + "<br>" + "<br>"
+                + "Your order <b>"+order.getOrderCode()+"</b>"+ " has just been delivered at " + date + "<br>" + "<br>"
                 + "Please login to GEAR Store to confirm that you have received the items and are satisfied with the product within 3 days."
                 + " If you do not confirm within this time we will automatically confirm for you.<br>"
                 + "<br>"

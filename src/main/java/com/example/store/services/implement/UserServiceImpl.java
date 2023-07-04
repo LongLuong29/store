@@ -319,6 +319,7 @@ public class UserServiceImpl implements UserService {
         String mail4Password = "<p>Dear " + user.getName() + ",<p><br>"
                 + "Please click the link below to confirm reset your password in GEAR Store account:<br>"
                 + "<h3>Your new password is: </h3>" + defaultPassword + "<br>"
+                + "<h3><a href = \"http://localhost:3000/login\">CLICK TO BACK TO LOGIN PAGE</a></h3>"
                 + "Thank you,<br>" + "From GEAR Store with love.";
 
         user.setPassword(defaultPassword);

@@ -20,6 +20,8 @@ public class Delivery {
 
     private boolean status; // 0 la don hang shipper huy, kh nhan chuyen hang
 
+    private String image;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;

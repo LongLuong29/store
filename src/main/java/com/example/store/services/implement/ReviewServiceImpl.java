@@ -67,11 +67,20 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> reviewList = getReviewList.getContent();
         List<ReviewResponseDTO> reviewResponseDTOList = new ArrayList<>();
 
-        for (Review f : reviewList) {
-            ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(f);
+        for (Review review : reviewList) {
+            ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(review);
             if(product.getThumbnail()!=null){
                 reviewResponseDTO.setProductThumbnail(imageService.getImageUrl(product.getThumbnail()));
             }
+            List<ImageReview> imageReviewList = imageReviewRepository.findImageReviewByReview(review);
+            String[] images = new String[imageReviewList.size()];
+            if(imageReviewList != null){
+                for (int i=0; i < imageReviewList.size(); i++){
+                    images[i] = imageService.getImageUrl(imageReviewList.get(i).getPath());
+                }
+            }
+
+            reviewResponseDTO.setImages(images);
             reviewResponseDTOList.add(reviewResponseDTO);
         }
 
@@ -98,7 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         if(reviewRequestDTO.getImages() != null){
             try {
-                reviewResponseDTO.setImages(saveImage(reviewRequestDTO,reviewSaved));
+                reviewResponseDTO.setImages(saveImage(reviewRequestDTO, reviewSaved));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -157,9 +166,18 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponseDTO getReviewById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Review với ID = " + reviewId));
+        List<ImageReview> imageReviewList = imageReviewRepository.findImageReviewByReview(review);
+
+        String[] images = new String[imageReviewList.size()];
+
+        if(imageReviewList!=null){
+            for (int i=0; i < imageReviewList.size(); i++){
+                images[i] = imageService.getImageUrl(imageReviewList.get(i).getPath());
+            }
+        }
 
         ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(review);
-
+        reviewResponseDTO.setImages(images);
         return reviewResponseDTO;
     }
 

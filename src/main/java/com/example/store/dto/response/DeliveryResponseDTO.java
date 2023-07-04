@@ -1,6 +1,7 @@
 package com.example.store.dto.response;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ public class DeliveryResponseDTO {
     private boolean deliveryStatus;
     private String status;
     private BigDecimal totalPrice;
+    private String image;
     private Long orderId;
     private String userName;
     private String userPhone;

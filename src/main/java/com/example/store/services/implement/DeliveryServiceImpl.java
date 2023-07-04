@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private AddressRepository addressRepository;
     @Autowired private AddressDetailRepository addressDetailRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
 
     private final DeliveryMapper mapper = Mappers.getMapper(DeliveryMapper.class);
 
@@ -58,20 +61,22 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = mapper.deliveryRequestDTOToDelivery(deliveryRequestDTO);
         User user = userRepository.findById(deliveryRequestDTO.getShipperId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy User với ID = " + deliveryRequestDTO.getShipperId()));
-        if(user.getRole().getId() != 3){
-            throw new InvalidValueException("This user is not shipper");
-        }
         Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Order với ID = " + deliveryRequestDTO.getOrderId()));
         Address address = addressRepository.findById(deliveryRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
 
+        // check error
+        if(user.getRole().getId() != 3){
+            throw new InvalidValueException("This user is not shipper");
+        }
         List<Delivery> userDeliveryList = deliveryRepository.findDeliveryByOrder(order);
         for (Delivery userDelivery: userDeliveryList){
             if(userDelivery != null && userDelivery.isStatus()){
                 throw new ResourceAlreadyExistsException("This order already has delivery");
             }
         }
+
         delivery.setStatus(true);
         delivery.setShipper(user);
         delivery.setAddress(address);
@@ -105,15 +110,30 @@ public class DeliveryServiceImpl implements DeliveryService {
                 delivery.setShipper(newShipper.get());
             }
         }
-        //Update order payed
-        if (deliveryRequestDTO.getOrderStatus() != null){
-            delivery.getOrder().setStatus(deliveryRequestDTO.getOrderStatus());
-            delivery.getOrder().setPaidDate(deliveryRequestDTO.getPayDate());
-            orderRepository.save(delivery.getOrder());
+        if(deliveryRequestDTO.getImage() != null){
+            try {
+                delivery.setImage(imageService.save(deliveryRequestDTO.getImage()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if(getDelivery.getImage()!=null){
+                try {
+                    imageService.delete(getDelivery.getImage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+//        //Update order payed
+//        if (deliveryRequestDTO.getOrderStatus() != null){
+//            delivery.getOrder().setStatus(deliveryRequestDTO.getOrderStatus());
+//            delivery.getOrder().setPaidDate(deliveryRequestDTO.getPayDate());
+//            orderRepository.save(delivery.getOrder());
+//        }
 
         Delivery deliverySaved = deliveryRepository.save(delivery);
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(deliverySaved);
+        deliveryResponseDTO.setImage(imageService.getImageUrl(delivery.getImage()));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Update delivery successfully!", deliveryResponseDTO));
@@ -123,6 +143,13 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with ID = " + id));
         delivery.setStatus(false);
+        if(delivery.getImage()!=null){
+            try {
+                imageService.delete(delivery.getImage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete delivery successfully!"));
     }
@@ -131,7 +158,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with ID = " + id));
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(delivery);
-
+        if(delivery.getImage()!=null){deliveryResponseDTO.setImage(imageService.getImageUrl(delivery.getImage()));}
         return deliveryResponseDTO;
     }
 
@@ -144,6 +171,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         for (Delivery d : deliveryList) {
             DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+            if(d.getImage()!=null){deliveryResponseDTO.setImage(imageService.getImageUrl(d.getImage()));}
             deliveryResponseDTOList.add(deliveryResponseDTO);
         }
 
@@ -158,11 +186,9 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<Delivery> deliveryList = deliveryRepository.findDeliveryByOrder(order);
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
         for (Delivery d: deliveryList){
-//            if(d.isStatus()){
-                DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
-                deliveryResponseDTOList.add(deliveryResponseDTO);
-//            }
-
+            DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+            if(d.getImage()!=null){deliveryResponseDTO.setImage(imageService.getImageUrl(d.getImage()));}
+            deliveryResponseDTOList.add(deliveryResponseDTO);
         }
         return deliveryResponseDTOList;
     }
@@ -174,6 +200,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         for (Delivery d : deliveryList) {
             DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+            if(d.getImage()!=null){deliveryResponseDTO.setImage(imageService.getImageUrl(d.getImage()));}
             deliveryResponseDTOList.add(deliveryResponseDTO);
         }
 

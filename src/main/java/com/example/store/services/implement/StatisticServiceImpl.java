@@ -32,6 +32,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderProductRepository orderProductRepository;
     @Autowired private DeliveryRepository deliveryRepository;
+    @Autowired private FirebaseImageServiceImpl imageService;
 
     private final OrderProductMapper orderProductMapper = Mappers.getMapper(OrderProductMapper.class);
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -122,6 +123,7 @@ public class StatisticServiceImpl implements StatisticService {
             }
             ProductResponseDTO getProduct = productMapper.productToProductResponseDTO(i.getProduct());
             ProductQuantityResponseDTO productQuantityResponseDTO = new ProductQuantityResponseDTO();
+            getProduct.setThumbnail(imageService.getImageUrl(i.getProduct().getThumbnail()));
             productQuantityResponseDTO.setProduct(getProduct);
             productQuantityResponseDTO.setQuantity(quantity);
             productQuantityResponseDTOList.add(productQuantityResponseDTO);

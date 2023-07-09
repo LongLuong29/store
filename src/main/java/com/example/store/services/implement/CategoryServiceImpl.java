@@ -83,6 +83,7 @@
             category.setId(id);
             category = checkExits(category);
             category.setStatus(true);
+            category.setCreatedDate(getCategory.getCreatedDate());
 
             Category categorySaved = categoryRepository.save(category);
             CategoryResponseDTO categoryResponseDTO = mapper.categoryToCategoryResponseDTO(categorySaved);

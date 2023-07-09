@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -25,4 +29,10 @@ public class UserVoucher {
   @ManyToOne(optional = false)
   @JoinColumn(name = "voucher_id")
   private Voucher voucher;
+
+  @CreationTimestamp
+  private Date createdDate;
+
+  @UpdateTimestamp
+  private Date updatedDate;
 }

@@ -79,6 +79,9 @@ public class VNPayController {
         //Thanh toan thanh cong
         if(paymentStatus == 1){
             try {
+                Date date = new Date();
+                order.get().setPaidDate(date);
+                orderRepository.save(order.get());
                 orderService.sendEmailForOrderStatus(order.get(),1);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);

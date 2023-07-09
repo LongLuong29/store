@@ -59,6 +59,7 @@ public class RankServiceImpl implements RankService {
         Rank getRank = rankRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find rank with ID = " + id));
         rank.setId(id);
+        rank.setCreatedDate(getRank.getCreatedDate());
         rank = checkExits(rank);
 
         Rank rankSaved = rankRepository.save(rank);

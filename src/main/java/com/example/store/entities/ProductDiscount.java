@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -25,4 +29,11 @@ public class ProductDiscount {
   @ManyToOne(optional = false)
   @JoinColumn(name = "discount_id")
   private Discount discount;
+
+  @CreationTimestamp
+  private Date createdDate;
+
+  @UpdateTimestamp
+  private Date updatedDate;
+
 }

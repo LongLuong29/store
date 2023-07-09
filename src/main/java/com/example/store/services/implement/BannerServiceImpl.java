@@ -51,6 +51,7 @@ public class BannerServiceImpl implements BannerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find banner with this id: "+id));
         Banner banner = mapper.bannerRequestDTOToBanner(bannerRequestDTO);
 
+
         banner.setId(id);
         banner.setStatus(true);
         banner.setCreatedDate(getBanner.getCreatedDate());

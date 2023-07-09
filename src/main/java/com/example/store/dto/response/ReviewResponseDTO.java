@@ -16,6 +16,7 @@ public class ReviewResponseDTO {
     private String[] images;
     private Long user;
     private String userName;
+    private String userImage;
     private Long product;
     private String productName;
     private String productThumbnail;

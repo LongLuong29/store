@@ -53,14 +53,6 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_product_id")
     private GroupProduct groupProduct;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "description_id")
-//    private Attribute attribute;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "discount_id")
-//    private Discount discount;
 
     // time
     @CreationTimestamp
@@ -69,4 +61,11 @@ public class Product {
     @UpdateTimestamp
     private Date updatedDate;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "description_id")
+//    private Attribute attribute;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "discount_id")
+//    private Discount discount;
 }

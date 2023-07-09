@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Setter
 @Getter
@@ -27,4 +31,9 @@ public class WishList {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @CreationTimestamp
+    private Date createdDate;
+
+    @UpdateTimestamp
+    private Date updatedDate;
 }

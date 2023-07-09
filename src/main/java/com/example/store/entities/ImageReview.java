@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -25,4 +29,11 @@ public class ImageReview {
   @ManyToOne(optional = false)
   @JoinColumn(name = "review_id")
   private Review review;
+
+  // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+  @CreationTimestamp
+  private Date createdDate;
+  @UpdateTimestamp
+  private Date updatedDate;
+
 }

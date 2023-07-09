@@ -35,6 +35,5 @@ public class ProductAttribute {
     @UpdateTimestamp
     private Date updatedDate;
 
-
 }
 

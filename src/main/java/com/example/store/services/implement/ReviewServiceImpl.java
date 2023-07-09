@@ -81,6 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
             }
 
             reviewResponseDTO.setImages(images);
+            reviewResponseDTO.setUserImage(imageService.getImageUrl(review.getUser().getImage()));
             reviewResponseDTOList.add(reviewResponseDTO);
         }
 
@@ -178,6 +179,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewResponseDTO reviewResponseDTO = mapper.reviewToReviewResponseDTO(review);
         reviewResponseDTO.setImages(images);
+        reviewResponseDTO.setUserImage(imageService.getImageUrl(review.getUser().getImage()));
         return reviewResponseDTO;
     }
 

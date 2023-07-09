@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,4 +24,11 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+    @CreationTimestamp
+    private Date createdDate;
+    @UpdateTimestamp
+    private Date updatedDate;
+
 }

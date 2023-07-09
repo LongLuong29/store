@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Setter
 @Getter
@@ -33,4 +37,11 @@ public class Delivery {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
+
+    // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+    @CreationTimestamp
+    private Date createdDate;
+    @UpdateTimestamp
+    private Date updatedDate;
+
 }

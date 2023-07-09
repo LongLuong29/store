@@ -57,6 +57,7 @@ public class GroupProductServiceImpl implements GroupProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find GroupProduct with ID = " + id));
         groupProduct.setId(id);
         groupProduct.setStatus(true);
+        groupProduct.setCreatedDate(getGroupProduct.getCreatedDate());
         groupProduct = checkExits(groupProduct);
 
         GroupProduct groupProductSaved = groupProductRepository.save(groupProduct);

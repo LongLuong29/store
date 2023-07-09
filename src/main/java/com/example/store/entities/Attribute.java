@@ -28,4 +28,10 @@ public class Attribute {
     @NotNull(message = "Attribute value is required")
     private String value;
 
+    // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+    @CreationTimestamp
+    private Date createdDate;
+    @UpdateTimestamp
+    private Date updatedDate;
+
 }

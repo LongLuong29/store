@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -26,4 +30,11 @@ public class ImageProduct {
   @ManyToOne(optional = false)
   @JoinColumn(name = "product_id")
   private Product product;
+
+  // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+  @CreationTimestamp
+  private Date createdDate;
+  @UpdateTimestamp
+  private Date updatedDate;
+
 }

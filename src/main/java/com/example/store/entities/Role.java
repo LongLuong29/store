@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Setter
 @Getter
@@ -24,4 +28,10 @@ public class Role {
 
     @Column(length = 150)
     private String description;
+
+    @CreationTimestamp
+    private Date createdDate;
+
+    @UpdateTimestamp
+    private Date updatedDate;
 }

@@ -56,6 +56,7 @@ public class BrandServiceImpl implements BrandService {
         Brand getBrand = brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find brand with ID = " + id));
         brand.setId(id);
+        brand.setCreatedDate(getBrand.getCreatedDate());
         brand = checkExits(brand);
 
         Brand branSaved = brandRepository.save(brand);

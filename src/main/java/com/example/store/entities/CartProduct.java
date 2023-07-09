@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -32,4 +35,11 @@ public class CartProduct {
     private int amount;
 
     private BigDecimal discountPrice;
+
+    // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+    @CreationTimestamp
+    private Date createdDate;
+    @UpdateTimestamp
+    private Date updatedDate;
+
 }

@@ -100,6 +100,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + deliveryRequestDTO.getOrderId()));
         delivery.setOrder(order);
 
+        delivery.setCreatedDate(getDelivery.getCreatedDate());
         delivery.setAddress(getDelivery.getAddress());
         delivery.setShipper(getDelivery.getShipper());
         delivery.setStatus(true);

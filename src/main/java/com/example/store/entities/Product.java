@@ -40,6 +40,7 @@ public class Product {
 //    @NotNull(message = "Status is required")
 //    private boolean status;
     private boolean deleted;
+    private boolean forSale;
 
     // thiết lập khóa ngoại---------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)

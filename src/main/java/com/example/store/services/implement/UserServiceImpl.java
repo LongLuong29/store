@@ -158,6 +158,17 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTOList);    }
 
     @Override
+    public ResponseEntity<ResponseObject> softDeleteUser(Long id, boolean deleted) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        user.setDeleted(deleted);
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Delete user success!!!", deleted));
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));

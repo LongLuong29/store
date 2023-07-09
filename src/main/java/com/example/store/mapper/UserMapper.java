@@ -29,9 +29,9 @@ public interface UserMapper {
     @Mapping(target = "phone", source = "user.phone")
 //    @Mapping(target = "password", source = "user.password")
     @Mapping(target = "status", source = "user.status")
+    @Mapping(target = "deleted", source = "user.deleted")
     @Mapping(target = "image", source = "user.image")
     @Mapping(target = "role", source = "user.role")
-
     UserResponseDTO userToUserResponseDTO(User user);
 
 

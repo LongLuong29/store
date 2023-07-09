@@ -17,6 +17,7 @@ public interface UserService {
             throws MessagingException, UnsupportedEncodingException;
     ResponseEntity<ResponseObject> updateUser(Long id, UserUpdateRequestDTO userUpdateRequestDTO);
     ResponseEntity<?> getAllUser(Pageable pageable);
+    ResponseEntity<ResponseObject> softDeleteUser(Long id, boolean deleted);
     ResponseEntity<ResponseObject> deleteUser(Long id);
     ResponseEntity<UserResponseDTO> getUserById(Long id);
     ResponseEntity<ResponseObject> verifyUser(String verifyCode);

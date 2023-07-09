@@ -6,5 +6,6 @@ import org.springframework.http.ResponseEntity;
 public interface ProductDiscountService {
   ResponseEntity<ResponseObject> createProductDiscount(Long productId, Long discountId);
   ResponseEntity<?> getProductDiscount(Long productId);
+  ResponseEntity<ResponseObject> softDeleteProductDiscount(Long productId, Long discountId, boolean deleted);
   ResponseEntity<ResponseObject> deleteProductDiscount(Long productId, Long discountId);
 }

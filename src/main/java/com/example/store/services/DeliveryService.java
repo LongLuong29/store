@@ -15,7 +15,7 @@ public interface DeliveryService {
 
     ResponseEntity<ResponseObject> updateDelivery(DeliveryRequestDTO deliveryRequestDTO, Long id);
 
-    ResponseEntity<ResponseObject> deleteDelivery(Long id);
+    ResponseEntity<ResponseObject> softDeleteDelivery(Long id, boolean deleted);
 
     DeliveryResponseDTO getDeliveryById(Long id);
 

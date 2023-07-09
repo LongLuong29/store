@@ -12,4 +12,5 @@ public class AddressDetailResponseDTO {
     private Long user;
     private Address address;
     private boolean defaultAddress;
+    private boolean deleted;
 }

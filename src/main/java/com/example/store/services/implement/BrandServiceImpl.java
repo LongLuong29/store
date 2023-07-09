@@ -76,12 +76,14 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> safeDeleteBrand(Long id) {
+    public ResponseEntity<ResponseObject> safeDeleteBrand(Long id, boolean deleted) {
         Brand getBrand = brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find brand with ID = " + id));
-        getBrand.setStatus(false);
+        getBrand.setStatus(deleted);
+
+        BrandResponseDTO brandResponseDTO = mapper.brandToBrandResponseDTO(getBrand);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseObject(HttpStatus.OK,"Delete brand successfully!"));
+                .body(new ResponseObject(HttpStatus.OK,"Delete brand successfully!", brandResponseDTO.isStatus()));
     }
 
     @Override

@@ -31,4 +31,10 @@ public class AttributeController {
   public ResponseEntity<?> getAttributeByProduct(@RequestParam(name = "productId") Long productId){
     return attributeProductService.getProductAttributeByProduct(productId);
   }
+
+  @DeleteMapping(value = "/product/softDeleted")
+  public ResponseEntity<?> softDeletedProductAttribute(@RequestParam(name = "productId") Long productId,
+                                                       @RequestParam(name = "deleted") boolean deleted){
+    return attributeProductService.softDelete(productId,deleted);
+  }
 }

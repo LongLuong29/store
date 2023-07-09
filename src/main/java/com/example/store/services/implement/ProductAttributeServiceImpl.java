@@ -78,6 +78,22 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
         return ResponseEntity.status(HttpStatus.OK).body(productAttributeResponseDTOList);
     }
 
+    @Override
+    public ResponseEntity<?> softDelete(Long productId, boolean deleted){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
+
+        List<ProductAttribute> productAttributeList = productAttributeRepository.findProductAttributeByProduct(product);
+        List<ProductAttributeResponseDTO> productAttributeResponseDTOList = new ArrayList<>();
+        for(ProductAttribute productAttribute : productAttributeList){
+            productAttribute.setDeleted(deleted);
+            ProductAttributeResponseDTO productAttributeResponseDTO
+                    = productAttributeMapper.attributeToProductAttributeResponseDTO(productAttribute);
+            productAttributeResponseDTOList.add(productAttributeResponseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(productAttributeResponseDTOList);
+    }
+
     private ProductAttributeResponseDTO saveProductAttribute(Attribute attribute, Product product){
         ProductAttribute productAttribute = new ProductAttribute();
         productAttribute.setProduct(product);

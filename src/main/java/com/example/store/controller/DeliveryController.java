@@ -37,8 +37,9 @@ public class DeliveryController {
         return deliveryService.updateDelivery(deliveryRequestDTO,deliveryId);
     }
     @DeleteMapping(value = "/softDelete")
-    public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId){
-        return deliveryService.deleteDelivery(deliveryId);
+    public ResponseEntity<ResponseObject> deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId,
+                                                         @RequestParam(name = "deleted") boolean deleted){
+        return deliveryService.softDeleteDelivery(deliveryId, deleted);
     }
     @GetMapping(value = "/byId")
     public DeliveryResponseDTO getDeliveryById(@RequestParam(name = "deliveryId") Long deliveryId){

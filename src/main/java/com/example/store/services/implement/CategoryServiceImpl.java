@@ -101,10 +101,10 @@
         }
 
         @Override
-        public ResponseEntity<ResponseObject> safeDelete(Long id) {
+        public ResponseEntity<ResponseObject> safeDelete(Long id, boolean deleted) {
             Category getCategory = categoryRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Could not find category with ID = " + id));
-            getCategory.setStatus(false);
+            getCategory.setStatus(deleted);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(HttpStatus.OK,"Delete category successfully!"));
         }

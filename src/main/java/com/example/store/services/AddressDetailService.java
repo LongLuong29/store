@@ -9,7 +9,7 @@ public interface AddressDetailService {
             AddressRequestDTO addressRequestDTO,
             Long userId
     );
-
+    ResponseEntity<ResponseObject> safeDeleteAddressDetail(Long addressId, Long userId, boolean deleted);
     ResponseEntity<?> getAddressByUser(Long id);
 
     ResponseEntity<ResponseObject> updateAddressDetail(Long addressId, Long userId, AddressRequestDTO addressRequestDTO);

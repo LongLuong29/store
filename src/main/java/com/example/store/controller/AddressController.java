@@ -34,4 +34,11 @@ public class AddressController {
                                                             @RequestParam(name = "addressId") Long addressId){
         return addressDetailService.deleteAddressDetail(addressId, userId);
     }
+
+    @DeleteMapping(value = "/user/softDelete")
+    public ResponseEntity<ResponseObject> softDeleteAddressUser(@RequestParam(name = "userId") Long userId,
+                                                            @RequestParam(name = "addressId") Long addressId,
+                                                                @RequestParam(name = "deleted") boolean deleted){
+        return addressDetailService.safeDeleteAddressDetail(addressId, userId, deleted);
+    }
 }

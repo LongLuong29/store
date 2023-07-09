@@ -22,6 +22,7 @@ public class UserResponseDTO {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private Date birthday;
     private boolean status;
+    private boolean deleted;
     private String image;
     private double point;
 

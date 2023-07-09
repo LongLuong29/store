@@ -11,5 +11,6 @@ import lombok.*;
 public class ProductAttributeResponseDTO {
   private Long productId;
   private String name;
+  private boolean deleted;
   private Attribute attribute;
 }

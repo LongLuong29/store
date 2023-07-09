@@ -12,5 +12,7 @@ public interface ProductService {
   ResponseEntity<ResponseObject> deleteProduct(Long id);
   ResponseEntity<?> getProductById(Long id);
   ResponseEntity<?> search(String search, int page, int size);
+  ResponseEntity<ResponseObject> softDelete(Long id, boolean deleted);
+  ResponseEntity<ResponseObject> setForSale(Long id, boolean forSale);
 
-}
+  }

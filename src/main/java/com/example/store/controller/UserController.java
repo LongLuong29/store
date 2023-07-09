@@ -59,6 +59,12 @@ public class UserController {
   @GetMapping(value = "/user-amount")
   public ResponseEntity<Integer> getNumberOfCustomer(){ return userService.getNumberOfCustomer(); }
 
+  @DeleteMapping(value = "/softDelete")
+  public ResponseEntity<ResponseObject> softDeleteUser(@RequestParam(name = "id")Long id,
+                                                       @RequestParam(name = "deleted") boolean deleted){
+    return userService.softDeleteUser(id,deleted);
+  }
+
   @DeleteMapping(value = "/{id}")
   public ResponseEntity<ResponseObject> deleteUser(@PathVariable(name = "id") Long id){
     return userService.deleteUser(id);

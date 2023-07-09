@@ -8,5 +8,6 @@ public interface ProductAttributeService {
   ResponseEntity<ResponseObject> createProductAttribute(Long productId, AttributeRequestDTO attributeRequestDTO);
   ResponseEntity<ResponseObject> updateProductAttribute(Long productId, Long attributeId, AttributeRequestDTO attributeRequestDTO);
   ResponseEntity<?> getProductAttributeByProduct(Long productId);
+  ResponseEntity<?> softDelete(Long productId, boolean deleted);
 
 }

@@ -56,6 +56,8 @@ public class User implements UserDetails {
     @NotNull(message = "Status is required")
     private boolean status;
 
+    private boolean deleted;
+
     @Column(name = "image", length = 500)
     private String image;
 

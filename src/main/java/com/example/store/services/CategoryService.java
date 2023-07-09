@@ -13,6 +13,6 @@ public interface CategoryService {
     ResponseEntity<ResponseObject> createCategory(CategoryRequestDTO categoryRequestDTO);
     ResponseEntity<ResponseObject> updateCategory(CategoryRequestDTO categoryRequestDTO, Long id);
     ResponseEntity<ResponseObject> deleteCategory(Long id);
-    ResponseEntity<ResponseObject> safeDelete(Long id);
+    ResponseEntity<ResponseObject> safeDelete(Long id, boolean deleted);
     CategoryResponseDTO getCategoryById(Long id);
 }

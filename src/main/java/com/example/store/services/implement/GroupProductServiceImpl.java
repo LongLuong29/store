@@ -77,6 +77,16 @@ public class GroupProductServiceImpl implements GroupProductService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> softDeleteGroupProduct(Long id, boolean deleted) {
+        GroupProduct getGroupProduct = groupProductRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find GroupProduct with ID = " + id));
+        getGroupProduct.setStatus(deleted);
+        groupProductRepository.save(getGroupProduct);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK,"Delete GroupProduct successfully!", deleted));
+    }
+
+    @Override
     public GroupProductResponseDTO getGroupProductById(Long id) {
         GroupProduct getGroupProduct = groupProductRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find GroupProduct with ID = " + id));

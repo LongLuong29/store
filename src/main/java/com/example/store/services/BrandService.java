@@ -16,7 +16,7 @@ public interface BrandService {
 
     ResponseEntity<ResponseObject> deleteBrand(Long id);
 
-    ResponseEntity<ResponseObject> safeDeleteBrand(Long id);
+    ResponseEntity<ResponseObject> safeDeleteBrand(Long id, boolean deleted);
 
     BrandResponseDTO getBrandById(Long id);
 

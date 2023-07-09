@@ -29,6 +29,8 @@ public class ProductAttribute {
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 
+    private boolean deleted;
+
     @CreationTimestamp
     private Date createdDate;
 

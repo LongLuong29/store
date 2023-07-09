@@ -9,13 +9,10 @@ public interface GroupProductService {
 //    ResponseEntity<?> getAllBrandOnTrading(Pageable pageable);
 
     ResponseEntity<?> getAllGroupProduct();
-
     ResponseEntity<ResponseObject> createGroupProduct(GroupProductRequestDTO groupProductRequestDTO);
-
     ResponseEntity<ResponseObject> updateGroupProduct(GroupProductRequestDTO groupProductRequestDTO, Long id);
-
+    ResponseEntity<ResponseObject> softDeleteGroupProduct(Long id, boolean deleted);
     ResponseEntity<ResponseObject> deleteGroupProduct(Long id);
-
     GroupProductResponseDTO getGroupProductById(Long id);
 }
 

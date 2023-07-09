@@ -23,12 +23,18 @@ public class DiscountController {
     return productDiscountService.getProductDiscount(productId);
   }
 
+  @DeleteMapping(value = "/product/softDelete")
+  public ResponseEntity<ResponseObject> softDeleteProductDiscount(@RequestParam(name = "productId") Long productId,
+                                                              @RequestParam(name = "discountId") Long discountId,
+                                                                  @RequestParam(name = "deleted") boolean deleted){
+    return productDiscountService.softDeleteProductDiscount(productId, discountId, deleted);
+  }
+
   @DeleteMapping(value = "/product")
   public ResponseEntity<ResponseObject> deleteProductDiscount(@RequestParam(name = "productId") Long productId,
                                                               @RequestParam(name = "discountId") Long discountId){
     return productDiscountService.deleteProductDiscount(productId, discountId);
   }
-
 
 }
 

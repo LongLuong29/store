@@ -17,6 +17,7 @@ public class ProductResponseDTO {
     private double rate;
     private String description;
     private boolean deleted;
+    private boolean forSale;
     private String thumbnail;
     private String[] images;
 

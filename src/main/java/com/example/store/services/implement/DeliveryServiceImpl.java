@@ -140,10 +140,10 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .body(new ResponseObject(HttpStatus.OK, "Update delivery successfully!", deliveryResponseDTO));
     }
     @Override
-    public ResponseEntity<ResponseObject> deleteDelivery(Long id) {
+    public ResponseEntity<ResponseObject> softDeleteDelivery(Long id, boolean deleted) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with ID = " + id));
-        delivery.setStatus(false);
+        delivery.setStatus(deleted);
         if(delivery.getImage()!=null){
             try {
                 imageService.delete(delivery.getImage());

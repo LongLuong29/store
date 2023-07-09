@@ -75,6 +75,24 @@ public class AddressDetailServiceImpl implements AddressDetailService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> safeDeleteAddressDetail(Long addressId, Long userId, boolean deleted) {
+        User getUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        Address getAddress = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find address with ID = " + addressId));
+        AddressDetail getAddressDetail = addressDetailRepository.findAddressDetailByUserAndAddress(getUser, getAddress)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find address detail with ID user = " + userId + " and ID address = " + addressId));
+
+        getAddressDetail.setDeleted(deleted);
+        addressDetailRepository.save(getAddressDetail);
+
+        AddressDetailResponseDTO addressDetailResponseDTO = addressDetailMapper.addressDetailToAddressDetailResponseDTO(getAddressDetail);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Successfully !!!", addressDetailResponseDTO.isDeleted()));
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> deleteAddressDetail(Long addressId, Long userId) {
         User getUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));

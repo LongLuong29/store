@@ -50,13 +50,15 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = getProductList.getContent();
         List<ProductGalleryDTO> productGalleryDTOList = new ArrayList<>();
         for (Product product : productList){
-            int discount = 0;
-            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
-            if (getDiscount.isPresent()){
-                discount = getDiscount.get();
+            if(product.isForSale()){
+                int discount = 0;
+                Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
+                if (getDiscount.isPresent()){
+                    discount = getDiscount.get();
+                }
+                ProductGalleryDTO productGalleryDTO = toProductGalleryDTO(product, discount);
+                productGalleryDTOList.add(productGalleryDTO);
             }
-            ProductGalleryDTO productGalleryDTO = toProductGalleryDTO(product, discount);
-            productGalleryDTOList.add(productGalleryDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(productGalleryDTOList);
     }
@@ -74,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
         }
         //set deleted = false
         product.setDeleted(false);
+        product.setForSale(true);
 
         Product productSaved = productRepository.save(product);
         ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(productSaved);
@@ -129,6 +132,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> setForSale(Long id, boolean forSale){
+        Product getProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + id));
+        getProduct.setForSale(forSale);
+        productRepository.save(getProduct);
+        ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(getProduct);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Set successfully!",productResponseDTO.isForSale()));
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> softDelete(Long id, boolean deleted){
+        Product getProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + id));
+        getProduct.setDeleted(deleted);
+        productRepository.save(getProduct);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete product successfully!"));
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> deleteProduct(Long id) {
         Product getProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + id));
@@ -146,7 +171,7 @@ public class ProductServiceImpl implements ProductService {
         this.productDiscountRepository.deleteAll(productDiscountList);
 
         productRepository.delete(getProduct);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete product successfully!"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK, "Delete product completely!"));
     }
 
     @Override

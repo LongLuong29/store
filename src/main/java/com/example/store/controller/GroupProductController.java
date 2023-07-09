@@ -30,6 +30,12 @@ public class GroupProductController {
         return groupProductService.updateGroupProduct(groupProductRequestDTO, id);
     }
 
+    @DeleteMapping(value = "/softDelete")
+    public ResponseEntity<ResponseObject> softDeleteGroupProduct(@RequestParam(name = "id") Long id,
+                                                                 @RequestParam(name = "deleted") boolean deleted){
+        return groupProductService.softDeleteGroupProduct(id,deleted);
+    }
+
     @DeleteMapping(value = "")
     public ResponseEntity<ResponseObject> deleteGroupProduct(@RequestParam(name = "id") Long id){
         return groupProductService.deleteGroupProduct(id);

@@ -30,6 +30,8 @@ public class AddressDetail {
     private Address address;
 
     private boolean defaultAddress;
+    private boolean deleted;
+
 
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp

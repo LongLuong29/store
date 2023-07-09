@@ -68,6 +68,22 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> softDeleteProductDiscount(Long productId, Long discountId, boolean deleted) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
+        Discount discount = discountRepository.findById(discountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with ID = " + discountId));
+
+        ProductDiscount getProductDiscount = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product).orElseThrow(
+                () -> new ResourceNotFoundException("Could not find product discount with ID product = " + productId + " and ID discount = " + discount)
+        );
+        getProductDiscount.setDeleted(deleted);
+        this.productDiscountRepository.save(getProductDiscount);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(HttpStatus.OK, "Delete product discount success!!!", deleted));
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> deleteProductDiscount(Long productId, Long discountId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));

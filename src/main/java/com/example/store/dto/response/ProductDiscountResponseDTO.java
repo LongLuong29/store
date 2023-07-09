@@ -11,5 +11,6 @@ import lombok.*;
 public class  ProductDiscountResponseDTO {
   private String id;
   private String name;
+  private boolean deleted;
   private Discount discount;
 }

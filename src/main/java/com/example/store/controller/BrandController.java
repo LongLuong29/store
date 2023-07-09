@@ -31,8 +31,9 @@ public class BrandController {
     }
 
     @DeleteMapping(value="")
-    public ResponseEntity<ResponseObject> safeDeleteBrand(@RequestParam(name = "id") Long id){
-        return brandService.safeDeleteBrand(id);
+    public ResponseEntity<ResponseObject> safeDeleteBrand(@RequestParam(name = "id") Long id,
+                                                          @RequestParam(name = "deleted") boolean deleted){
+        return brandService.safeDeleteBrand(id, deleted);
     }
 
     @DeleteMapping(value = "/remove")

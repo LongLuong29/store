@@ -40,8 +40,9 @@ public class CategoryController {
     }
 
     @DeleteMapping(value ="")
-    public ResponseEntity<ResponseObject> safeDelete(@RequestParam(name = "id") Long id){
-        return categoryService.safeDelete(id);
+    public ResponseEntity<ResponseObject> safeDelete(@RequestParam(name = "id") Long id,
+                                                     @RequestParam(name = "deleted") boolean deleted){
+        return categoryService.safeDelete(id, deleted);
     }
 
     @DeleteMapping(value = "remove")

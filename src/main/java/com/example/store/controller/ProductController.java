@@ -36,6 +36,18 @@ public class  ProductController {
     return productService.updateProduct(productRequestDTO, id);
   }
 
+  @PutMapping(value = "/setForSale")
+  public ResponseEntity<ResponseObject> setForSale(@RequestParam(name = "id") Long id,
+                                                   @RequestParam(name = "forSale") boolean forSale){
+    return productService.setForSale(id, forSale);
+  }
+
+  @DeleteMapping(value = "/softDelete")
+  public ResponseEntity<ResponseObject> softDelete(@RequestParam(name = "id") Long id,
+                                                   @RequestParam(name = "deleted") boolean deleted){
+    return productService.softDelete(id, deleted);
+  }
+
   @DeleteMapping(value = "")
   public ResponseEntity<ResponseObject> deleteProduct(@RequestParam(name = "id") Long id){
     return productService.deleteProduct(id);

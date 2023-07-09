@@ -30,6 +30,8 @@ public class ProductDiscount {
   @JoinColumn(name = "discount_id")
   private Discount discount;
 
+  private boolean deleted;
+
   @CreationTimestamp
   private Date createdDate;
 

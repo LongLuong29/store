@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList = getUserList.getContent();
         for (User user : userList) {
             UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(user);
+            userResponseDTO.setImage(imageService.getImageUrl(user.getImage()));
             userResponseDTOList.add(userResponseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTOList);    }

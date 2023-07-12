@@ -77,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus("Ordered");
         order.setOrderedDate(orderDay);
         order.setAddress(address);
+        order.setOrderCode(orderCode);
 
         Order orderSave = orderRepository.save(order);
         OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(orderSave);
@@ -151,6 +152,7 @@ public class OrderServiceImpl implements OrderService {
         Order getOrder = orderRepository
                 .findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + orderId));
         Date date = new Date();
+        if(getOrder.getStatus().equals("Done")){throw new InvalidValueException("Order is already finish");}
         if(orderStatus.equals("Delivered")){
             getOrder.setStatus("Delivered");
             if(getOrder.getPaymentMethod().equals("COD")){
@@ -169,7 +171,9 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         if(orderStatus.equals("Done")){
-            if (!getOrder.getStatus().equals("Confirmed")){throw new InvalidValueException("Order isn't confirmed yet");}
+            String status = getOrder.getStatus();
+            if (status.equals("Confirmed") == false)
+            {throw new InvalidValueException("Order isn't confirmed yet");}
             getOrder.setStatus("Done");
             getOrder.setDoneDate(date);
         }
@@ -195,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
         String senderName = "GEAR STORE";
         String orderedSubject = "Notificate of order";
         String orderedMailContent = "<p>Dear " + user.getName() + ",<p><br>"
-                + "You have just successfully ordered an order "+order.getOrderCode()+" at "+order.getOrderedDate()+"<br> <br>"
+                + "You have just successfully ordered an order <b>"+order.getOrderCode()+"</b> at "+order.getOrderedDate()+"<br> <br>"
                 + "Thank you for choosing us,<br>"
                 + "From GEAR Store with love.";
 //                + "<Please check the order information below to confirm that the products you have ordered are correct<br>"

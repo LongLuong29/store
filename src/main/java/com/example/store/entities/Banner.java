@@ -1,5 +1,6 @@
 package com.example.store.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,15 @@ public class  Banner {
     private String description;
     @NotNull(message = "Photo url is required")
     private String photoUrl;
+
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;
+
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
+
     private boolean status;
 
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database

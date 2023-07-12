@@ -1,6 +1,7 @@
 package com.example.store.entities;
 
 import com.example.store.entities.Enum.AuthenticationProvider;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
     @Column(name = "gender")
     private boolean gender;
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
     @Column(unique = true)
     @Size(max = 11, min = 10, message = "Invalid phone size")

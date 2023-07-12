@@ -1,5 +1,6 @@
 package com.example.store.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class Address {
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp
     private Date createdDate;
+
     @UpdateTimestamp
     private Date updatedDate;
 

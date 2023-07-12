@@ -1,5 +1,6 @@
 package com.example.store.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -41,13 +42,21 @@ public class Order {
     private String paymentMethod;
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date orderedDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date doneDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date deliveredDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date paidDate;
+
     //foreign key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

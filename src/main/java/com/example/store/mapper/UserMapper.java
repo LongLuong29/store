@@ -18,7 +18,6 @@ public interface UserMapper {
     @Mapping(target = "phone", source = "dto.phone")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "role.id", source = "dto.role")
-//    @Mapping(target = "rank.id", source = "dto.rank")
     @Mapping(target = "password", source = "dto.password")
     @Mapping(target = "image", expression = "java(null)")
     User userRequestDTOtoUser(UserRequestDTO dto);
@@ -27,11 +26,12 @@ public interface UserMapper {
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "phone", source = "user.phone")
-//    @Mapping(target = "password", source = "user.password")
     @Mapping(target = "status", source = "user.status")
     @Mapping(target = "deleted", source = "user.deleted")
     @Mapping(target = "image", source = "user.image")
     @Mapping(target = "role", source = "user.role")
+    @Mapping(target = "gender", source = "user.gender")
+    @Mapping(target = "birthday", source = "user.birthday")
     UserResponseDTO userToUserResponseDTO(User user);
 
 

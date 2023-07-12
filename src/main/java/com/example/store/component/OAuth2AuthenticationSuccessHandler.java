@@ -61,11 +61,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         UsernamePasswordAuthenticationToken authenticationToken = null;
         String username = null;
         User user4Token = new User();
+        Optional<User> getUserByEmail = null;
         if (authentication.getPrincipal() instanceof DefaultOAuth2User) {
             DefaultOAuth2User userDetails = (DefaultOAuth2User) authentication.getPrincipal();
             username = userDetails.getAttribute("email") != null ? userDetails.getAttribute("email") : userDetails.getAttribute("login") + "@gmail.com";
             Optional<User> getUser = userRepo.findUserByEmail(username);
-            if (!getUser.isPresent()) {
+            if (getUser.isPresent() == false) {
                 UserRequestDTO user = new UserRequestDTO();
 
 //                user.setName(userDetails.getAttribute("email") !=null?userDetails.getAttribute("email"):userDetails.getAttribute("login"));
@@ -80,13 +81,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 }
             }
             authenticationToken = new UsernamePasswordAuthenticationToken(username, "default");
-            authentication = auth.authenticate(authenticationToken);
-            user4Token = (User) authentication.getPrincipal();
+            getUserByEmail = userRepo.findUserByEmail(username);
+//            authentication = auth.authenticate(authenticationToken);
+//            user4Token = (User) authentication.getPrincipal();
         }
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
-        String token = jwtUtil.generateToken(user4Token);
+        String token = jwtUtil.generateToken(getUserByEmail.get());
         String targetUrl = redirectUri.orElse("http://localhost:3000/login");
 //        RefreshToken refreshToken = refreshTokenService.createRefreshToken(authentication);
 //        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();

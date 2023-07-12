@@ -359,4 +359,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public boolean updateUserStatus (Long id, boolean status){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + id));
+        user.setStatus(status);
+        this.userRepository.save(user);
+        return status;
+    }
+
 }

@@ -86,4 +86,10 @@ public class UserController {
   public void sendMail4ChangePassword(@RequestParam(name = "email") String email) throws MessagingException, UnsupportedEncodingException {
     userService.sendEmailForUser(email,1);
   }
+
+  @PutMapping(value = "/updateUserStatus")
+  public boolean updateUserStatus(@RequestParam(name = "id") Long id,
+                                  @RequestParam(name = "status") boolean status){
+    return userService.updateUserStatus(id,status);
+  }
 }

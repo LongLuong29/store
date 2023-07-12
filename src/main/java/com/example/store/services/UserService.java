@@ -25,6 +25,5 @@ public interface UserService {
     ResponseEntity<?> getALlShipper();
     ResponseEntity<Integer> getNumberOfCustomer();
     void sendEmailForUser(String email, int typeMail) throws MessagingException, UnsupportedEncodingException;
-
-
+    boolean updateUserStatus (Long id, boolean status);
 }

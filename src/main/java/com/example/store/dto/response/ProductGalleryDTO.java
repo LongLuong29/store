@@ -17,6 +17,8 @@ public class ProductGalleryDTO {
     private String thumbnail;
     private double discount;
     private double rate;
+    private boolean deleted;
+    private boolean forSale;
 
     private String groupProduct;
     private String category;

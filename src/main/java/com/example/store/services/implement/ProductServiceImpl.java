@@ -276,6 +276,8 @@ public class ProductServiceImpl implements ProductService {
         productGalleryDTO.setDiscount(discount);
         productGalleryDTO.setGroupProduct(product.getGroupProduct().getName());
         productGalleryDTO.setBrand(product.getBrand().getName());
+        productGalleryDTO.setDeleted(product.isDeleted());
+        productGalleryDTO.setForSale(product.isForSale());
         productGalleryDTO.setCategory(product.getCategory().getName());
         BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf( (100- discount) / (double) 100));
         if (discount == 0){

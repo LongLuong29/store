@@ -22,7 +22,7 @@ public class WishListController {
     }
     @DeleteMapping(value = "/user")
     public ResponseEntity<ResponseObject> deleteUserWishList(@RequestParam(value = "userId") Long userId,
-                                                                 @RequestParam(value = "productId") Long productId){
+                                                             @RequestParam(value = "productId") Long productId){
         return wishListService.deleteUserWishList(userId,productId);
     }
 

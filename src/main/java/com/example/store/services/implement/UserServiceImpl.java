@@ -70,10 +70,12 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ResponseObject> saveUser(UserRequestDTO userRequestDTO) throws MessagingException, UnsupportedEncodingException {
         User user = mapper.userRequestDTOtoUser(userRequestDTO);
         //Check phone user existed
-        Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
-        if (userCheckPhone.isPresent()) {
-            if(userCheckPhone.get().getPhone() != null){
-                throw new ResourceAlreadyExistsException("Phone user existed");
+        if(userRequestDTO.getPhone()!=null){
+            Optional<User> userCheckPhone = userRepository.findUserByPhone(userRequestDTO.getPhone());
+            if (userCheckPhone.isPresent()) {
+                if(userCheckPhone.get().getPhone() != null){
+                    throw new ResourceAlreadyExistsException("Phone user existed");
+                }
             }
         }
         //Check email user existed

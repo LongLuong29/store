@@ -34,9 +34,6 @@ public class Discount {
 
     private boolean status;
 
-    @Size(max = 11, min = 5, message = "Invalid code size")
-    private String code;
-
     @CreationTimestamp
     private Date createdDate;
 

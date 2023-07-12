@@ -29,27 +29,19 @@ public class Voucher {
     @NotNull(message = "Voucher title is required")
     @Column(length = 100)
     private String title;
-
     @NotNull(message = "Discount percent is required")
     @Min(value = 1, message = "Percent must be greater than 1")
     @Max(value = 100, message = "Percent must smaller than 100")
     private double percent;
-
     private boolean status;
-
     private String description;
-
     private String thumbnail;
-
     @NotNull(message = "Voucher has to have a limit discount amount")
     private BigDecimal upTo;
-
     private BigDecimal minSpend;
-
     @ManyToOne(optional = true)
     @JoinColumn(name = "voucherType_id")
     private VoucherType voucherType;
-
     @Size(max = 10, min = 10, message = "Invalid code size")
     private String code;
 

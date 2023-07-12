@@ -34,36 +34,26 @@ public class User implements UserDetails {
             + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$"), message = "Invalid email")
     @Size(max =140, min = 11, message = "Invalid mail size")
     private String email;
-
     // custom trường data trong entity
     @Column(name = "name", length = 100)
     @NotNull(message = "Name is required")
     private String name;
-
     @Column(name = "gender")
     private boolean gender;
-
     @Temporal(TemporalType.DATE)
     private Date birthday;
-
     @Column(unique = true)
     @Size(max = 11, min = 10, message = "Invalid phone size")
     private String phone;
-
     @NotNull(message = "Password is required")
     private String password;
-
     @NotNull(message = "Status is required")
     private boolean status;
-
     private boolean deleted;
-
     @Column(name = "image", length = 500)
     private String image;
-
     @Column(name = "point")
     private double point;
-
     @Column(length = 64)
     private String verificationCode;
 

@@ -50,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = getProductList.getContent();
         List<ProductGalleryDTO> productGalleryDTOList = new ArrayList<>();
         for (Product product : productList){
-            if(product.isForSale()){
                 int discount = 0;
                 Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
                 if (getDiscount.isPresent()){
@@ -58,7 +57,6 @@ public class ProductServiceImpl implements ProductService {
                 }
                 ProductGalleryDTO productGalleryDTO = toProductGalleryDTO(product, discount);
                 productGalleryDTOList.add(productGalleryDTO);
-            }
         }
         return ResponseEntity.status(HttpStatus.OK).body(productGalleryDTOList);
     }

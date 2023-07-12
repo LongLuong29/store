@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BannerMapper {
     @Mapping(target = "id", expression = "java(null)")
-    @Mapping(target = "photoUrl", source = "dto.photoUrl")
+    @Mapping(target = "photoUrl", expression = "java(null)")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "startDate", source = "dto.startDate")

@@ -22,13 +22,13 @@ public class  Banner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private boolean status;
     @NotNull(message = "Photo url is required")
     private String photoUrl;
     @Temporal(TemporalType.DATE)
     private Date startDate;
     @Temporal(TemporalType.DATE)
     private Date endDate;
+    private boolean status;
 
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp

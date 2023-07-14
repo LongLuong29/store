@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.example.store.dto.request.UserRequestDTO;
+import com.example.store.entities.Cart;
 import com.example.store.entities.RefreshToken;
 import com.example.store.entities.User;
 import com.example.store.entities.principal.UserPrincipal;
 import com.example.store.exceptions.BadRequestException;
 import com.example.store.mapper.UserMapper;
 import com.example.store.oauth.CustomOAuth2User;
+import com.example.store.repositories.CartRepository;
 import com.example.store.repositories.RoleRepository;
 import com.example.store.repositories.UserRepository;
 import com.example.store.services.RefreshTokenService;
@@ -46,6 +48,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Autowired UserRepository userRepo;
     @Autowired RoleRepository roleRepository;
+    @Autowired CartRepository cartRepository;
     @Autowired JwtTokenUtil jwtUtil;
     @Autowired UserService userService;
     @Autowired UserMapper userMapper;
@@ -77,6 +80,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 user.setRole(1L);
                 try {
                     userService.saveUser(user);
+                    User createUser = userMapper.userRequestDTOtoUser(user);
+                    Cart cart = new Cart();
+                    cart.setUser(createUser);
+                    this.cartRepository.save(cart);
                 } catch (MessagingException e) {
                     throw new RuntimeException(e);
                 }

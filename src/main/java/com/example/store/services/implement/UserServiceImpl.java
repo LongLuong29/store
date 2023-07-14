@@ -100,6 +100,10 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO userResponseDTO = mapper.userToUserResponseDTO(userRepository.save(user));
         //send email
         sendVerificationEmail(user);
+        //Create cart by user
+        Cart cart = new Cart();
+        cart.setUser(user);
+        this.cartRepository.save(cart);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Create user successfully!", userResponseDTO));
@@ -241,10 +245,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Verify code is incorrect"));
         getUser.setStatus(true);
         User user =  userRepository.save(getUser);
-        //Create cart by user
-        Cart cart = new Cart();
-        cart.setUser(user);
-        this.cartRepository.save(cart);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(HttpStatus.OK, "Verify account success!!!"));
     }

@@ -80,10 +80,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 user.setRole(1L);
                 try {
                     userService.saveUser(user);
-                    User createUser = userMapper.userRequestDTOtoUser(user);
-                    Cart cart = new Cart();
-                    cart.setUser(createUser);
-                    this.cartRepository.save(cart);
                 } catch (MessagingException e) {
                     throw new RuntimeException(e);
                 }

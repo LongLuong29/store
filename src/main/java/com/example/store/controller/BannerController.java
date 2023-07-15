@@ -16,10 +16,8 @@ public class BannerController {
     @GetMapping("")
     public ResponseEntity<?> getAllBanner (){ return bannerService.getAllBanner(); }
 
-//    @GetMapping("")
-//    public ResponseEntity<?> getBannerAvailable(){
-//        return bannerService.getBannerAvailable();
-//    }
+    @GetMapping("/available")
+    public ResponseEntity<?> getAllAvailableBanner (){ return bannerService.getAllBanner(); }
 
     @PostMapping("")
     public ResponseEntity<?> createBanner(@ModelAttribute @Valid BannerRequestDTO bannerRequestDTO){

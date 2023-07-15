@@ -12,6 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface BannerRepository extends JpaRepository<Banner, Long> {
-    @Query(value = "select b from Banner b where b.startDate >= :date and :date <= b.endDate and b.status = true ")
+    @Query(value = "select b from Banner b where  b.startDate >= :date and :date <= b.endDate and b.status = true ")
     List<Banner> findAllAvailableBanner(Date date);
 }

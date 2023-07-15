@@ -9,6 +9,6 @@ public interface BannerService {
     ResponseEntity<ResponseObject> updateBanner(Long id, BannerRequestDTO bannerRequestDTO);
     ResponseEntity<ResponseObject> deleteBanner(Long id);
     ResponseEntity<?> getAllBanner();
-
+    ResponseEntity<?> getAllAvailableBanner();
 
 }

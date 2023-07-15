@@ -86,9 +86,23 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<?> getAllBanner() {
+    public ResponseEntity<?> getAllAvailableBanner() {
         Date date = new Date();
         List<Banner> bannerList = bannerRepository.findAllAvailableBanner(date);
+        List<BannerResponseDTO> bannerResponseDTOList = new ArrayList<>();
+        for(Banner banner: bannerList){
+            BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);
+            bannerResponseDTOList.add(bannerResponseDTO);
+            if(banner.getEndDate().compareTo(new Date()) < 0 ){
+                banner.setStatus(false);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(bannerResponseDTOList);
+    }
+
+    public ResponseEntity<?> getAllBanner() {
+        Date date = new Date();
+        List<Banner> bannerList = bannerRepository.findAll();
         List<BannerResponseDTO> bannerResponseDTOList = new ArrayList<>();
         for(Banner banner: bannerList){
             BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);

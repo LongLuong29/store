@@ -209,6 +209,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ResponseEntity<?> findNewProductList(){
+        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
+        List<Product> productList = productRepository.findNewProductList();
+        for(Product p : productList){
+            ProductResponseDTO productResponseDTO = mapper.productToProductResponseDTO(p);
+            productResponseDTOList.add(productResponseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(productResponseDTOList);
+    }
+
+    @Override
     public ResponseEntity<?> search(String search, int page, int size) {
         return null;
     }

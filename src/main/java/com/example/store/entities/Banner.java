@@ -26,6 +26,8 @@ public class  Banner {
     @NotNull(message = "Photo url is required")
     private String photoUrl;
 
+    private String link;
+
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;

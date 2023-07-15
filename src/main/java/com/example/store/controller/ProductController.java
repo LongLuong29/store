@@ -58,6 +58,11 @@ public class  ProductController {
     return productService.getProductById(id);
   }
 
+  @GetMapping(value = "/new-product-list")
+  public ResponseEntity<?> findNewProductList(){
+    return productService.findNewProductList();
+  }
+
     @GetMapping(value = "/search")
   public ResponseEntity<?> findAll(@RequestParam(name = "search") String search,
       @RequestParam(name = "page", required = false, defaultValue = Utils.DEFAULT_PAGE_NUMBER)

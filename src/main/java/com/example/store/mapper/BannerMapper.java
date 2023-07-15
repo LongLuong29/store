@@ -15,6 +15,7 @@ public interface BannerMapper {
     @Mapping(target = "photoUrl", expression = "java(null)")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "description", source = "dto.description")
+    @Mapping(target = "link", source = "dto.link")
     @Mapping(target = "startDate", source = "dto.startDate")
     @Mapping(target = "endDate", source = "dto.endDate")
     Banner bannerRequestDTOToBanner(BannerRequestDTO dto);
@@ -23,6 +24,7 @@ public interface BannerMapper {
     @Mapping(target = "photoUrl", source ="banner.photoUrl" )
     @Mapping(target = "status", source = "banner.status")
     @Mapping(target = "description", source = "banner.description")
+    @Mapping(target = "link", source = "banner.link")
     @Mapping(target = "startDate", source = "banner.startDate")
     @Mapping(target = "endDate", source = "banner.endDate")
     BannerResponseDTO bannerToBannerResponseDTO(Banner banner);

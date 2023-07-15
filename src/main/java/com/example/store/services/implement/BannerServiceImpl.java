@@ -87,7 +87,8 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public ResponseEntity<?> getAllBanner() {
-        List<Banner> bannerList = bannerRepository.findAll();
+        Date date = new Date();
+        List<Banner> bannerList = bannerRepository.findAllAvailableBanner(date);
         List<BannerResponseDTO> bannerResponseDTOList = new ArrayList<>();
         for(Banner banner: bannerList){
             BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);

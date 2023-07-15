@@ -32,6 +32,7 @@ public interface UserMapper {
     @Mapping(target = "role", source = "user.role")
     @Mapping(target = "gender", source = "user.gender")
     @Mapping(target = "birthday", source = "user.birthday")
+    @Mapping(target = "purse", source = "user.purse")
     UserResponseDTO userToUserResponseDTO(User user);
 
 

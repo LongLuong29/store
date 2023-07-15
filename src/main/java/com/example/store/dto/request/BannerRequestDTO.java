@@ -17,6 +17,7 @@ public class BannerRequestDTO {
     private MultipartFile photoUrl;
     private boolean status;
     private String description;
+    private String link;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;

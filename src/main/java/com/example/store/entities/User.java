@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -58,6 +59,8 @@ public class User implements UserDetails {
     private double point;
     @Column(length = 64)
     private String verificationCode;
+
+    private BigDecimal purse;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "role_id")

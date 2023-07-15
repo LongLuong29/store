@@ -15,6 +15,7 @@ public class BannerResponseDTO {
     private String description;
     private boolean status;
     private String photoUrl;
+    private String link;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;

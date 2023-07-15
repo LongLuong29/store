@@ -5,6 +5,7 @@ import com.example.store.entities.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -25,6 +26,7 @@ public class UserResponseDTO {
     private boolean deleted;
     private String image;
     private double point;
+    private BigDecimal purse;
 
     private Role role;
     private Rank rank;

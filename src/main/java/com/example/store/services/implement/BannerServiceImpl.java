@@ -4,6 +4,7 @@ import com.example.store.dto.request.BannerRequestDTO;
 import com.example.store.dto.response.BannerResponseDTO;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.entities.Banner;
+import com.example.store.exceptions.InvalidValueException;
 import com.example.store.exceptions.ResourceNotFoundException;
 import com.example.store.mapper.BannerMapper;
 import com.example.store.repositories.BannerRepository;
@@ -30,7 +31,9 @@ public class BannerServiceImpl implements BannerService {
     @Override
     public ResponseEntity<ResponseObject> createBanner(BannerRequestDTO bannerRequestDTO){
         Banner banner = mapper.bannerRequestDTOToBanner(bannerRequestDTO);
-
+        if(bannerRequestDTO.getEndDate().compareTo(bannerRequestDTO.getStartDate()) <0){
+            throw new InvalidValueException("End day must be after Start day");
+        }
         banner.setStatus(true);
         try {
             banner.setPhotoUrl(imageService.save(bannerRequestDTO.getPhotoUrl()));

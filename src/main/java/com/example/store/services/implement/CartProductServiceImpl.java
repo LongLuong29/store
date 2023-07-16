@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class CartProductServiceImpl implements CartProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find cart with ID = " + cartId));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
-        Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId()/*, new Date()*/);
+        Optional<Integer> getDiscount = discountRepository.findPercentByProductId(product.getId(), new Date());
         if(amount > product.getInventory()){
             throw new InvalidValueException("Amount product add to cart must be less than amount product exists");
         }
@@ -101,7 +102,7 @@ public class CartProductServiceImpl implements CartProductService {
         for (CartProduct cartProduct : cartProductList){
             Product getProduct = cartProduct.getProduct();
             CartProductResponseDTO cartProductResponseDTO = cartProductMapper.cartProductToCartProductResponseDTO(cartProduct);
-            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(getProduct.getId()/*, new Date()*/);
+            Optional<Integer> getDiscount = discountRepository.findPercentByProductId(getProduct.getId(), new Date());
             if(getDiscount.isPresent()){cartProductResponseDTO.setDiscount(getDiscount.get());}
             else{cartProductResponseDTO.setDiscount(0);}
             cartProductResponseDTO.setProductImage(imageService.getImageUrl(cartProduct.getProduct().getThumbnail()));

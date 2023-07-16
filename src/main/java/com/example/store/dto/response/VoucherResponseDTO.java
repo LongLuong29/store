@@ -30,6 +30,8 @@ public class VoucherResponseDTO {
     private double percent;
     private boolean status;
     private String description;
+    private int quantity;
+
     private String thumbnail;
     private BigDecimal upTo;
     private BigDecimal minSpend;

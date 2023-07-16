@@ -22,7 +22,7 @@ public class GroupProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 45, unique = true)
+    @Column(length = 100, unique = true)
     @NotNull(message = "GProduct name is required")
     private String name;
 

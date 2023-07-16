@@ -37,6 +37,7 @@ public class Voucher {
     private boolean status;
     private String description;
     private String thumbnail;
+    private int quantity;
     @NotNull(message = "Voucher has to have a limit discount amount")
     private BigDecimal upTo;
     private BigDecimal minSpend;

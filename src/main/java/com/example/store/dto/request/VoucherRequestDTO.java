@@ -28,6 +28,7 @@ public class VoucherRequestDTO {
     private double percent;
     private String description;
     private String thumbnail;
+    private int quantity;
     private BigDecimal upTo;
     private BigDecimal minSpend;
 

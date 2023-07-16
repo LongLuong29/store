@@ -1,6 +1,7 @@
 package com.example.store.entities;
 
 import com.example.store.entities.Keys.ProductDiscountKey;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,14 @@ public class ProductDiscount {
   @ManyToOne(optional = false)
   @JoinColumn(name = "discount_id")
   private Discount discount;
+
+//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//  @Column(name = "start_date")
+//  private Date startDate;
+//
+//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//  @Column(name = "end_date")
+//  private Date endDate;
 
   private boolean deleted;
 

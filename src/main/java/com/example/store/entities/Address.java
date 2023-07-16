@@ -25,19 +25,17 @@ public class Address {
 
     @NotNull(message = "Apartment number is required")
     private String apartmentNumber;
-
     @NotNull(message = "Ward is required")
     private String ward;
-    @Column(name = "ward_id")
-    private int wardId;
-
     @NotNull(message = "District is required")
     private String district;
-    @Column(name = "district_id")
-    private int districtId;
-
     @NotNull(message = "Province is required")
     private String province;
+
+    @Column(name = "ward_id")
+    private int wardId;
+    @Column(name = "district_id")
+    private int districtId;
     @Column(name = "province_id")
     private int provinceId;
 

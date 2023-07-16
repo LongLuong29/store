@@ -25,14 +25,11 @@ public interface OrderMapper {
     @Mapping(target = "userName",source = "b.user.name")
     @Mapping(target = "orderId", source = "b.id")
     @Mapping(target = "status", source = "b.status")
-
     @Mapping(target = "totalPrice", source = "b.totalPrice")
     @Mapping(target = "shippingFee", source = "b.shippingFee")
     @Mapping(target = "finalPrice", source = "b.finalPrice")
-//    @Mapping(target = "orderTotal", source = "b.orderTotal")
     @Mapping(target = "note", source = "b.note")
     @Mapping(target = "paymentMethod", source ="b.paymentMethod")
-
     @Mapping(target = "orderedDate", source ="b.orderedDate")
     @Mapping(target = "doneDate", source ="b.doneDate")
     @Mapping(target = "deliveredDate", source ="b.deliveredDate")

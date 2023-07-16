@@ -7,6 +7,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 
 public interface OrderService {
   ResponseEntity<?> getOrderByUser(Long userId);
@@ -24,4 +25,5 @@ public interface OrderService {
   ResponseEntity<ResponseObject> updateOrderStatus(Long orderId, String orderStatus);
 
   void sendEmailForOrderStatus(Order order, int typeMail) throws MessagingException, UnsupportedEncodingException;
+  ResponseEntity<?> checkoutByWallet(Long orderId, Long userId, BigDecimal totalPrice);
 }

@@ -188,6 +188,23 @@ public class OrderServiceImpl implements OrderService {
                 .body(new ResponseObject(HttpStatus.OK, "Update order status success!", orderResponseDTO));
     }
 
+    @Override
+    public ResponseEntity<?> checkoutByWallet(Long orderId, Long userId, BigDecimal totalPrice){
+        Order getOrder = orderRepository
+                .findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + orderId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        BigDecimal userWallet = user.getWallet();
+        if(totalPrice.compareTo(userWallet) > 0){throw new InvalidValueException("Ví người dùng không đủ số dư để thanh toán");}
+        Date date = new Date();
+        getOrder.setStatus("Confirmed");
+        getOrder.setPaidDate(date);
+        user.setWallet(userWallet.subtract(totalPrice));
+        orderRepository.save(getOrder);
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công. Ví của người dùng còn lại: "+user.getWallet()+"VND");
+    }
 
     @Override
     public void sendEmailForOrderStatus(Order order, int typeMail) throws MessagingException, UnsupportedEncodingException {

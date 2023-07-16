@@ -11,11 +11,11 @@ import java.util.*;
 
 @Service
 public class VNPayService {
-    public String createOrder(int total, Long orderId, String urlReturn){
+    public String createOrder(int total, Long userId, String urlReturn){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
 //        String vnp_TxnRef = String.valueOf(orderId);
-        String vnp_TxnRef = orderId + VNPayConfig.getRandomNumber(7);
+        String vnp_TxnRef = userId + VNPayConfig.getRandomNumber(7);
         String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
 

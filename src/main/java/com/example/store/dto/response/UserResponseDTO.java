@@ -26,7 +26,7 @@ public class UserResponseDTO {
     private boolean deleted;
     private String image;
     private double point;
-    private BigDecimal purse;
+    private BigDecimal wallet;
 
     private Role role;
     private Rank rank;

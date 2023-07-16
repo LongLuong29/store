@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find bronze rank" ));
         user.setRank(rank);
         user.setPoint(0);
-        user.setPurse(BigDecimal.valueOf(0));
+        user.setWallet(BigDecimal.valueOf(0));
         user.setRole(role);
 
         String randomCodeVerify = RandomStringUtils.random(14,true,true);

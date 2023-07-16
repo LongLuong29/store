@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @RestController
@@ -51,6 +52,12 @@ public class OrderController {
     return orderService.upateOrder(orderId, orderRequestDTO);
   }
 
+  @PutMapping(value = "/wallet-checkout")
+  public ResponseEntity<?> checkoutByWallet(@RequestParam(name = "orderId") Long orderId,
+                                            @RequestParam(name = "userId") Long userId,
+                                            @RequestParam(name = "totalPrice") BigDecimal totalPrice){
+    return orderService.checkoutByWallet(orderId, userId, totalPrice );
+  }
 
   @DeleteMapping(value = "")
   public ResponseEntity<ResponseObject> deleteOrder(@RequestParam(name = "orderId") Long orderId){
@@ -85,7 +92,7 @@ public class OrderController {
   public void sendEmailForOrderStatus(@RequestParam(name = "orderId") Long orderId,
                                       @RequestParam(name = "typeMail") int typeMail) throws MessagingException, UnsupportedEncodingException{
     Optional<Order> order = orderRepository.findById(orderId);
-    orderService.sendEmailForOrderStatus(order.get(),typeMail);
+    orderService.sendEmailForOrderStatus(order.get(),1);
   }
 
 }

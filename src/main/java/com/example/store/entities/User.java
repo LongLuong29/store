@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,7 +61,7 @@ public class User implements UserDetails {
     @Column(length = 64)
     private String verificationCode;
 
-    private BigDecimal purse;
+    private BigDecimal wallet;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "role_id")

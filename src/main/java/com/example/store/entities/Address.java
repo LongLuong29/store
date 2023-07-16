@@ -32,12 +32,12 @@ public class Address {
     @NotNull(message = "Province is required")
     private String province;
 
-    @Column(name = "ward_id")
-    private int wardId;
-    @Column(name = "district_id")
-    private int districtId;
-    @Column(name = "province_id")
-    private int provinceId;
+//    @Column(name = "ward_id")
+//    private int wardId;
+//    @Column(name = "district_id")
+//    private int districtId;
+//    @Column(name = "province_id")
+//    private int provinceId;
 
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
     @CreationTimestamp

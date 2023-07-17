@@ -58,6 +58,21 @@ public class DeliveryController {
     public List<DeliveryResponseDTO> getDeliveryByStatus(@Valid String orderStatus) {
         return deliveryService.findDeliveriesByOrderStatus(orderStatus);
     }
+
+    @GetMapping(value = "/on-delivering")
+    public ResponseEntity<?> findDelivering() {
+        return deliveryService.findDelivering();
+    }
+
+    @GetMapping(value = "/late-delivering")
+    public ResponseEntity<?> lateDelivering() {
+        return deliveryService.lateDelivering();
+    }
+
+    @PutMapping(value = "/cancel-delivery")
+    public ResponseEntity<?> cancelDelivery(@RequestParam(name = "deliveryId") Long deliveryId){
+        return deliveryService.cancelDelivery(deliveryId);
+    }
 //    @GetMapping(value = "/shipper/status")
 //    public ResponseEntity<?> getDeliveryByStatusAndShipper(@Valid String status,
 //                                                           @RequestParam(name = "shipperId") Long shipperId){

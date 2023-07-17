@@ -1,5 +1,6 @@
 package com.example.store.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class Delivery {
     private Order order;
 
     // tự tạo ngày giờ hiện tại khi 1 người create / update xuống database
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date createdDate;
     @UpdateTimestamp

@@ -25,5 +25,7 @@ public interface DeliveryService {
 
     List<DeliveryResponseDTO> findDeliveriesByOrderStatus (String orderStatus);
     //    ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId)
-
+    ResponseEntity<?> findDelivering();
+    ResponseEntity<?> lateDelivering();
+    ResponseEntity<?> cancelDelivery(Long deliveryId);
 }

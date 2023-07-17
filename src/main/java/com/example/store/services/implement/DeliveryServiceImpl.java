@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,7 +193,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryResponseDTOList;
     }
 
-        @Override
+    @Override
     public List<DeliveryResponseDTO> findDeliveriesByOrderStatus (String orderStatus) {
         List<Delivery> deliveryList = deliveryRepository.findDeliveriesByOrderStatus(orderStatus);
         List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
@@ -203,6 +205,55 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
 
         return deliveryResponseDTOList;
+    }
+
+    @Override
+    public ResponseEntity<?> findDelivering(){
+        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByOrderStatus("Delivering");
+        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+        Date now = new Date();
+        for(Delivery d: deliveryList){
+            if(d.getCreatedDate().compareTo(now) == 0){
+                DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+                deliveryResponseDTOList.add(deliveryResponseDTO);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
+    }
+
+    @Override
+    public ResponseEntity<?> lateDelivering(){
+        List<Delivery> deliveryList = deliveryRepository.findDeliveriesByOrderStatus("Delivering");
+        List<DeliveryResponseDTO> deliveryResponseDTOList = new ArrayList<>();
+        // Date Format In Java
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date now = new Date();
+        String nowDate = simpleDateFormat.format(now);
+        for(Delivery d: deliveryList){
+            if(d.isStatus()){
+                String createdDate = simpleDateFormat.format(d.getCreatedDate());
+                if(!createdDate.equals(nowDate)){
+                    DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(d);
+                    deliveryResponseDTOList.add(deliveryResponseDTO);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deliveryResponseDTOList);
+    }
+
+    @Override
+    public ResponseEntity<?> cancelDelivery(Long deliveryId){
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find delivery with ID = " + deliveryId));
+        Order order = orderRepository.findById(delivery.getOrder().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + delivery.getOrder().getId()));
+        if(!delivery.isStatus()){throw new ResourceAlreadyExistsException("Đơn vận chuyển của shipper này đi bị hủy trước đó !!");}
+        delivery.setStatus(false);
+        this.deliveryRepository.save(delivery);
+        order.setStatus("Wait_Delivering");
+        this.orderRepository.save(order);
+        return ResponseEntity.status(HttpStatus.OK).body("Hủy thành công đơn vận chuyển của shipper: " + delivery.getShipper().getName());
     }
 
     //    @Override

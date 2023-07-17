@@ -49,7 +49,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         productDiscount.setProduct(product);
         productDiscount.setStartDate(startDate);
         productDiscount.setEndDate(endDate);
-        if(discount.getPercent() > 20){
+        if(discount.getPercent() >= 30){
             productDiscount.setFlashSale(true);
         }
         ProductDiscountResponseDTO productDiscountResponseDTO

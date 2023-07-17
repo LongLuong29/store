@@ -15,6 +15,7 @@ public class  ProductDiscountResponseDTO {
   private String name;
   private boolean deleted;
   private Discount discount;
+  private boolean flashSale;
   private Date startDate;
   private Date endDate;
 }

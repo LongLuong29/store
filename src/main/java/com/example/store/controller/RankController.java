@@ -40,4 +40,9 @@ public class RankController {
         return rankService.getRankByUserId(id);
     }
 
+    @PutMapping(value = "/reset-user-rank")
+    public ResponseEntity<?> resetAllUserRank(){
+        return rankService.resetAllUserRank();
+    }
+
 }

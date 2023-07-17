@@ -49,6 +49,9 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         productDiscount.setProduct(product);
         productDiscount.setStartDate(startDate);
         productDiscount.setEndDate(endDate);
+        if(discount.getPercent() > 20){
+            productDiscount.setFlashSale(true);
+        }
         ProductDiscountResponseDTO productDiscountResponseDTO
                 = productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscountRepository.save(productDiscount));
         return ResponseEntity.status(HttpStatus.OK)

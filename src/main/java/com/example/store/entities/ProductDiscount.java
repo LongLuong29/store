@@ -40,6 +40,7 @@ public class ProductDiscount {
   private Date endDate;
 
   private boolean deleted;
+  private boolean flashSale;
 
   @CreationTimestamp
   private Date createdDate;

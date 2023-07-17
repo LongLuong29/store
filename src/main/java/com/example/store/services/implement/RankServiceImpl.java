@@ -97,7 +97,19 @@ public class RankServiceImpl implements RankService {
         return rankResponseDTO;
     }
 
-
+    @Override
+    public ResponseEntity<?> resetAllUserRank(){
+        List<User> userList = userRepository.findAll();
+        Rank bronze = rankRepository.findRankByName("Bronze")
+                .orElseThrow(() ->new ResourceNotFoundException("Could not find rank with Bronze rank "));
+        for (User u: userList){
+            if(u.getRole().getId() == 1){
+                u.setRank(bronze);
+                u.setPoint(0);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Reset rank successfully");
+    }
 
     //check brand name exits or not
     private Rank checkExits(Rank rank){

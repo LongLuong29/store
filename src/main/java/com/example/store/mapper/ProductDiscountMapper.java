@@ -11,6 +11,7 @@ public interface ProductDiscountMapper {
   @Mapping(target = "name", source = "p.product.name")
   @Mapping(target = "discount", source = "p.discount")
   @Mapping(target = "deleted", source = "p.deleted")
-
+  @Mapping(target = "startDate", source = "p.startDate")
+  @Mapping(target = "endDate", source = "p.endDate")
   ProductDiscountResponseDTO productDiscountToProductDiscountResponseDTO(ProductDiscount p);
 }

@@ -95,6 +95,7 @@ public class BannerServiceImpl implements BannerService {
         List<BannerResponseDTO> bannerResponseDTOList = new ArrayList<>();
         for(Banner banner: bannerList){
             BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);
+            bannerResponseDTO.setPhotoUrl(imageService.getImageUrl(banner.getPhotoUrl()));
             bannerResponseDTOList.add(bannerResponseDTO);
             if(banner.getEndDate().compareTo(new Date()) < 0 ){
                 banner.setStatus(false);
@@ -109,6 +110,7 @@ public class BannerServiceImpl implements BannerService {
         List<BannerResponseDTO> bannerResponseDTOList = new ArrayList<>();
         for(Banner banner: bannerList){
             BannerResponseDTO bannerResponseDTO = mapper.bannerToBannerResponseDTO(banner);
+            bannerResponseDTO.setPhotoUrl(imageService.getImageUrl(banner.getPhotoUrl()));
             bannerResponseDTOList.add(bannerResponseDTO);
             if(banner.getEndDate().compareTo(new Date()) < 0 ){
                 banner.setStatus(false);

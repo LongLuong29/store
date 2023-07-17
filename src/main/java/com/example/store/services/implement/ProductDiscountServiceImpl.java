@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,19 +33,22 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
     private final ProductDiscountMapper productDiscountMapper = Mappers.getMapper(ProductDiscountMapper.class);
 
     @Override
-    public ResponseEntity<ResponseObject> createProductDiscount(Long productId, Long discountId) {
+    public ResponseEntity<ResponseObject> createProductDiscount(Long productId, Long discountId, Date startDate, Date endDate) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find product with ID = " + productId));
         Discount discount = discountRepository.findById(discountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find discount with ID = " + discountId));
-
+        Date now = new Date();
         Optional<ProductDiscount> getProductDiscount = productDiscountRepository.findProductDiscountByDiscountAndProduct(discount, product);
         if (getProductDiscount.isPresent()){
-            throw new ResourceAlreadyExistsException("Discount of product is exists");
+            if(now.compareTo(getProductDiscount.get().getEndDate()) < 0) {throw new ResourceAlreadyExistsException("Discount of product is exists or outdated");}
+//            else {this.productRepository.delete(getProductDiscount.get());}
         }
         ProductDiscount productDiscount = new ProductDiscount();
         productDiscount.setDiscount(discount);
         productDiscount.setProduct(product);
+        productDiscount.setStartDate(startDate);
+        productDiscount.setEndDate(endDate);
         ProductDiscountResponseDTO productDiscountResponseDTO
                 = productDiscountMapper.productDiscountToProductDiscountResponseDTO(productDiscountRepository.save(productDiscount));
         return ResponseEntity.status(HttpStatus.OK)

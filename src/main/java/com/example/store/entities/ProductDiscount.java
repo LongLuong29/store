@@ -31,13 +31,13 @@ public class ProductDiscount {
   @JoinColumn(name = "discount_id")
   private Discount discount;
 
-//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//  @Column(name = "start_date")
-//  private Date startDate;
-//
-//  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//  @Column(name = "end_date")
-//  private Date endDate;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "start_date")
+  private Date startDate;
+
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "end_date")
+  private Date endDate;
 
   private boolean deleted;
 

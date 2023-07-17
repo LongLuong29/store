@@ -3,8 +3,11 @@ package com.example.store.controller;
 import com.example.store.dto.response.ResponseObject;
 import com.example.store.services.ProductDiscountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api/v1/discount")
@@ -14,8 +17,10 @@ public class DiscountController {
   // Product-Discount
   @PostMapping(value = "/product")
   public ResponseEntity<ResponseObject> createProductDiscount(@RequestParam(name = "productId") Long productId,
-                                                              @RequestParam(name = "discountId") Long discountId){
-    return productDiscountService.createProductDiscount(productId, discountId);
+                                                              @RequestParam(name = "discountId") Long discountId,
+                                                              @Param(value = "startDate") Date startDate,
+                                                              @Param(value = "endDate") Date endDate){
+    return productDiscountService.createProductDiscount(productId, discountId,startDate,endDate);
   }
 
   @GetMapping(value = "/product")

@@ -32,14 +32,6 @@ public class Discount {
 
     private boolean status;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "start_date")
-    private Date startDate;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "end_date")
-    private Date endDate;
-
     @CreationTimestamp
     private Date createdDate;
 

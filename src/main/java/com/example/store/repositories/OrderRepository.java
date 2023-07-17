@@ -1,5 +1,6 @@
 package com.example.store.repositories;
 
+import com.example.store.entities.Address;
 import com.example.store.entities.Order;
 import com.example.store.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,9 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
   List<Order> findOrdersByUser (User user);
 
   List<Order> findOrdersByStatus(String status);
+
+  @Query(value = "select o from Order o left join Address a on o.address.id = a.id where a.province = :province and o.status = 'Wait_Delivering' ")
+  List<Order> listOrderByShipperProvince(String province);
 
   @Query(value = "SELECT o FROM Order o where o.createdDate >= :sinceDay and o.createdDate <=:toDay")
   List<Order> findOrderByDate(Date sinceDay, Date toDay);

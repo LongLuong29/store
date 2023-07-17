@@ -39,7 +39,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired private VoucherRepository voucherRepository;
     @Autowired private UserVoucherRepository userVoucherRepository;
     @Autowired private AddressRepository addressRepository;
+    @Autowired private AddressDetailRepository addressDetailRepository;
     @Autowired private JavaMailSender mailSender;
+    @Autowired private DeliveryRepository deliveryRepository;
 
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
 
@@ -176,6 +178,7 @@ public class OrderServiceImpl implements OrderService {
 //            {throw new InvalidValueException("Order isn't confirmed yet");}
             getOrder.setStatus("Done");
             getOrder.setDoneDate(date);
+            calculateShipperPoint(getOrder);
         }
         else {
             getOrder.setStatus(orderStatus);
@@ -203,12 +206,43 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(getOrder);
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công. Ví của người dùng còn lại: "+user.getWallet()+"VND");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Thanh toán thành công. Ví của người dùng còn lại: "+user.getWallet()+"VND");
+    }
+
+    @Override
+    public ResponseEntity<?> refundOrder(Long orderId, Long userId) {
+        Order getOrder = orderRepository
+                .findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + orderId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find user with ID = " + userId));
+        BigDecimal userWallet = user.getWallet();
+        getOrder.setStatus("Cancel");
+        user.setWallet(userWallet.add(getOrder.getFinalPrice()));
+        orderRepository.save(getOrder);
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Hủy đơn hàng thành công. Ví của người dùng còn lại: "+user.getWallet()+"VND");
     }
 
     @Override
     public ResponseEntity<?> getListOrderByOrderStatus(String orderStatus) {
         List<Order> orderList = orderRepository.findOrdersByStatus(orderStatus);
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for(Order o: orderList){
+            OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(o);
+            orderResponseDTOList.add(orderResponseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTOList);
+    }
+
+    @Override
+    public ResponseEntity<?> getListOrderByShipperProvince(Long shipperId) {
+        User shipper = userRepository.findById(shipperId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
+        List<AddressDetail> shipperAddress = addressDetailRepository.findAddressDetailsByUser(shipper);
+        String shipperProvince = shipperAddress.get(0).getAddress().getProvince();
+        List<Order> orderList = orderRepository.listOrderByShipperProvince(shipperProvince);
         List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
         for(Order o: orderList){
             OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(o);
@@ -283,6 +317,17 @@ public class OrderServiceImpl implements OrderService {
             messageHelper.setSubject(deliveredSubject);
             messageHelper.setText(mail4DeliveredNoti, true);
             mailSender.send(message);
+        }
+    }
+
+    private void calculateShipperPoint(Order order){
+        List<Delivery> deliveryList = deliveryRepository.findDeliveryByOrder(order);
+        for(Delivery d: deliveryList){
+            User shipper = d.getShipper();
+            if(d.isStatus()){
+                if(shipper.getPoint() < 100){d.getShipper().setPoint(shipper.getPoint()+1);}
+                this.userRepository.save(shipper);
+            }
         }
     }
 }

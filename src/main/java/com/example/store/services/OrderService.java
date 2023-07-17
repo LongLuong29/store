@@ -11,21 +11,15 @@ import java.math.BigDecimal;
 
 public interface OrderService {
   ResponseEntity<?> getOrderByUser(Long userId);
-
   ResponseEntity<ResponseObject> createOrder(Long userId, OrderRequestDTO oderRequestDTO/*, Long discountId*/);
-
   ResponseEntity<ResponseObject> upateOrder(Long orderId, OrderRequestDTO orderRequestDTO);
-
   ResponseEntity<?> getAllOrder();
-
   ResponseEntity<ResponseObject> deleteOrder(Long orderId);
-
   ResponseEntity<?> getOrderById(Long id);
-
   ResponseEntity<ResponseObject> updateOrderStatus(Long orderId, String orderStatus);
-
   void sendEmailForOrderStatus(Order order, int typeMail) throws MessagingException, UnsupportedEncodingException;
   ResponseEntity<?> checkoutByWallet(Long orderId, Long userId, BigDecimal totalPrice);
-
+  ResponseEntity<?> refundOrder(Long orderId, Long userId);
   ResponseEntity<?> getListOrderByOrderStatus(String orderStatus);
+  ResponseEntity<?> getListOrderByShipperProvince(Long shipperId);
 }

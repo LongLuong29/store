@@ -45,6 +45,11 @@ public class OrderController {
     return orderService.getListOrderByOrderStatus(orderStatus);
   }
 
+  @GetMapping(value = "/list-order-for-shipper")
+  public ResponseEntity<?> getListOrderByShipperProvince(@RequestParam(name = "shipperId") Long shipperId){
+    return orderService.getListOrderByShipperProvince(shipperId);
+  }
+
   @PostMapping(value = "")
   public ResponseEntity<ResponseObject> createOrder(@RequestParam(name = "userId") Long userId,
                                                     @RequestBody OrderRequestDTO orderRequestDTO){
@@ -62,6 +67,12 @@ public class OrderController {
                                             @RequestParam(name = "userId") Long userId,
                                             @RequestParam(name = "totalPrice") BigDecimal totalPrice){
     return orderService.checkoutByWallet(orderId, userId, totalPrice );
+  }
+
+  @PutMapping(value = "/refund")
+  public ResponseEntity<?> checkoutByWallet(@RequestParam(name = "orderId") Long orderId,
+                                            @RequestParam(name = "userId") Long userId){
+    return orderService.refundOrder(orderId, userId);
   }
 
   @DeleteMapping(value = "")

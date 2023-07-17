@@ -65,23 +65,20 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Order với ID = " + deliveryRequestDTO.getOrderId()));
         Address address = addressRepository.findById(deliveryRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Address với ID = " + deliveryRequestDTO.getAddressId()));
-
         // check error
-        if(user.getRole().getId() != 3){
-            throw new InvalidValueException("This user is not shipper");
-        }
+        if(user.getRole().getId() != 3){throw new InvalidValueException("This user is not shipper");}
+        if(user.getPoint() < 70){throw new InvalidValueException("Shipper không đủ số điểm tin cậy");}
         List<Delivery> userDeliveryList = deliveryRepository.findDeliveryByOrder(order);
         for (Delivery userDelivery: userDeliveryList){
             if(userDelivery != null && userDelivery.isStatus()){
                 throw new ResourceAlreadyExistsException("This order already has delivery");
             }
         }
-
         delivery.setStatus(true);
         delivery.setShipper(user);
         delivery.setAddress(address);
         delivery.setOrder(order);
-        delivery.getOrder().setStatus("Wait_Delivering");
+        delivery.getOrder().setStatus("Delivering");
 
         Delivery deliverySaved = deliveryRepository.save(delivery);
         DeliveryResponseDTO deliveryResponseDTO = mapper.deliveryToDeliveryResponseDTO(deliverySaved);

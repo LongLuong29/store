@@ -40,6 +40,11 @@ public class OrderController {
     return orderService.getOrderById(id);
   }
 
+  @GetMapping(value = "/list-by-status")
+  public ResponseEntity<?> getListOrdersByStatus(@RequestParam(name = "orderStatus") String orderStatus){
+    return orderService.getListOrderByOrderStatus(orderStatus);
+  }
+
   @PostMapping(value = "")
   public ResponseEntity<ResponseObject> createOrder(@RequestParam(name = "userId") Long userId,
                                                     @RequestBody OrderRequestDTO orderRequestDTO){

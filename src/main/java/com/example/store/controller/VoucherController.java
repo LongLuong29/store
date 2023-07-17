@@ -26,6 +26,11 @@ public class VoucherController {
         return voucherService.createVoucher(voucherRequestDTO);
     }
 
+    @PutMapping("/decrease-quantity")
+    public ResponseEntity<?> decreaseVoucherQuantity(@RequestParam(value = "voucherId") Long voucherId){
+        return voucherService.decreaseVoucherQuantity(voucherId);
+    }
+
     @DeleteMapping("")
     ResponseEntity<ResponseObject> deleteVoucher(@RequestParam(name = "voucherId") Long voucherId){
         return voucherService.deleteVoucher(voucherId);

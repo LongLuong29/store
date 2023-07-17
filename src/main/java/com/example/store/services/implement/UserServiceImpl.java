@@ -94,6 +94,7 @@ public class UserServiceImpl implements UserService {
         user.setPoint(0);
         user.setWallet(BigDecimal.valueOf(0));
         user.setRole(role);
+        if(role.getId() == 3){user.setPoint(100);}
 
         String randomCodeVerify = RandomStringUtils.random(14,true,true);
         user.setVerificationCode(randomCodeVerify);

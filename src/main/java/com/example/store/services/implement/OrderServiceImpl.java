@@ -171,9 +171,9 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         if(orderStatus.equals("Done")){
-            String status = getOrder.getStatus();
-            if (status.equals("Confirmed") == false)
-            {throw new InvalidValueException("Order isn't confirmed yet");}
+//            String status = getOrder.getStatus();
+//            if (status.equals("Reciev") == false)
+//            {throw new InvalidValueException("Order isn't confirmed yet");}
             getOrder.setStatus("Done");
             getOrder.setDoneDate(date);
         }
@@ -197,13 +197,24 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal userWallet = user.getWallet();
         if(totalPrice.compareTo(userWallet) > 0){throw new InvalidValueException("Ví người dùng không đủ số dư để thanh toán");}
         Date date = new Date();
-        getOrder.setStatus("Confirmed");
+        getOrder.setStatus("Wait_Delivering");
         getOrder.setPaidDate(date);
         user.setWallet(userWallet.subtract(totalPrice));
         orderRepository.save(getOrder);
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body("Thanh toán thành công. Ví của người dùng còn lại: "+user.getWallet()+"VND");
+    }
+
+    @Override
+    public ResponseEntity<?> getListOrderByOrderStatus(String orderStatus) {
+        List<Order> orderList = orderRepository.findOrdersByStatus(orderStatus);
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for(Order o: orderList){
+            OrderResponseDTO orderResponseDTO = orderMapper.orderToOrderResponseDTO(o);
+            orderResponseDTOList.add(orderResponseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTOList);
     }
 
     @Override

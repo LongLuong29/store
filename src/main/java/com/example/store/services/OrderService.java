@@ -26,4 +26,6 @@ public interface OrderService {
 
   void sendEmailForOrderStatus(Order order, int typeMail) throws MessagingException, UnsupportedEncodingException;
   ResponseEntity<?> checkoutByWallet(Long orderId, Long userId, BigDecimal totalPrice);
+
+  ResponseEntity<?> getListOrderByOrderStatus(String orderStatus);
 }

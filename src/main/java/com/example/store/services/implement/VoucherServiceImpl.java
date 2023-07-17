@@ -37,6 +37,18 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
+    public ResponseEntity<?> decreaseVoucherQuantity(Long voucherId) {
+        Voucher voucher = voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not found voucher with id = "+voucherId));
+        int voucherQuantity = voucher.getQuantity();
+        if(voucherQuantity > 0) {
+            voucher.setQuantity(voucherQuantity - 1);
+            voucherRepository.save(voucher);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Voucher quantity: " + voucher.getQuantity());
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> createVoucher(VoucherRequestDTO voucherRequestDTO) {
         Voucher voucher = mapper.voucherRequestDTOtoVoucher(voucherRequestDTO);
         voucher.setStatus(true);

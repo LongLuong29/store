@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 public interface VoucherService {
     ResponseEntity<?> getAllVoucher();
 
+    ResponseEntity<?> decreaseVoucherQuantity(Long voucherId);
     ResponseEntity<ResponseObject> createVoucher(VoucherRequestDTO voucherRequestDTO);
     ResponseEntity<ResponseObject> updateVoucher(VoucherRequestDTO voucherRequestDTO, Long id);
 

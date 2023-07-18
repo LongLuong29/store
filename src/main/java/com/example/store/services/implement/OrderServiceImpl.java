@@ -241,7 +241,13 @@ public class OrderServiceImpl implements OrderService {
         User shipper = userRepository.findById(shipperId)
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find shipper with ID = " + shipperId));
         List<AddressDetail> shipperAddress = addressDetailRepository.findAddressDetailsByUser(shipper);
-        String shipperProvince = shipperAddress.get(0).getAddress().getProvince();
+        String shipperProvince = "";
+        for(AddressDetail ad: shipperAddress){
+            if(ad.isDefaultAddress()){
+                shipperProvince = ad.getAddress().getProvince();
+                break;
+            }
+        }
         List<Order> orderList = orderRepository.listOrderByShipperProvince(shipperProvince);
         List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
         for(Order o: orderList){

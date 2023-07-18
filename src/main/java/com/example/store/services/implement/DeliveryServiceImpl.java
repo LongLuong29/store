@@ -249,12 +249,16 @@ public class DeliveryServiceImpl implements DeliveryService {
         Order order = orderRepository.findById(delivery.getOrder().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find order with ID = " + delivery.getOrder().getId()));
         if(!delivery.isStatus()){throw new ResourceAlreadyExistsException("Đơn vận chuyển của shipper này đi bị hủy trước đó !!");}
+        User shipper = delivery.getShipper();
+        if(shipper.getPoint() < 100){delivery.getShipper().setPoint(shipper.getPoint()-10);}
+        this.userRepository.save(shipper);
         delivery.setStatus(false);
         this.deliveryRepository.save(delivery);
         order.setStatus("Wait_Delivering");
         this.orderRepository.save(order);
         return ResponseEntity.status(HttpStatus.OK).body("Hủy thành công đơn vận chuyển của shipper: " + delivery.getShipper().getName());
     }
+
 
     //    @Override
 //    public ResponseEntity<?> getDeliveryByStatusAndShipper(String status, Long shipperId) {
